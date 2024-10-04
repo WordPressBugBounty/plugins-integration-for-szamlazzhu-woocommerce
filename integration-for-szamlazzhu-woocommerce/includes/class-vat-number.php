@@ -38,8 +38,10 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			add_filter( 'woocommerce_localisation_address_formats', array( __CLASS__, 'add_vat_number_to_address'));
 			add_filter( 'woocommerce_formatted_address_replacements', array( __CLASS__, 'replace_vat_number_in_address'), 10, 2);
 			add_filter( 'woocommerce_order_formatted_billing_address', function( $address, $order ) {
-				$taxnumber = self::get_order_vat_number($order);
-				$address['wc_szamlazz_adoszam'] = $taxnumber != '' ? $taxnumber : null;
+				if($address) {
+					$taxnumber = self::get_order_vat_number($order);
+					$address['wc_szamlazz_adoszam'] = $taxnumber != '' ? $taxnumber : '';
+				}
 				return $address;
 			}, 10, 2 );
 
