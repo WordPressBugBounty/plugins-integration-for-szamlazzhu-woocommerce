@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.0.5
+ * Version: 6.0.6
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 9.3.1
+ * WC tested up to: 9.4.1
  * Requires Plugins: woocommerce
  */
 
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.0.5';
+		self::$version = '6.0.6';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -113,20 +113,11 @@ class WC_Szamlazz {
 		}
 	}
 
-	public function load_plugin_textdomain() {
-		$locale = determine_locale();
-		$locale = apply_filters( 'plugin_locale', $locale, 'wc-szamlazz' );
-
-		unload_textdomain( 'wc-szamlazz' );
-		load_textdomain( 'wc-szamlazz', basename( dirname( __FILE__ ) ) . '/languages/wc-szamlazz-' . $locale . '.mo' );
-		load_plugin_textdomain( 'wc-szamlazz', false, basename( dirname( __FILE__ ) ) . '/languages/' );
-	}
-
 	//Load plugin stuff
 	public function init() {
 
 		//Load locale
-		$this->load_plugin_textdomain();
+		load_plugin_textdomain( 'wc-szamlazz', false, basename( dirname( __FILE__ ) ) . '/languages/' );
 		
 		//Background invoice generator
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-background-generator.php' );

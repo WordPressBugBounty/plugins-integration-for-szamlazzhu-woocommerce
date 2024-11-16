@@ -52,6 +52,7 @@ class WC_Szamlazz_Woo_Subscriptions_Compatibility {
 	public static function renewal_order_created( $renewal_order, $subscription ) {
 		if(WC_Szamlazz()->get_option('compat_subscriptions_proform', 'no') == 'yes') {
 			WC_Szamlazz_Automations::on_order_processing($renewal_order);
+			WC_Szamlazz_Automations::on_order_created($renewal_order->get_id(), false, false);
 		}
 		return $renewal_order;
 	}
@@ -59,12 +60,13 @@ class WC_Szamlazz_Woo_Subscriptions_Compatibility {
 	public static function renewal_order_payment_completed( $order_id ) {
 		if(WC_Szamlazz()->get_option('compat_subscriptions_invoice', 'no') == 'yes') {
 			WC_Szamlazz_Automations::on_order_complete($order_id);
+			WC_Szamlazz_Automations::on_payment_complete($order_id);
 		}
 	}
 
 	public static function order_meta($order_meta) {
 		foreach ( $order_meta as $key => $value ) {
-			$order_meta_query = array('_wc_szamlazz_own', '_wc_szamlazz_invoice', '_wc_szamlazz_proform', '_wc_szamlazz_proform_pdf', '_wc_szamlazz_invoice_pdf', '_wc_szamlazz_invoice_manual', '_wc_szamlazz_delivery', '_wc_szamlazz_delivery_pdf', '_wc_szamlazz_delivery_manual', '_wc_szamlazz_deposit', '_wc_szamlazz_deposit_pdf', '_wc_szamlazz_deposit_manual', '_wc_szamlazz_completed', '_wc_szamlazz_account_id');
+			$order_meta_query = array('_wc_szamlazz_own', '_wc_szamlazz_invoice', '_wc_szamlazz_proform', '_wc_szamlazz_proform_pdf', '_wc_szamlazz_invoice_pdf', '_wc_szamlazz_invoice_manual', '_wc_szamlazz_delivery', '_wc_szamlazz_delivery_pdf', '_wc_szamlazz_delivery_manual', '_wc_szamlazz_deposit', '_wc_szamlazz_deposit_pdf', '_wc_szamlazz_deposit_manual', '_wc_szamlazz_completed', '_wc_szamlazz_account_id', '_wc_szamlazz_receipt', '_wc_szamlazz_receipt_pdf');
 			if ( in_array($value['meta_key'],$order_meta_query) ) {
 				unset( $order_meta[$key] );
 				return $order_meta;
