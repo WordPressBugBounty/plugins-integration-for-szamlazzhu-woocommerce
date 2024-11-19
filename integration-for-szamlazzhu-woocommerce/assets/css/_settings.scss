@@ -231,7 +231,7 @@
 					align-items: center;
 					margin: 0 0 8px 0;
 
-					select {
+					select, input[type="text"] {
 						margin-right: 8px !important;
 
 						&.value {
@@ -653,7 +653,7 @@
 					align-items: center;
 					margin: 0 0 8px 0;
 
-					select {
+					select, input[type="text"] {
 						margin-right: 8px !important;
 
 						&.value {
@@ -663,6 +663,12 @@
 								display: block;
 							}
 						}
+					}
+
+					input[type="text"] {
+						min-height: 0;
+						line-height: 1;
+						padding: 2px 8px !important;
 					}
 
 					a {

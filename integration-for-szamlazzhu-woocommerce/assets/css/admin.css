@@ -141,11 +141,11 @@
         display: flex;
         align-items: center;
         margin: 0 0 8px 0; }
-        .wc-szamlazz-settings-note-if-options li select {
+        .wc-szamlazz-settings-note-if-options li select, .wc-szamlazz-settings-note-if-options li input[type="text"] {
           margin-right: 8px !important; }
-          .wc-szamlazz-settings-note-if-options li select.value {
+          .wc-szamlazz-settings-note-if-options li select.value, .wc-szamlazz-settings-note-if-options li input[type="text"].value {
             display: none; }
-            .wc-szamlazz-settings-note-if-options li select.value.selected {
+            .wc-szamlazz-settings-note-if-options li select.value.selected, .wc-szamlazz-settings-note-if-options li input[type="text"].value.selected {
               display: block; }
         .wc-szamlazz-settings-note-if-options li a {
           width: 27px;
@@ -418,12 +418,16 @@
         display: flex;
         align-items: center;
         margin: 0 0 8px 0; }
-        .wc-szamlazz-settings-vat-override-if-options li select {
+        .wc-szamlazz-settings-vat-override-if-options li select, .wc-szamlazz-settings-vat-override-if-options li input[type="text"] {
           margin-right: 8px !important; }
-          .wc-szamlazz-settings-vat-override-if-options li select.value {
+          .wc-szamlazz-settings-vat-override-if-options li select.value, .wc-szamlazz-settings-vat-override-if-options li input[type="text"].value {
             display: none; }
-            .wc-szamlazz-settings-vat-override-if-options li select.value.selected {
+            .wc-szamlazz-settings-vat-override-if-options li select.value.selected, .wc-szamlazz-settings-vat-override-if-options li input[type="text"].value.selected {
               display: block; }
+        .wc-szamlazz-settings-vat-override-if-options li input[type="text"] {
+          min-height: 0;
+          line-height: 1;
+          padding: 2px 8px !important; }
         .wc-szamlazz-settings-vat-override-if-options li a {
           width: 27px;
           height: 27px;

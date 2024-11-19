@@ -65,7 +65,7 @@ if ( ! class_exists( 'WC_Szamlazz_Emails', false ) ) :
 			if(!empty($invoices)) {
 
 				//This will load the correct site locale, not the admin language
-				WC_Szamlazz()->load_plugin_textdomain();
+				//WC_Szamlazz()->load_plugin_textdomain();
 
 				if($plain_text) {
 					wc_get_template( 'emails/plain/email-szamlazz-section.php', array( 'order' => $order, 'wc_szamlazz_invoices' => $invoices ), '', plugin_dir_path( __FILE__ ) );
