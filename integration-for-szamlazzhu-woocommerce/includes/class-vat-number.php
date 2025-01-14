@@ -160,7 +160,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 		public static function display_vat_number_in_admin($billing_fields){
 			$billing_fields['wc_szamlazz_adoszam'] = array(
 				'label' => __( 'VAT number', 'wc-szamlazz' ),
-				'show'  => true,
+				'show' => true,
 			);
 			return $billing_fields;
 		}
@@ -213,6 +213,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 					$vat_number = sanitize_text_field($fields['wc_szamlazz_adoszam']);
 					$country_code = substr($vat_number, 0, 2);
 					$billing_country = $fields['billing_country'];
+					$billing_country = self::get_vat_number_prefix($billing_country);
 					if($country_code != $billing_country) {
 						$errors->add( 'validation', apply_filters('wc_szamlazz_eu_vat_number_validation_country_mismatch_message', esc_html__( 'The VAT number is from another country, please select that country in the billing address.', 'wc-szamlazz'), $fields) );
 					}
@@ -336,7 +337,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			$vat_number = preg_replace('/[^A-Z0-9]/', '', $vat_number);
 
 			//Check with regex match
-			if(!preg_match('/^((AT)?U[0-9]{8}|(BE)?0[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}L|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}L|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})$/', $vat_number)) {
+			if(!preg_match('/^((AT)?U[0-9]{8}|(BE)?0[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}[A-Z]|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}[A-Z]|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})$/', $vat_number)) {
 				return array(
 					"valid" => false
 				);
@@ -546,6 +547,18 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 		public static function require_vat_number($fields) {
 			$fields['company']['required'] = true;
 			return $fields;
+		}
+
+		public static function get_vat_number_prefix( $country ) {
+			switch ( $country ) {
+				case 'GR':
+					$vat_prefix = 'EL';
+					break;
+				default:
+					$vat_prefix = $country;
+					break;
+			}
+			return $vat_prefix;
 		}
 
 	}

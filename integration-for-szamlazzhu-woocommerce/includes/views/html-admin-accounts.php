@@ -4,10 +4,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $saved_values = get_option('wc_szamlazz_extra_accounts');
+
 $product_categories = array();
 foreach (get_terms(array('taxonomy' => 'product_cat')) as $category) {
 	$product_categories['product_cat_'.$category->term_id] = $category->name;
 }
+
 $condition_select_values = apply_filters('wc_szamlazz_account_conditions', array(
 	array(
 		"label" => __('Payment method', 'wc-szamlazz'),

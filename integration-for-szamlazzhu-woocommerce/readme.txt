@@ -4,7 +4,7 @@ Tags: szamlazz.hu, szamlazz, woocommerce, szamlazo, magyar
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 6.0.7
+Stable tag: 6.0.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,6 +128,13 @@ A számlaértesítő teszt módban nem a vásárló email címére érkezik, han
 8. Számlakészítés doboz a rendelés oldalon
 
 == Changelog ==
+
+6.0.9
+* EU adószám ellenőrzés javítások
+* Szállítólevélből lehet újat csinálni akkor is, ha már van egy(felülírja a meglévőt)
+
+6.0.8
+* WPML kompatibilitás javítás
 
 6.0.7
 * Fatal error javítás pénztár oldalon, ha volt e-mail küldés beállítva

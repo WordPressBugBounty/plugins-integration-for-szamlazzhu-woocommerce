@@ -123,7 +123,7 @@ if ( ! class_exists( 'WC_Szamlazz_Helpers', false ) ) :
 			$lang_code = WC_Szamlazz()->get_option('language', 'hu');
 
 			if(true) {
-				$wpml_lang_code = get_post_meta( $orderId, 'wpml_language', true );
+				$wpml_lang_code = $order->get_meta('wpml_language');
 				if(!$wpml_lang_code && function_exists('pll_get_post_language')){
 					$wpml_lang_code = pll_get_post_language($orderId, 'slug');
 				}

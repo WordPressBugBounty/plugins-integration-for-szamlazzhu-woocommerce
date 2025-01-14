@@ -17,7 +17,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 				add_action( 'woocommerce_checkout_order_processed', array( __CLASS__, 'on_order_created' ), 10, 3 );
 
 				//On successful payment
-				add_action( 'woocommerce_payment_complete',  array( __CLASS__, 'on_payment_complete' ) );
+				add_action( 'woocommerce_payment_complete', array( __CLASS__, 'on_payment_complete' ) );
 
 				//On status change
 				$statuses = self::get_order_statuses();

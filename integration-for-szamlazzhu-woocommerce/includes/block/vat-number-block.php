@@ -34,6 +34,7 @@ add_action('woocommerce_blocks_loaded', function() {
 			if(preg_match('/^[A-Z]{2}/', $vat_number)) {
 				$country_code = substr($vat_number, 0, 2);
 				$billing_country = $request['billing_address']['country'];
+				$billing_country = WC_Billingo_Plus_Vat_Number_Field::get_vat_number_prefix($billing_country);
 				if($country_code != $billing_country) {
 					throw new Exception(apply_filters('wc_szamlazz_eu_vat_number_validation_country_mismatch_message', esc_html__( 'The VAT number is from another country, please select that country in the billing address.', 'wc-szamlazz')));
 				}

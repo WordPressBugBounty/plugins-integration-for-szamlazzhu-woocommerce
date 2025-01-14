@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.0.7
+ * Version: 6.0.9
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.0.7';
+		self::$version = '6.0.9';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -436,7 +436,7 @@ class WC_Szamlazz {
 		}
 
 		//Mark as paid if needed with custom options
-		if(isset($options['paid'])) {
+		if(isset($options['paid']) && $type != 'delivery') {
 			if(!$fejlec->fizetve) {
 				$fejlec->addChild('fizetve', 'false');
 			}
@@ -450,7 +450,7 @@ class WC_Szamlazz {
 		}
 
 		//Mark as paid based on metabox option
-		if(isset($_POST['paid'])) {
+		if(isset($_POST['paid']) && $type != 'delivery') {
 			if(!$fejlec->fizetve) {
 				$fejlec->addChild('fizetve', 'true');
 			}
@@ -935,7 +935,7 @@ class WC_Szamlazz {
 		}
 
 		//Just in case, check again if we already have a document generated
-		if($this->is_invoice_generated($orderId, $type)) {
+		if($this->is_invoice_generated($orderId, $type) && $type != 'delivery') {
 				
 			//Create response
 			$response['error'] = true;
