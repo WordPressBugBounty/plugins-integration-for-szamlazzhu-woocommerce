@@ -85,7 +85,7 @@ class WC_Szamlazz_VAT_Number_Block_Extend_Store_Endpoint {
 						$vat_number_data = WC_Szamlazz_Vat_Number_Field::get_eu_vat_number_data($data['vat_number']);
 
 						//Set VAT exempt if the vat number is not from Hungary
-						if(isset($vat_number_data['country_code']) && $vat_number_data['country_code'] != 'HU') {
+						if(isset($vat_number_data['country_code']) && $vat_number_data['country_code'] != 'HU' && WC_Szamlazz()->get_option('eu_vat_exempt', 'yes') == 'yes') {
 							WC()->customer->set_is_vat_exempt(true);
 						}
 
