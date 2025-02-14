@@ -16,6 +16,7 @@ class WC_Szamlazz_Woo_Subscriptions_Compatibility {
 		add_filter( 'wcs_renewal_order_created', array( __CLASS__, 'renewal_order_created' ), 10, 2 );
 		add_action( 'woocommerce_renewal_order_payment_complete', array( __CLASS__, 'renewal_order_payment_completed' ) );
 		add_filter( 'wcs_renewal_order_meta', array( __CLASS__, 'order_meta' ) );
+		add_action( 'woocommerce_customer_save_address', __CLASS__ . '::maybe_update_subscription_addresses' );
 
 	}
 
@@ -73,6 +74,27 @@ class WC_Szamlazz_Woo_Subscriptions_Compatibility {
 			}
 		}
 		return $order_meta;
+	}
+
+	public static function maybe_update_subscription_addresses( $user_id ) {
+		if ( ! wcs_user_has_subscription( $user_id ) || ! isset( $_POST['_wcsnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wcsnonce'] ) ), 'wcs_edit_address' ) || wc_notice_count( 'error' ) > 0 ) {
+			return;
+		}
+
+		$vat_number = isset( $_POST['wc_szamlazz_adoszam'] ) ? wc_clean( wp_unslash( $_POST['wc_szamlazz_adoszam'] ) ) : '';
+
+		if ( isset( $_POST['update_all_subscriptions_addresses'] )) {
+			$users_subscriptions = wcs_get_users_subscriptions( $user_id );
+			foreach ( $users_subscriptions as $subscription ) {
+				if ( $subscription->has_status( array( 'active', 'on-hold' ) ) ) {
+					if(preg_match('/^\d{11}$/', $vat_number)) {
+						$vat_number = preg_replace('/^(\d{8})(\d{1})(\d{2})$/', '$1-$2-$3', $vat_number);
+					}
+					$subscription->update_meta_data( '_billing_wc_szamlazz_adoszam', $vat_number );
+					$subscription->save();
+				}
+			}
+		}
 	}
 
 }

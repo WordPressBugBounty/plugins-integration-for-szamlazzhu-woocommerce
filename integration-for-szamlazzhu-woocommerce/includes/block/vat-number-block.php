@@ -69,8 +69,10 @@ add_action('woocommerce_blocks_loaded', function() {
 		}
 
 		//If a company name was entered, but not a vat number, throw error
-		if($request_data['customer_type'] == 'individual') {
-			if($request['billing_address']['company']) {
+		if($request_data['customer_type'] == 'individual' && $request['billing_address']['company']) {
+			$eu_countries = WC()->countries->get_european_union_countries();
+			$check_eu_vat = (WC_Szamlazz()->get_option('vat_number_eu', 'no') == 'yes');
+			if($request['billing_country'] == 'HU' || ($check_eu_vat && in_array($request['billing_country'], $eu_countries))) {
 				throw new Exception(apply_filters('wc_szamlazz_tax_validation_required_message', esc_html__( 'If you enter a company name, the VAT number field is required.', 'wc-szamlazz')));
 			}
 		}

@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.0.11
+ * Version: 6.0.13
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.0.11';
+		self::$version = '6.0.13';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -260,7 +260,7 @@ class WC_Szamlazz {
 		}
 
 		add_meta_box('wc_szamlazz_metabox', __('Számlázz.hu', 'wc-szamlazz'), array( $this, 'render_meta_box_content' ), $screen, 'side');
-		add_meta_box('wc_szamlazz_metabox', __('Számlázz.hu', 'wc-szamlazz'), array( $this, 'render_meta_box_content' ), 'awcdp_payment', 'side');
+		add_meta_box('wc_szamlazz_metabox', __('Számlázz.hu', 'wc-szamlazz'), array( $this, 'render_meta_box_content' ), 'awcdp_payment', 'side');		
 
 		$order = ( $post_or_order_object instanceof \WP_Post ) ? wc_get_order( $post_or_order_object->ID ) : $post_or_order_object;
 		if(is_a( $order, 'WC_Order' )) {
@@ -559,11 +559,19 @@ class WC_Szamlazz {
 		//Let plugins change the vat number
 		$taxcode = apply_filters('wc_szamlazz_xml_adoszam', $taxcode, $order);
 		$adoszam_eu = apply_filters('wc_szamlazz_xml_adoszam_eu', '', $order);
+		$billing_country = $order->get_billing_country();
+		if(!$billing_country) $billing_country = 'HU';
 
 		//If we have a taxcode but starts with 2 letters, its an EU VAT number
 		if($adoszam_eu == '' && $taxcode && preg_match('/^[A-Z]{2}/', $taxcode)) {
 			$adoszam_eu = $taxcode;
 			$taxcode = '';
+		}
+
+		//If we have a taxcode or eu vat number, but the billing country is not Hungary or EU, we need to remove it
+		if(($taxcode || $adoszam_eu) && !in_array($billing_country, WC()->countries->get_european_union_countries())) {
+			$taxcode = '';
+			$adoszam_eu = '';
 		}
 
 		//Set tax number
