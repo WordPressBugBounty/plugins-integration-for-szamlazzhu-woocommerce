@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.0.13
+ * Version: 6.0.14
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 9.4.1
+ * WC tested up to: 9.7.1
  * Requires Plugins: woocommerce
  */
 
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.0.13';
+		self::$version = '6.0.14';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -349,6 +349,7 @@ class WC_Szamlazz {
 		//Set document type
 		$szamla->beallitasok->addChild('eszamla', $electronic_invoice_type);
 		$szamla->beallitasok->addChild('szamlaLetoltes', 'true');
+		$szamla->beallitasok->addChild('aggregator', 'uiBo2swiVxh0SLgDDt6jnTNk0ohWNY9Q');
 
 		//If custom details submitted
 		if(isset($_POST['deadline']) && isset($_POST['completed'])) {
@@ -1260,6 +1261,7 @@ class WC_Szamlazz {
 		$electronic_invoice_type = WC_Szamlazz_Helpers::get_invoice_type($order);
 		$szamla->beallitasok->addChild('eszamla', $electronic_invoice_type);
 		$szamla->beallitasok->addChild('szamlaLetoltes', 'true');
+		$szamla->beallitasok->addChild('aggregator', 'uiBo2swiVxh0SLgDDt6jnTNk0ohWNY9Q');
 
 		//Invoice details
 		$fejlec = $szamla->addChild('fejlec');
