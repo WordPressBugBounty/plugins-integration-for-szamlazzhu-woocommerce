@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.0.14
+ * Version: 6.0.15
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.0.14';
+		self::$version = '6.0.15';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -215,7 +215,7 @@ class WC_Szamlazz {
 		wp_enqueue_script( 'wc_szamlazz_print_js', plugins_url( '/assets/js/print.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
 		wp_enqueue_script( 'wc_szamlazz_pdf_lib_js', plugins_url( '/assets/js/pdf-lib.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
 		wp_enqueue_script( 'wc_szamlazz_filesaver_js', plugins_url( '/assets/js/filesaver.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
-		wp_enqueue_script( 'wc_szamlazz_admin_js', plugins_url( '/assets/js/admin'.$suffix.'.js',__FILE__ ), array('jquery', 'jquery-tiptip', 'jquery-blockui'), WC_Szamlazz::$version, TRUE );
+		wp_enqueue_script( 'wc_szamlazz_admin_js', plugins_url( '/assets/js/admin'.$suffix.'.js',__FILE__ ), array('jquery', 'jquery-tiptip', 'jquery-blockui', 'wc-backbone-modal'), WC_Szamlazz::$version, TRUE );
 		wp_enqueue_style( 'wc_szamlazz_admin_css', plugins_url( '/assets/css/admin.css',__FILE__ ), array(), WC_Szamlazz::$version );
 
 		$wc_szamlazz_local = array(
