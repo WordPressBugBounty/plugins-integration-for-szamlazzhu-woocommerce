@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.0.15
+ * Version: 6.0.16
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 9.7.1
+ * WC tested up to: 9.8.2
  * Requires Plugins: woocommerce
  */
 
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.0.15';
+		self::$version = '6.0.16';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -160,7 +160,7 @@ class WC_Szamlazz {
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 
 		//Admin CSS & JS
-		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_init' ) );
 
 		//Create order metaboxes
 		add_action( 'add_meta_boxes', array( $this, 'add_metabox' ), 10, 2 );
@@ -212,22 +212,27 @@ class WC_Szamlazz {
 	//Add CSS & JS
 	public function admin_init() {
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
-		wp_enqueue_script( 'wc_szamlazz_print_js', plugins_url( '/assets/js/print.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
-		wp_enqueue_script( 'wc_szamlazz_pdf_lib_js', plugins_url( '/assets/js/pdf-lib.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
-		wp_enqueue_script( 'wc_szamlazz_filesaver_js', plugins_url( '/assets/js/filesaver.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
-		wp_enqueue_script( 'wc_szamlazz_admin_js', plugins_url( '/assets/js/admin'.$suffix.'.js',__FILE__ ), array('jquery', 'jquery-tiptip', 'jquery-blockui', 'wc-backbone-modal'), WC_Szamlazz::$version, TRUE );
-		wp_enqueue_style( 'wc_szamlazz_admin_css', plugins_url( '/assets/css/admin.css',__FILE__ ), array(), WC_Szamlazz::$version );
+		$screen       = get_current_screen();
+		$screen_id    = $screen ? $screen->id : '';
 
-		$wc_szamlazz_local = array(
-			'loading' => plugins_url( '/assets/images/ajax-loader.gif',__FILE__ ),
-			'delete_proform_too' => 'yes',
-			'settings_link' => esc_url(admin_url( 'admin.php?page=wc-settings&tab=integration&section=wc_szamlazz' )),
-			'nonces' => array(
-				'generate' => current_user_can( 'manage_woocommerce' ) ? wp_create_nonce( 'wc-szamlazz-generate' ) : null,
-				'settings' => current_user_can( 'manage_woocommerce' ) ? wp_create_nonce( 'wc-szamlazz-license-check' ) : null,
-			)
-		);
-		wp_localize_script( 'wc_szamlazz_admin_js', 'wc_szamlazz_params', $wc_szamlazz_local );
+		if ( in_array( $screen_id, wc_get_screen_ids() ) ) {
+			wp_enqueue_script( 'wc_szamlazz_print_js', plugins_url( '/assets/js/print.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
+			wp_enqueue_script( 'wc_szamlazz_pdf_lib_js', plugins_url( '/assets/js/pdf-lib.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
+			wp_enqueue_script( 'wc_szamlazz_filesaver_js', plugins_url( '/assets/js/filesaver.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
+			wp_enqueue_script( 'wc_szamlazz_admin_js', plugins_url( '/assets/js/admin'.$suffix.'.js',__FILE__ ), array('jquery', 'jquery-tiptip', 'jquery-blockui', 'wc-backbone-modal'), WC_Szamlazz::$version, TRUE );
+			wp_enqueue_style( 'wc_szamlazz_admin_css', plugins_url( '/assets/css/admin.css',__FILE__ ), array(), WC_Szamlazz::$version );
+
+			$wc_szamlazz_local = array(
+				'loading' => plugins_url( '/assets/images/ajax-loader.gif',__FILE__ ),
+				'delete_proform_too' => 'yes',
+				'settings_link' => esc_url(admin_url( 'admin.php?page=wc-settings&tab=integration&section=wc_szamlazz' )),
+				'nonces' => array(
+					'generate' => current_user_can( 'manage_woocommerce' ) ? wp_create_nonce( 'wc-szamlazz-generate' ) : null,
+					'settings' => current_user_can( 'manage_woocommerce' ) ? wp_create_nonce( 'wc-szamlazz-license-check' ) : null,
+				)
+			);
+			wp_localize_script( 'wc_szamlazz_admin_js', 'wc_szamlazz_params', $wc_szamlazz_local );
+		}
 
 	}
 
