@@ -102,15 +102,13 @@ class WC_Szamlazz_VAT_Number_Block_Extend_Store_Endpoint {
 					WC()->session->set( 'vat-number-data', $vat_number_data );
 					
 				} else {
-
 					$vat_number_data = WC()->session->get( 'vat-number-data' );
 					if(!$vat_number_data) {
 						$vat_number_data = array(
-							'vat_number' => '',
-							'customer_type' => 'individual'
+							'vat_number' => ''
 						);
 					}
-
+					$vat_number_data['customer_type'] = 'individual';
 					WC()->session->set( 'vat-number-data', $vat_number_data );
 					WC()->customer->set_is_vat_exempt(false);
 				}

@@ -176,7 +176,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 
 			//Don't defer if we are just changing one or two order status using bulk actions
 			if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) {
-				$deferred = true;
+				$deferred = apply_filters('wc_szamlazz_defer_invoice_in_bulk_action', true);
 			}
 
 			//Don't create for free orders
@@ -354,7 +354,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 
 					//Don't defer if we are just changing one or two order status using bulk actions
 					if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) {
-						$deferred = true;
+						$deferred = apply_filters('wc_szamlazz_defer_invoice_in_bulk_action', true);
 					}
 
 					if($deferred) {
@@ -388,7 +388,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 
 			//Don't defer if we are just changing one or two order status using bulk actions
 			if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) {
-				$deferred = true;
+				$deferred = apply_filters('wc_szamlazz_defer_invoice_in_bulk_action', true);
 			}
 
 			//Don't create for free orders

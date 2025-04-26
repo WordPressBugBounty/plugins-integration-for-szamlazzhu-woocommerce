@@ -28,7 +28,7 @@ class WC_Szamlazz_Translatepress_Compatibility {
 	}
 
 	public static function change_item_language($tetel, $order_item, $order, $szamla) {
-		if($order->get_meta('trp_language')) {
+		if($order->get_meta('trp_language') && $tetel) {
 			$tetel->megnevezes = htmlspecialchars_decode(wp_strip_all_tags(trp_translate($tetel->megnevezes)));
 		}
 		return $tetel;
