@@ -13,20 +13,16 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 			$is_pro = WC_Szamlazz_Pro::is_pro_enabled();
 
 			if($is_pro && WC_Szamlazz()->get_option('auto_invoice_custom', 'no') == 'yes') {
+
 				//When order created
 				add_action( 'woocommerce_checkout_order_processed', array( __CLASS__, 'on_order_created' ), 10, 3 );
 
 				//On successful payment
 				add_action( 'woocommerce_payment_complete', array( __CLASS__, 'on_payment_complete' ) );
 
-				//On status change
-				$statuses = self::get_order_statuses();
-				foreach ($statuses as $status => $label) {
-					$status = str_replace( 'wc-', '', $status );
-					add_action( 'woocommerce_order_status_'.$status, function($order_id) use ($status) {
-						self::on_status_change($order_id, $status);
-					});
-				}
+				//On order status change
+				add_action( 'init', array( __CLASS__, 'init_order_status_hooks' ) );
+
 			}
 
 			//Create a hook based on the status setup in settings to auto-generate invoice, only if the advanced options are not used
@@ -66,6 +62,17 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 			//Delete PDF when order is deleted
 			add_action('woocommerce_before_delete_order', array(__CLASS__, 'on_order_post_deleted'), 10, 2);
 
+		}
+
+		//Initialize order status hooks
+		public static function init_order_status_hooks() {
+			$statuses = self::get_order_statuses();
+			foreach ($statuses as $status => $label) {
+				$status = str_replace( 'wc-', '', $status );
+				add_action( 'woocommerce_order_status_'.$status, function($order_id) use ($status) {
+					self::on_status_change($order_id, $status);
+				});
+			}
 		}
 
 		//Get order statues
@@ -226,7 +233,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 				$complete_date_delay = intval($automation['complete_delay']);
 				$deadline = intval($automation['deadline']);
 				$paid = $automation['paid'];
-				$automation_id = $automation['id'];
+				$automation_id = isset($automation['id']) ? $automation['id'] : '';
 				$timestamp = current_time('timestamp');
 
 				//Get dates related to the order

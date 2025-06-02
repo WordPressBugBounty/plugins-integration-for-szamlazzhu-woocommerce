@@ -74,9 +74,13 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 					'options' => array()
 				),
 				'shipping_class' => array(
-					'label' => __('Shipping class', 'vp-woo-pont'),
+					'label' => __('Shipping class', 'wc-szamlazz'),
 					'options' => WC_Szamlazz_Helpers::get_shipping_classes()
-				)
+				),
+				'user_role' => array(
+					'label' => __('User role', 'wc-szamlazz'),
+					'options' => WC_Szamlazz_Helpers::get_user_roles()
+				),
 			);
 
 			//Add category options
@@ -239,8 +243,18 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 				'product_attribute' => $product_attributes,
 				'account' => $account,
 				'currency' => $order->get_currency(),
-				'shipping_classes' => $shipping_classes
+				'shipping_classes' => $shipping_classes,
+				'user_role' => '',
 			);
+
+			//Get order customer user role
+			$user_id = $order->get_user_id();
+			if($user_id) {
+				$user = get_userdata($user_id);
+				if($user && $user->roles) {
+					$order_details['user_role'] = $user->roles[0];
+				}
+			}
 
 			//Custom conditions
 			return apply_filters('wc_szamlazz_'.$group.'_conditions_values', $order_details, $order);

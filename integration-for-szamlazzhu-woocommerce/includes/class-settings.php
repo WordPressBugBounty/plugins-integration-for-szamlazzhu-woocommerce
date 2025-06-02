@@ -407,7 +407,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 		$payment_methods = array();
 		foreach ($available_gateways as $available_gateway) {
 			if($available_gateway->enabled == 'yes') {
-				$payment_methods[$available_gateway->id] = $available_gateway->title;
+				$payment_methods[$available_gateway->id] = $available_gateway->get_title();
 			}
 		}
 		return $payment_methods;
