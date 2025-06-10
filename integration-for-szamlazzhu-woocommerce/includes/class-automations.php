@@ -15,7 +15,8 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 			if($is_pro && WC_Szamlazz()->get_option('auto_invoice_custom', 'no') == 'yes') {
 
 				//When order created
-				add_action( 'woocommerce_checkout_order_processed', array( __CLASS__, 'on_order_created' ), 10, 3 );
+				add_action( 'woocommerce_checkout_order_processed', array( __CLASS__, 'on_order_created' ), 10, 1 );
+				add_action( 'woocommerce_store_api_checkout_order_processed', array( __CLASS__, 'on_order_created_block' ), 10, 1 );
 
 				//On successful payment
 				add_action( 'woocommerce_payment_complete', array( __CLASS__, 'on_payment_complete' ) );
@@ -46,7 +47,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 				foreach ($auto_invoice_statuses as $auto_invoice_status) {
 					$order_auto_invoice_status = str_replace( 'wc-', '', $auto_invoice_status );
 					if($order_auto_invoice_status != 'no') {
-						add_action( 'woocommerce_order_status_'.$order_auto_invoice_status, array( __CLASS__, 'on_order_complete' ) );
+						add_action( 'woocommerce_order_status_'.$order_auto_invoice_status, array( __CLASS__, 'on_order_complete' ), 1 );
 					}
 				}
 
@@ -54,7 +55,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 				foreach ($auto_void_statuses as $auto_void_status) {
 					$order_auto_void_status = str_replace( 'wc-', '', $auto_void_status );
 					if($order_auto_void_status != 'no') {
-						add_action( 'woocommerce_order_status_'.$order_auto_void_status, array( __CLASS__, 'on_order_deleted' ) );
+						add_action( 'woocommerce_order_status_'.$order_auto_void_status, array( __CLASS__, 'on_order_deleted' ), 1 );
 					}
 				}
 			}
@@ -101,8 +102,12 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 			}
 		}
 
-		public static function on_order_created($order_id, $posted_data, $order) {
+		public static function on_order_created($order_id) {
 			$automations = self::find_automations($order_id, 'order_created');
+		}
+
+		public static function on_order_created_block($order) {
+			$automations = self::find_automations($order->get_id(), 'order_created');
 		}
 
 		public static function on_payment_complete( $order_id ) {

@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.1.1
+ * Version: 6.1.2
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 9.8.2
+ * WC tested up to: 9.9.3
  * Requires Plugins: woocommerce
  */
 
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.1.1';
+		self::$version = '6.1.2';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -750,8 +750,8 @@ class WC_Szamlazz {
 
 		//Shipping
 		foreach( $order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ) {
-			$order_shipping = $shipping_item_obj->get_total();
-			$order_shipping_tax = $shipping_item_obj->get_total_tax();
+			$order_shipping = (float)$shipping_item_obj->get_total();
+			$order_shipping_tax = (float)$shipping_item_obj->get_total_tax();
 			if($this->get_option('hide_free_shipping') == 'yes' && $order_shipping == 0) {
 				continue;
 			}

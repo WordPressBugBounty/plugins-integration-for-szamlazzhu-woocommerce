@@ -642,7 +642,8 @@
   display: flex;
   align-items: center;
   margin: 0 0 1em 0;
-  gap: 10px; }
+  gap: 10px;
+  padding-top: 10px; }
   .wc-szamlazz-settings-submenu a.button {
     display: flex;
     align-items: center;
@@ -690,14 +691,6 @@ body.wc-szamlazz-settings:not(.wc-szamlazz-pro-enabled) .subsubsub a[href*="sect
   padding: 0px 5px;
   margin-top: -3px;
   content: 'PRO'; }
-
-.nav-tab-wrapper a.nav-tab[href*="tab=wc-szamlazz"] {
-  color: rgba(0, 0, 0, 0);
-  padding: 5px 24px;
-  background-image: url(../images/logo-szamlazz.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: auto 16px; }
 
 .wc-szamlazz-pro-widget {
   max-width: 380px;

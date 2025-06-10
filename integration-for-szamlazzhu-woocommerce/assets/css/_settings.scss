@@ -995,6 +995,7 @@
 		align-items: center;
 		margin: 0 0 1em 0;
 		gap: 10px;
+		padding-top: 10px;
 
 		a.button {
 			display: flex;
@@ -1071,17 +1072,6 @@ body.wc-szamlazz-settings:not(.wc-szamlazz-pro-enabled) {
 			}
 		}
 	}
-}
-
-.nav-tab-wrapper a.nav-tab[href*="tab=wc-szamlazz"] {
-	color: rgba(0,0,0,0);
-	padding: 5px 24px;
-
-	background-image: url(../images/logo-szamlazz.svg);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: auto 16px;
-
 }
 
 .wc-szamlazz-pro-widget {

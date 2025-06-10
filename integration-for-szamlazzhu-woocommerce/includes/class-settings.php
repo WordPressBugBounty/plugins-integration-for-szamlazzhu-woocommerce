@@ -343,7 +343,6 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 						$automations[$automation_id]['conditional'] = true;
 						$automations[$automation_id]['conditions'] = array();
 						$automations[$automation_id]['logic'] = wc_clean($automation['logic']);
-						$automations[$automation_id]['append'] = $append_enabled;
 
 						foreach ($automation['conditions'] as $condition) {
 							$condition_details = array(
