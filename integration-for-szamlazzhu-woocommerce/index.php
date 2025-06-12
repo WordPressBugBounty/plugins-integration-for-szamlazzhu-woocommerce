@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.1.2
+ * Version: 6.1.3
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.1.2';
+		self::$version = '6.1.3';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -2246,9 +2246,9 @@ class WC_Szamlazz {
 	public function get_order_shipping_tax_label($order, $shipping_item_obj, $vevo = false) {
 		$tax_item_label = '';
 		$valid_tax_labels = WC_Szamlazz_Helpers::get_vat_types(true);
-		$total = $shipping_item_obj->get_total();
+		$total = (float)$shipping_item_obj->get_total();
 		if($shipping_item_obj->get_type() == 'shop_order_refund') {
-			$total = $shipping_item_obj->get_total()-$shipping_item_obj->get_total_tax();
+			$total = (float)$shipping_item_obj->get_total()-(float)$shipping_item_obj->get_total_tax();
 		}
 
 		//If a fixed value is set in settings
@@ -2289,7 +2289,7 @@ class WC_Szamlazz {
 
 		if($tax_item_label == '') {
 			$order_shipping = $total;
-			$order_shipping_tax = $shipping_item_obj->get_total_tax();
+			$order_shipping_tax = (float)$shipping_item_obj->get_total_tax();
 			if($order_shipping != 0) {
 				$tax_item_label = round(($order_shipping_tax/$order_shipping)*100);
 			} else {
