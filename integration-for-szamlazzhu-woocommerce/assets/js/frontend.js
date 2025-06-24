@@ -99,12 +99,13 @@ jQuery(document).ready(function($) {
 			$eu_vat_number_field: $('#woocommerce_eu_vat_number_field'), //WooCommerce EU Vat Number compatibility
 			$company_field: $('#billing_company_field'),
 			$billing_toggle_field: $('#wc_szamlazz_company_toggle_field'),
+			$billing_toggle_radio_field: $('#wc_szamlazz_company_toggle_radio_field'),
 			$country_field: $('select#billing_country'),
 			ui_type: wc_szamlazz_vat_number_params.type,
 			init: function() {
 
 				//On country and company name change
-				$('body').on('blur change keyup', 'select#billing_country, input#billing_company, input#wc_szamlazz_company_toggle', function(){
+				$('body').on('blur change keyup', 'select#billing_country, input#billing_company, input#wc_szamlazz_company_toggle, input[name="wc_szamlazz_company_toggle_radio"]', function(){
 					wc_szamlazz_show_hide_vat_field.adjust();
 				});
 
@@ -134,10 +135,13 @@ jQuery(document).ready(function($) {
 					}
 
 					//If its based on the toggle field checkbox
-					if(_this.ui_type == 'toggle') {
+					if(_this.ui_type == 'toggle' || _this.ui_type == 'radio') {
 
 						//Hide and disable the field based on the value specified in the company field
 						var is_checked = _this.$billing_toggle_field.find('input').is(':checked');
+						if(_this.ui_type == 'radio') {
+							is_checked = (_this.$billing_toggle_radio_field.find('input:checked').val() == 'company');
+						}
 
 						//Delay for EU Vat Number compatibility(animation glitch)
 						if(_this.$eu_vat_number_field.length && _this.$eu_vat_number_field.is(':visible') && is_checked) {
@@ -182,8 +186,12 @@ jQuery(document).ready(function($) {
 					_this.toggle_field(_this.$vat_number_field, false);
 
 					//If UI type is the checkboxed one, still hide/show the company name field
-					if(_this.ui_type == 'toggle') {
+					if(_this.ui_type == 'toggle' || _this.ui_type == 'radio') {
 						var is_checked = _this.$billing_toggle_field.find('input').is(':checked');
+						if(_this.ui_type == 'radio') {
+							is_checked = _this.$billing_toggle_radio_field.find('input:checked').val() == 'company';
+						}
+
 						_this.toggle_field(_this.$company_field, is_checked);
 						_this.toggle_required(_this.$company_field, is_checked);
 

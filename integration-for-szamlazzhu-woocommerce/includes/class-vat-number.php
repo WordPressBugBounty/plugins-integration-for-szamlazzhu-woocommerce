@@ -95,6 +95,21 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 				);
 			}
 
+			if(WC_Szamlazz()->get_option('vat_number_type', '') == 'radio') {
+				$fields['wc_szamlazz_company_toggle_radio'] = array(
+					 'label' => esc_html__('Are you buying as a private individual or a company?', 'wc-szamlazz'),
+					 'type' => 'radio',
+					 'class' => array( 'form-row-wide' ),
+					 'required' => true,
+					 'priority' => 29,
+					 'default' => 'individual',
+					 'options' => array(
+						 'individual' => _x('Individual', 'customer type', 'wc-szamlazz'),
+						 'company' => _x('Company', 'customer type', 'wc-szamlazz')
+					 )
+				);
+			}
+
 			$fields['wc_szamlazz_adoszam'] = array(
 				 'label' => esc_html__('VAT number', 'wc-szamlazz'),
 				 'placeholder' => _x('12345678-1-12', 'placeholder', 'wc-szamlazz'),

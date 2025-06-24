@@ -9,7 +9,8 @@
 	perspective: 1000px;
 }
 
-#wc_szamlazz_company_toggle_field label span.optional {
+#wc_szamlazz_company_toggle_field label span.optional,
+#wc_szamlazz_company_toggle_radio_field .woocommerce-input-wrapper span.required {
 	display: none !important;
 }
 

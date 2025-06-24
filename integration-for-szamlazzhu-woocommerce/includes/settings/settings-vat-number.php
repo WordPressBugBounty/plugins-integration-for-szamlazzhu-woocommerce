@@ -37,7 +37,8 @@ $settings_vat_shortcode = array(
 			'no' => __('Do not show the VAT number field', 'wc-szamlazz'),
 			'default' => __('Show the field if the Company Name field is filled', 'wc-szamlazz'),
 			'show' => __('Show the VAT number field always(optional by default, required if company name filled)',  'wc-szamlazz'),
-			'toggle' => __('Display a company billing checkbox to toggle both the company name and VAT number fields',  'wc-szamlazz')
+			'toggle' => __('Display a company billing checkbox to toggle both the company name and VAT number fields',  'wc-szamlazz'),
+			'radio' => __('Radio buttons',  'wc-szamlazz')
 		),
 		'default' => 'no',
 		'id' => 'vat_number_type'
