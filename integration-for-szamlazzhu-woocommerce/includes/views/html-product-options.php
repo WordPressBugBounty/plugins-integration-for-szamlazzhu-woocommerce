@@ -54,6 +54,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	));
 	?>
 	<?php
+	woocommerce_wp_checkbox(array(
+		'id' => 'wc_szamlazz_eraser_code',
+		'label' => esc_html__('Add data eraser code', 'wc-szamlazz'),
+		'desc_tip' => true,
+		'value' => esc_attr( $post->wc_szamlazz_eraser_code ),
+		'description' => esc_html__('If checked, a data eraser code will be added to the invoice.', 'wc-szamlazz')
+	));
+	?>
+	<?php
 	woocommerce_wp_text_input(array(
 		'id' => 'wc_szamlazz_custom_cost',
 		'label' => esc_html__('Cost on invoice', 'wc-szamlazz'),

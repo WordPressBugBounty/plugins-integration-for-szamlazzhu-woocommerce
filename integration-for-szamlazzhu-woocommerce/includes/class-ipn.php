@@ -108,7 +108,7 @@ if ( ! class_exists( 'WC_Szamlazz_IPN', false ) ) :
 				//Change status if needed
 				if($target_status && $target_status != 'no' && isset($ipn_parameters['payment_method']) && !WC_Szamlazz()->is_invoice_generated($orderId, 'void') && (!WC_Szamlazz()->is_invoice_generated($orderId, 'invoice') || $marked_paid)) {
 					if(apply_filters('wc_szamlazz_ipn_should_change_order_status', ($order->get_status() != 'completed'), $order, $ipn_parameters, $target_status)) {
-						$order->update_status($target_status, __( 'Order status changed with Számlázz.hu IPN.', 'wc-szamlazz' ));
+						$order->update_status(apply_filters('wc_szamlazz_ipn_target_order_status', $target_status, $order, $ipn_parameters), __( 'Order status changed with Számlázz.hu IPN.', 'wc-szamlazz' ));
 					}
 				}
 

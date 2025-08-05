@@ -76,6 +76,7 @@ if ( ! class_exists( 'WC_Szamlazz_Helpers', false ) ) :
 				'18' => __( '18%', 'wc-szamlazz' ),
 				'19' => __( '19%', 'wc-szamlazz' ),
 				'20' => __( '20%', 'wc-szamlazz' ),
+				'21' => __( '21%', 'wc-szamlazz' ),
 				'25' => __( '25%', 'wc-szamlazz' ),
 				'27' => __( '27%', 'wc-szamlazz' )
 			);

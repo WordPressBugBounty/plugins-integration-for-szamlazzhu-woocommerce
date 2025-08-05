@@ -64,7 +64,7 @@ if ( ! class_exists( 'WC_Szamlazz_Product_Options', false ) ) :
 		}
 
 		public static function save_product_options_fields($product) {
-			$fields = ['mennyisegi_egyseg', 'megjegyzes', 'tetel_nev', 'disable_auto_invoice', 'hide_item', 'custom_cost'];
+			$fields = ['mennyisegi_egyseg', 'megjegyzes', 'tetel_nev', 'disable_auto_invoice', 'hide_item', 'custom_cost', 'eraser_code'];
 			foreach ($fields as $field) {
 				if(isset($_REQUEST['wc_szamlazz_'.$field])) {
 					$posted_data = $_REQUEST['wc_szamlazz_'.$field];
@@ -82,7 +82,7 @@ if ( ! class_exists( 'WC_Szamlazz_Product_Options', false ) ) :
 		}
 
 		public static function save_variable_options_fields($variation_id, $i) {
-			$fields = ['mennyisegi_egyseg', 'megjegyzes', 'tetel_nev', 'disable_auto_invoice', 'hide_item', 'custom_cost'];
+			$fields = ['mennyisegi_egyseg', 'megjegyzes', 'tetel_nev', 'disable_auto_invoice', 'hide_item', 'custom_cost', 'eraser_code'];
 			$product_variation = wc_get_product_object( 'variation', $variation_id );
 			foreach ($fields as $field) {
 				if(isset($_POST['wc_szamlazz_'.$field][$i])) {

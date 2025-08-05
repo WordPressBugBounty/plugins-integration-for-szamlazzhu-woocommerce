@@ -90,8 +90,8 @@ use Automattic\WooCommerce\StoreApi\Exceptions\InvalidCartException;
 	public function get_script_data() {
 		$data = [
 			'defaultText' => __('Are you buying as a private individual or a company?', 'wc-szamlazz'),
-			'defaultIndividualLabel' =>_x('Individual', 'customer type', 'wc-szamlazz'),
-			'defaultCompanyLabel' =>_x('Company', 'customer type', 'wc-szamlazz'),
+			'defaultIndividualLabel' => _x('Individual', 'customer type', 'wc-szamlazz'),
+			'defaultCompanyLabel' => _x('Company', 'customer type', 'wc-szamlazz'),
 			'defaultVatNumberLabel' => __('VAT Number', 'wc-szamlazz'),
 			'textRequired' => __('Please enter your VAT number', 'wc-szamlazz'),
 			'textInvalid' => apply_filters('wc_szamlazz_tax_validation_nav_message', esc_html__( 'The VAT number is not valid.', 'wc-szamlazz')),

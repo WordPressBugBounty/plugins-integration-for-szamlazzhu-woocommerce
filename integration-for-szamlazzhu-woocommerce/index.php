@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.1.4
+ * Version: 6.1.5
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 9.9.3
+ * WC tested up to: 10.0.4
  * Requires Plugins: woocommerce
  */
 
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.1.4';
+		self::$version = '6.1.5';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -730,6 +730,11 @@ class WC_Szamlazz {
 					$tetel->tetelFokonyv->addChild('arbevetelFokonyviSzam', $accounting_details['fokonyvi_szam']);
 					$tetel->tetelFokonyv->addChild('afaFokonyviSzam', $accounting_details['afa_fokonyvi_szam']);
 				}
+			}
+
+			//Eraser code
+			if($order_item->get_product() && $order_item->get_product()->get_meta('wc_szamlazz_eraser_code') && $order_item->get_product()->get_meta('wc_szamlazz_eraser_code') == 'yes') {
+				$tetel->torlokod = apply_filters('wc_szamlazz_eraser_code_qty', 1, $order_item, $order, $szamla);
 			}
 
 			//Append to items
