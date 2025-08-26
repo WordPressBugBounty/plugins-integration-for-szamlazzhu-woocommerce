@@ -72,7 +72,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 				$status = str_replace( 'wc-', '', $status );
 				add_action( 'woocommerce_order_status_'.$status, function($order_id) use ($status) {
 					self::on_status_change($order_id, $status);
-				});
+				}, 9);
 			}
 		}
 

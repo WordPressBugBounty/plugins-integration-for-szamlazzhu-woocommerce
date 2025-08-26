@@ -44,7 +44,7 @@ $settings = array(
 	),
 	array(
 		'title' => __( 'Invoice notification e-mail content', 'wc-szamlazz' ),
-		'type' => 'text',
+		'type' => 'textarea',
 		'class' => 'wc-szamlazz-toggle-group-email-notify-item',
 		'desc_tip' => __('The body of the email notification sent by Számlázz.hu.', 'wc-szamlazz'),
 		'id' => 'auto_email_message'
