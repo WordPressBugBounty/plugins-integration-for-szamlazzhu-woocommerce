@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.1.6
+ * Version: 6.1.15
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 10.1.1
+ * WC tested up to: 10.4.2
  * Requires Plugins: woocommerce
  */
 
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.1.6';
+		self::$version = '6.1.15';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -214,12 +214,14 @@ class WC_Szamlazz {
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 		$screen       = get_current_screen();
 		$screen_id    = $screen ? $screen->id : '';
+		$woocommerce_version = defined( 'WC_VERSION' ) ? WC_VERSION : '0.0.0';
+		$dependencies = version_compare( $woocommerce_version, '10.3.0', '>=' ) ? array('jquery', 'wc-jquery-tiptip', 'wc-jquery-blockui', 'wc-backbone-modal') : array('jquery', 'jquery-tiptip', 'jquery-blockui', 'wc-backbone-modal');
 
 		if ( in_array( $screen_id, wc_get_screen_ids() ) ) {
 			wp_enqueue_script( 'wc_szamlazz_print_js', plugins_url( '/assets/js/print.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
 			wp_enqueue_script( 'wc_szamlazz_pdf_lib_js', plugins_url( '/assets/js/pdf-lib.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
 			wp_enqueue_script( 'wc_szamlazz_filesaver_js', plugins_url( '/assets/js/filesaver.min.js',__FILE__ ), array('jquery'), WC_Szamlazz::$version, TRUE );
-			wp_enqueue_script( 'wc_szamlazz_admin_js', plugins_url( '/assets/js/admin'.$suffix.'.js',__FILE__ ), array('jquery', 'jquery-tiptip', 'jquery-blockui', 'wc-backbone-modal'), WC_Szamlazz::$version, TRUE );
+			wp_enqueue_script( 'wc_szamlazz_admin_js', plugins_url( '/assets/js/admin'.$suffix.'.js',__FILE__ ), $dependencies, WC_Szamlazz::$version, TRUE );
 			wp_enqueue_style( 'wc_szamlazz_admin_css', plugins_url( '/assets/css/admin.css',__FILE__ ), array(), WC_Szamlazz::$version );
 
 			$wc_szamlazz_local = array(
@@ -239,9 +241,12 @@ class WC_Szamlazz {
 	//Frontend CSS & JS
 	public function frontend_css() {
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+		$woocommerce_version = defined( 'WC_VERSION' ) ? WC_VERSION : '0.0.0';
+		$dependencies = version_compare( $woocommerce_version, '10.3.0', '>=' ) ? array('jquery', 'wc-jquery-blockui') : array('jquery', 'jquery-blockui');
+
 		if(is_checkout() || is_account_page()) {
 			wp_enqueue_style( 'wc_szamlazz_frontend_css', plugins_url( '/assets/css/frontend.css',__FILE__ ), array(), WC_Szamlazz::$version );
-			wp_enqueue_script( 'wc_szamlazz_frontend_js', plugins_url( '/assets/js/frontend'.$suffix.'.js',__FILE__ ), array('jquery', 'jquery-blockui'), WC_Szamlazz::$version );
+			wp_enqueue_script( 'wc_szamlazz_frontend_js', plugins_url( '/assets/js/frontend'.$suffix.'.js',__FILE__ ), $dependencies, WC_Szamlazz::$version );
 
 			$vat_type_default = ($this->get_option('vat_number_always_show', 'no') == 'yes') ? 'show' : 'default';
 			$wc_szamlazz_local = array(
@@ -423,7 +428,7 @@ class WC_Szamlazz {
 		$fejlec->addChild('szallitolevel', 'false');
 
 		//Define custom logo(optional)
-		$fejlec->logoExtra = '';
+		$fejlec->logoExtra = $this->get_option('custom_logo', '');
 
 		//Előtag
 		if($this->get_option('prefix')) {
@@ -915,7 +920,7 @@ class WC_Szamlazz {
 		}
 
 		//If we are creating an invoice based on a deposit invoice, duplicate invoice line items as negative values
-		if($this->is_invoice_generated($orderId, 'deposit') && $type == 'invoice') {
+		if($this->is_invoice_generated($orderId, 'deposit') && $type == 'invoice' && apply_filters('wc_szamlazz_deposit_negative_lines', true, $order)) {
 			foreach ($invoice_line_items as $invoice_line_item) {
 				//Convert prices to negative
 				$invoice_line_item->mennyiseg = floatval($invoice_line_item->mennyiseg)*-1;
@@ -1889,7 +1894,7 @@ class WC_Szamlazz {
 
 		//Fix for coupon items with a fixed tax rate set in settings
 		if($args['negative'] && !$args['tax']) {
-			if(in_array($args['vat_rate'], array('0', '5', '7', '18', '19', '20', '25', '27'))) {
+			if(in_array($args['vat_rate'], array('0', '5', '7', '18', '19', '20', '21', '25', '27'))) {
 				$args['vat_rate'] = (float)$args['vat_rate'];
 			}
 				
@@ -2139,7 +2144,7 @@ class WC_Szamlazz {
 		//If a fixed value is set in settings
 		if($this->get_option('afakulcs') != '') {
 			$afakulcs = $this->get_option('afakulcs');
-			if(in_array($afakulcs, array('0', '5', '7', '18', '19', '20', '25', '27'))) {
+			if(in_array($afakulcs, array('0', '5', '7', '18', '19', '20', '21', '25', '27'))) {
 				if($afakulcs == '7') $afakulcs = '27';
 				$afakulcs = (float)$afakulcs;
 			}
@@ -2259,7 +2264,7 @@ class WC_Szamlazz {
 		//If a fixed value is set in settings
 		if($this->get_option('afakulcs') != '') {
 			$afakulcs = $this->get_option('afakulcs');
-			if(in_array($afakulcs, array('0', '5', '7', '18', '19', '20', '25', '27'))) {
+			if(in_array($afakulcs, array('0', '5', '7', '18', '19', '20', '21', '25', '27'))) {
 				if($afakulcs == '7') $afakulcs = '27';
 				$afakulcs = (float)$afakulcs;
 			}

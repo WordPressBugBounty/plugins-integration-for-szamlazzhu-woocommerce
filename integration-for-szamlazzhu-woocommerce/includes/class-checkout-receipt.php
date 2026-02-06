@@ -151,8 +151,8 @@ if ( ! class_exists( 'WC_Szamlazz_Checkout_Receipt', false ) ) :
 		}
 
 		public static function save_receipt_session_data( $order_id ) {
-			if ( ! empty( WC()->session->wc_szamlazz_receipt ) ) {
-
+			if ( ! empty( WC()->session->wc_szamlazz_receipt ) && apply_filters('wc_szamlazz_receipt_enabled', true) ) {
+				
 				//Save order type as receipt, if receipt is selected
 				if(WC()->session->wc_szamlazz_receipt == 'receipt') {
 					$order = wc_get_order($order_id);

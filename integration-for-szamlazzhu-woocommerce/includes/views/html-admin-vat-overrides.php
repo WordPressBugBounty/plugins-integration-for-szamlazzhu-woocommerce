@@ -7,13 +7,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 $saved_values = get_option('wc_szamlazz_vat_overrides');
 
 //Set valid documents for automation
-$line_item_types = array(
+$line_item_types = apply_filters('wc_szamlazz_vat_overrides_line_item_types', array(
 	'product' => __('Line item(product)', 'wc-szamlazz'),
 	'shipping' => __('Shipping', 'wc-szamlazz'),
 	'discount' => __('Discount', 'wc-szamlazz'),
 	'fee' => __('Fee', 'wc-szamlazz'),
 	'refund' => __('Refund', 'wc-szamlazz')
-);
+));
 
 //When to generate these documents
 $vat_types = WC_Szamlazz_Helpers::get_vat_types();

@@ -107,6 +107,12 @@ $settings = array(
 		'id' => 'template'
 	),
 	array(
+		'type' => 'text',
+		'title' => __('Custom Logo', 'wc-szamlazz' ),
+		'desc' => __('Leave empty to use the default logo set in your Számlázz.hu account.', 'wc-szamlazz' ),
+		'id' => 'custom_logo',
+	),
+	array(
 		'type' => 'checkbox',
 		'title' => __( 'Advanced settings', 'wc-szamlazz' ),
 		'desc' => __( 'Overwrite the bank account number, the invoice block and the language based on conditional logic.', 'wc-szamlazz' ),

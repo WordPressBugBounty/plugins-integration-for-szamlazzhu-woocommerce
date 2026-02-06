@@ -66,19 +66,47 @@ if ( ! class_exists( 'WC_Szamlazz_Helpers', false ) ) :
 				'NAM' => __( 'NAM', 'wc-szamlazz' ),
 				'EAM' => __( 'EAM', 'wc-szamlazz' ),
 				'KBAUK' => __( 'KBAUK', 'wc-szamlazz' ),
-				'KBAET' => __( 'KBAET', 'wc-szamlazz' )
+				'KBAET' => __( 'KBAET', 'wc-szamlazz' ),
+				'HO' => __( 'HO', 'wc-szamlazz' )
 			);
 
 			$number_types = array(
-				'0' => __( '0%', 'wc-szamlazz' ),
-				'5' => __( '5%', 'wc-szamlazz' ),
-				'7' => __( '7%', 'wc-szamlazz' ),
-				'18' => __( '18%', 'wc-szamlazz' ),
-				'19' => __( '19%', 'wc-szamlazz' ),
-				'20' => __( '20%', 'wc-szamlazz' ),
-				'21' => __( '21%', 'wc-szamlazz' ),
-				'25' => __( '25%', 'wc-szamlazz' ),
-				'27' => __( '27%', 'wc-szamlazz' )
+				'0' => '0%',
+				'1' => '1%',
+				'2' => '2%',
+				'2.1' => '2,1%',
+				'3' => '3%',
+				'4' => '4%',
+				'4.8' => '4,8%',
+				'5' => '5%',
+				'5.5' => '5,5%',
+				'6' => '6%',
+				'7' => '7%',
+				'7.7' => '7,7%',
+				'8' => '8%',
+				'8.1' => '8,1%',
+				'9' => '9%',
+				'9.5' => '9,5%',
+				'10' => '10%',
+				'11' => '11%',
+				'12' => '12%',
+				'13' => '13%',
+				'13.5' => '13,5%',
+				'14' => '14%',
+				'15' => '15%',
+				'16' => '16%',
+				'17' => '17%',
+				'18' => '18%',
+				'19' => '19%',
+				'20' => '20%',
+				'21' => '21%',
+				'22' => '22%',
+				'23' => '23%',
+				'24' => '24%',
+				'25' => '25%',
+				'25.5' => '25,5%',
+				'26' => '26%',
+				'27' => '27%',
 			);
 
 			if($valid_tax_labels) {
@@ -243,7 +271,8 @@ if ( ! class_exists( 'WC_Szamlazz_Helpers', false ) ) :
 			foreach ($vat_overrides as $automation_id => $automation) {
 
 				//Check if trigger is a match. If not, just skip
-				if($automation['line_item'] != $line_item_type) {
+				$is_match = apply_filters('wc_szamlazz_check_vat_override_line_item', ($automation['line_item'] == $line_item_type), $automation, $line_item_type, $order, $order_item);
+				if(!$is_match) {
 					continue;
 				}
 

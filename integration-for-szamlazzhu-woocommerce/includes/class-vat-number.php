@@ -7,6 +7,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 	class WC_Szamlazz_Vat_Number_Field {
 
+		private static $country_codes_patterns = array(
+			'AT' => 'U[A-Z\d]{8}',
+			'BE' => '[01]\d{9}',
+			'BG' => '\d{9,10}',
+			'CY' => '\d{8}[A-Z]',
+			'CZ' => '\d{8,10}',
+			'DE' => '\d{9}',
+			'DK' => '(\d{2} ?){3}\d{2}',
+			'EE' => '\d{9}',
+			'EL' => '\d{9}',
+			'ES' => '[A-Z]\d{7}[A-Z]|\d{8}[A-Z]|[A-Z]\d{8}',
+			'FI' => '\d{8}',
+			'FR' => '([A-Z]{2}|[A-Z0-9]{2})\d{9}',
+			'GB' => '(\d{9}|\d{12}|(GD|HA)\d{3})',
+			'XI' => '(\d{9}|\d{12}|(GD|HA)\d{3})',
+			'HR' => '\d{11}',
+			'HU' => '\d{8}',
+			'IE' => '[A-Z\d]{8,10}',
+			'IT' => '\d{11}',
+			'LT' => '(\d{9}|\d{12})',
+			'LU' => '\d{8}',
+			'LV' => '\d{11}',
+			'MT' => '\d{8}',
+			'NL' => '\d{9}B\d{2}',
+			'PL' => '\d{10}',
+			'PT' => '\d{9}',
+			'RO' => '\d{2,10}',
+			'SE' => '\d{12}',
+			'SI' => '\d{8}',
+			'SK' => '\d{10}',
+		);
+
+		//Validate EU VAT number format
+		private static function validate_eu_vat_format($vat_number) {
+			//Remove extra characters
+			$vat_number = preg_replace('/[^A-Z0-9]/', '', strtoupper($vat_number));
+			
+			//Extract country code (first 2 characters)
+			if(strlen($vat_number) < 3) {
+				return false;
+			}
+			
+			$country_code = substr($vat_number, 0, 2);
+			$vat_number_part = substr($vat_number, 2);
+			
+			//Check if we have a pattern for this country
+			if(!isset(self::$country_codes_patterns[$country_code])) {
+				return false;
+			}
+			
+			//Validate against country-specific pattern
+			$pattern = '/^' . self::$country_codes_patterns[$country_code] . '$/';
+			return preg_match($pattern, $vat_number_part) === 1;
+		}
+
 		//Init notices
 		public static function init() {
 
@@ -348,11 +403,11 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			//Allow plugins to hook into the vat number validation
 			do_action('wc_szamlazz_before_vat_number_validation', $vat_number);
 
-			//Remove extra characters
-			$vat_number = preg_replace('/[^A-Z0-9]/', '', $vat_number);
+			//Remove extra characters and validate format
+			$vat_number = preg_replace('/[^A-Z0-9]/', '', strtoupper($vat_number));
 
-			//Check with regex match
-			if(!preg_match('/^((AT)?U[0-9]{8}|(BE)?[0-9]{10}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}[A-Z]|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}[A-Z]|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})$/', $vat_number)) {
+			//Check with country-specific regex patterns
+			if(!self::validate_eu_vat_format($vat_number)) {
 				return array(
 					"valid" => false
 				);
@@ -407,10 +462,23 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			$response_body = json_decode($api_response, true);
 
 			//Check for valid response
-			if (!is_array($response_body) || !isset($response_body['valid']) || !$response_body['valid']) {
+			if (!is_array($response_body) || !isset($response_body['valid'])) {
+				if (isset($response_body['errorWrappers']) && is_array($response_body['errorWrappers'])) {
+					foreach ($response_body['errorWrappers'] as $error_wrapper) {
+						if (isset($error_wrapper['error']) && $error_wrapper['error'] === 'MS_MAX_CONCURRENT_REQ') {
+							$response['valid'] = true;
+							$response['note'] = 'Could not verify due to service rate limit, treated as valid';
+							return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number);
+						}
+					}
+				}
 				return $response;
 			}
 
+			if (!$response_body['valid']) {
+				return $response;
+			}			
+		
 			//Setup data
 			$response['valid'] = true;
 			$response['vies'] = $response_body; 
@@ -549,11 +617,11 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 					isset($output['billing_company']) &&
 					isset($output['billing_country']) &&
 					!empty($output['billing_company']) &&
-					in_array($output['billing_country'], $eu_countries) &&
-					$output['billing_country'] != 'HU' &&
-					isset($output['wc_szamlazz_adoszam']) &&
-					preg_match('/^[A-Z]{2}/', $output['wc_szamlazz_adoszam'])
-				) {
+				in_array($output['billing_country'], $eu_countries) &&
+				$output['billing_country'] != 'HU' &&
+				isset($output['wc_szamlazz_adoszam']) &&
+				self::validate_eu_vat_format($output['wc_szamlazz_adoszam'])
+			) {
 					WC()->customer->set_is_vat_exempt(true);
 				}
 			}

@@ -244,5 +244,23 @@ if ( ! class_exists( 'WCSzamlazzSimpleXMLElement', false ) ) :
 				$domdict->appendChild($domcat);
 			}
 		}
+
+		public function prependXML($prepend) {
+			if ($prepend) {
+				// Create new DOMElements from the two SimpleXMLElements
+				$domdict = dom_import_simplexml($this);
+				$domcat = dom_import_simplexml($prepend);
+
+				// Import the element into the dictionary document
+				$domcat = $domdict->ownerDocument->importNode($domcat, TRUE);
+
+				// Prepend the element (insert before the first child)
+				if ($domdict->firstChild) {
+					$domdict->insertBefore($domcat, $domdict->firstChild);
+				} else {
+					$domdict->appendChild($domcat);
+				}
+			}
+		}
 	}
 endif;

@@ -40,6 +40,10 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 					'label' => __('Product attributes', 'wc-szamlazz'),
 					'options' => array()
 				),
+				'product_tag' => array(
+					'label' => __('Product tags', 'wc-szamlazz'),
+					'options' => array()
+				),
 				'language' => array(
 					'label' => __('Invoice language', 'wc-szamlazz'),
 					'options' => WC_Szamlazz_Helpers::get_supported_languages()
@@ -100,6 +104,11 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 						}
 					}
 				}
+			}
+
+			//Add tag options
+			foreach (get_terms(array('taxonomy' => 'product_tag')) as $tag) {
+				$conditions['product_tag']['options'][$tag->term_id] = $tag->name;
 			}
 
 			//Add account options
@@ -181,6 +190,7 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 			//Get product category ids and shipping classes
 			$product_categories = array();
 			$shipping_classes = array();
+			$product_tags = array();
 			$order_items = $order->get_items();
 			foreach ($order_items as $order_item) {
 				if($order_item->get_product() && $order_item->get_product()->get_category_ids()) {
@@ -190,6 +200,10 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 				if($order_item->get_product() && $order_item->get_product()->get_shipping_class()) {
 					$shipping_classes[] = $order_item->get_product()->get_shipping_class();
 				}
+		
+				if($order_item->get_product() && $order_item->get_product()->get_tag_ids()) {
+					$product_tags = $product_tags+$order_item->get_product()->get_tag_ids();
+				}
 
 				//Fix for variations
 				$product_id = $order_item->get_product_id();
@@ -197,12 +211,16 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 				if($product_id && $variation_id) {
 					$product = wc_get_product($product_id);
 					$categories = $product->get_category_ids();
+					$tags = $product->get_tag_ids();
 					$shipping_class = $product->get_shipping_class();
 					if($categories) {
 						$product_categories = $product_categories+$categories;
 					}
 					if($shipping_class) {
 						$shipping_classes[] = $shipping_class;
+					}
+					if($tags) {
+						$product_tags = $product_tags+$tags;
 					}
 				} 
 			}
@@ -240,6 +258,7 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 				'billing_address' => $billing_address,
 				'billing_country' => $order->get_billing_country(),
 				'product_categories' => $product_categories,
+				'product_tags' => $product_tags,
 				'product_attribute' => $product_attributes,
 				'account' => $account,
 				'currency' => $order->get_currency(),
@@ -264,6 +283,11 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 		public static function match_conditions($items, $item_id, $order_details) {
 			$item = $items[$item_id];
 
+			//Check if conditions exist and is an array
+			if(!isset($item['conditions']) || !is_array($item['conditions']) || empty($item['conditions'])) {
+				return false;
+			}
+
 			//Check if the conditions match
 			foreach ($item['conditions'] as $condition_id => $condition) {
 				$comparison = ($condition['comparison'] == 'equal');
@@ -285,6 +309,13 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 						break;
 					case 'shipping_class':
 						if(in_array($condition['value'], $order_details['shipping_classes'])) {
+							$items[$item_id]['conditions'][$condition_id]['match'] = $comparison;
+						} else {
+							$items[$item_id]['conditions'][$condition_id]['match'] = !$comparison;
+						}
+						break;
+					case 'product_tag':
+						if(in_array($condition['value'], $order_details['product_tags'])) {
 							$items[$item_id]['conditions'][$condition_id]['match'] = $comparison;
 						} else {
 							$items[$item_id]['conditions'][$condition_id]['match'] = !$comparison;
