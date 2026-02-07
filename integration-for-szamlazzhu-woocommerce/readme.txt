@@ -4,7 +4,7 @@ Tags: szamlazz.hu, szamlazz, woocommerce, szamlazo, magyar
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 6.1.15
+Stable tag: 6.1.16
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,6 +128,10 @@ A számlaértesítő teszt módban nem a vásárló email címére érkezik, han
 8. Számlakészítés doboz a rendelés oldalon
 
 == Changelog ==
+
+6.1.16
+* "Kizárólag" feltétel(pl csak akkor fut le, ha csak a kiválasztott(egy) kategória van a rendelésben)
+* Komaptibilitás megjelölése legújabb WC verzióval
 
 6.1.15
 * Egyedi logó beállítás mező

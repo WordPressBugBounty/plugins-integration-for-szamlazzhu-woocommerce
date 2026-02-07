@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Integration for Szamlazz.hu & WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-28 16:28+0000\n"
-"PO-Revision-Date: 2025-12-17 15:38+0000\n"
+"PO-Revision-Date: 2026-02-07 19:14+0000\n"
 "Last-Translator: \n"
 "Language-Team: Magyar\n"
 "Language: hu_HU\n"
@@ -355,6 +355,7 @@ msgstr "A következő feltételek esetén, ha az"
 msgid "Based on the following conditions:"
 msgstr "A következő feltételek esetén:"
 
+#: includes/compatibility/modules/class-wc-szamlazz-deposits-partial-payments-for-woocommerce.php:31
 #: includes/compatibility/modules/class-wc-szamlazz-bayna-deposits-for-woocommerce.php:31
 msgid "Bayna - Deposits for WooCommerce"
 msgstr ""
@@ -891,6 +892,10 @@ msgstr "Euró"
 #: includes/class-helpers.php:53
 msgid "EUT"
 msgstr "EUT"
+
+#: includes/class-conditions.php:150
+msgid "Exclusively"
+msgstr "Kizárólag"
 
 #: includes/class-helpers.php:57
 msgid "F.AFA"
@@ -2207,6 +2212,7 @@ msgstr "Számla Agent kulcs"
 
 #: index.php:272 index.php:273 includes/class-bulk-actions.php:101
 #: includes/class-bulk-actions.php:149 includes/class-settings-old.php:8
+#: includes/compatibility/modules/class-wc-szamlazz-deposits-partial-payments-for-woocommerce.php:26
 #: includes/compatibility/modules/class-wc-szamlazz-bayna-deposits-for-woocommerce.php:26
 msgid "Számlázz.hu"
 msgstr "Számlázz.hu"

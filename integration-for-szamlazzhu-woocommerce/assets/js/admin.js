@@ -69,6 +69,15 @@ jQuery(document).ready(function($) {
 						sample_row.find('select.comparison').val(condition.comparison);
 						sample_row.find('select.value').removeClass('selected');
 						sample_row.find('select[data-condition="'+condition.category+'"]').val(condition.value).addClass('selected').attr('disabled', false);
+						
+						//Show/hide "exclusively" option based on condition
+						var exclusively_option = sample_row.find('select.comparison option[value="exclusively"]');
+						if (condition.category.startsWith('shipping_') || condition.category.startsWith('product_')) {
+							exclusively_option.show();
+						} else {
+							exclusively_option.hide();
+						}
+						
 						ul.append(sample_row);
 					});
 				});
@@ -289,6 +298,20 @@ jQuery(document).ready(function($) {
 			//Hide all selects and make them disabled(so it won't be in $_POST)
 			$(this).parent().find('select.value').removeClass('selected').prop('disabled', true);
 			$(this).parent().find('select.value[data-condition="'+condition+'"]').addClass('selected').prop('disabled', false);
+
+			//Show/hide "exclusively" option based on condition
+			var comparison_select = $(this).parent().find('select.comparison');
+			var exclusively_option = comparison_select.find('option[value="exclusively"]');
+			
+			if (condition.startsWith('shipping_') || condition.startsWith('product_')) {
+				exclusively_option.show();
+			} else {
+				exclusively_option.hide();
+				//If exclusively was selected, reset to equal
+				if (comparison_select.val() === 'exclusively') {
+					comparison_select.val('equal');
+				}
+			}
 		},
 		add_new_x_condition_row: function(event) {
 			var sample_row = $('#wc_szamlazz_'+event.data.group+'_condition_sample_row').html();

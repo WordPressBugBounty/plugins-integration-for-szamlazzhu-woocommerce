@@ -147,6 +147,7 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 					<select class="comparison" data-name="wc_szamlazz_<?php echo $group; ?>[X][conditions][Y][comparison]">
 						<option value="equal"><?php _e('Equal', 'wc-szamlazz'); ?></option>
 						<option value="not_equal"><?php _e('Not equal', 'wc-szamlazz'); ?></option>
+						<option value="exclusively"><?php _e('Exclusively', 'wc-szamlazz'); ?></option>
 					</select>
 					<?php foreach ($conditions as $condition_id => $condition): ?>
 						<select class="value <?php if($condition_id == 'payment_method'): ?>selected<?php endif; ?>" data-condition="<?php echo esc_attr($condition_id); ?>" data-name="wc_szamlazz_<?php echo $group; ?>[X][conditions][Y][<?php echo esc_attr($condition_id); ?>]" <?php if($condition_id != 'payment_method'): ?>disabled="disabled"<?php endif; ?>>
@@ -194,7 +195,7 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 			$order_items = $order->get_items();
 			foreach ($order_items as $order_item) {
 				if($order_item->get_product() && $order_item->get_product()->get_category_ids()) {
-					$product_categories = $product_categories+$order_item->get_product()->get_category_ids();
+					$product_categories = array_merge($product_categories, $order_item->get_product()->get_category_ids());
 				}
 		
 				if($order_item->get_product() && $order_item->get_product()->get_shipping_class()) {
@@ -202,7 +203,7 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 				}
 		
 				if($order_item->get_product() && $order_item->get_product()->get_tag_ids()) {
-					$product_tags = $product_tags+$order_item->get_product()->get_tag_ids();
+					$product_tags = array_merge($product_tags, $order_item->get_product()->get_tag_ids());
 				}
 
 				//Fix for variations
@@ -214,13 +215,13 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 					$tags = $product->get_tag_ids();
 					$shipping_class = $product->get_shipping_class();
 					if($categories) {
-						$product_categories = $product_categories+$categories;
+						$product_categories = array_merge($product_categories, $categories);
 					}
 					if($shipping_class) {
 						$shipping_classes[] = $shipping_class;
 					}
 					if($tags) {
-						$product_tags = $product_tags+$tags;
+						$product_tags = array_merge($product_tags, $tags);
 					}
 				} 
 			}
@@ -291,43 +292,29 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 			//Check if the conditions match
 			foreach ($item['conditions'] as $condition_id => $condition) {
 				$comparison = ($condition['comparison'] == 'equal');
+				$is_exclusively = ($condition['comparison'] == 'exclusively');
 
-				switch ($condition['category']) {
-					case 'product_category':
-						if(in_array($condition['value'], $order_details['product_categories'])) {
-							$items[$item_id]['conditions'][$condition_id]['match'] = $comparison;
-						} else {
-							$items[$item_id]['conditions'][$condition_id]['match'] = !$comparison;
-						}
-						break;
-					case 'product_attribute':
-						if(in_array($condition['value'], $order_details['product_attribute'])) {
-							$items[$item_id]['conditions'][$condition_id]['match'] = $comparison;
-						} else {
-							$items[$item_id]['conditions'][$condition_id]['match'] = !$comparison;
-						}
-						break;
-					case 'shipping_class':
-						if(in_array($condition['value'], $order_details['shipping_classes'])) {
-							$items[$item_id]['conditions'][$condition_id]['match'] = $comparison;
-						} else {
-							$items[$item_id]['conditions'][$condition_id]['match'] = !$comparison;
-						}
-						break;
-					case 'product_tag':
-						if(in_array($condition['value'], $order_details['product_tags'])) {
-							$items[$item_id]['conditions'][$condition_id]['match'] = $comparison;
-						} else {
-							$items[$item_id]['conditions'][$condition_id]['match'] = !$comparison;
-						}
-						break;
-					default:
-						if($condition['value'] == $order_details[$condition['category']]) {
-							$items[$item_id]['conditions'][$condition_id]['match'] = $comparison;
-						} else {
-							$items[$item_id]['conditions'][$condition_id]['match'] = !$comparison;
-						}
-						break;
+				//Map condition categories to their order_details array keys
+				$array_conditions = array(
+					'product_category' => 'product_categories',
+					'product_attribute' => 'product_attribute',
+					'shipping_class' => 'shipping_classes',
+					'product_tag' => 'product_tags'
+				);
+
+				//Check if this is an array-based condition
+				if(isset($array_conditions[$condition['category']])) {
+					$order_values = $order_details[$array_conditions[$condition['category']]];
+					$value_in_array = in_array($condition['value'], $order_values);
+					
+					if($is_exclusively) {
+						$items[$item_id]['conditions'][$condition_id]['match'] = (count($order_values) == 1 && $value_in_array);
+					} else {
+						$items[$item_id]['conditions'][$condition_id]['match'] = $value_in_array ? $comparison : !$comparison;
+					}
+				} else {
+					//Direct value comparison
+					$items[$item_id]['conditions'][$condition_id]['match'] = ($condition['value'] == $order_details[$condition['category']]) ? $comparison : !$comparison;
 				}
 			}
 
