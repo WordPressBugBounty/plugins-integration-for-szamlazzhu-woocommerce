@@ -11,7 +11,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-07 19:14+0000\n"
+"POT-Creation-Date: 2026-02-26 23:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: wc-szamlazz\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid " Számlázz.hu document created"
 msgstr ""
 
-#: index.php:2380
+#: index.php:2381
 #, php-format
 msgid "%1$s discount with the following coupon code: %2$s"
 msgstr ""
@@ -194,12 +194,12 @@ msgstr ""
 msgid "after %1$s status"
 msgstr ""
 
-#: index.php:1856 includes/class-xml-generator.php:176
+#: index.php:1857 includes/class-xml-generator.php:176
 #, php-format
 msgid "Agent error code: %s"
 msgstr ""
 
-#: index.php:1857 includes/class-xml-generator.php:177
+#: index.php:1858 includes/class-xml-generator.php:177
 #, php-format
 msgid "Agent error message: %s"
 msgstr ""
@@ -227,7 +227,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: index.php:966
+#: index.php:967
 msgid "Already generated."
 msgstr ""
 
@@ -455,7 +455,7 @@ msgctxt "Correction invoice"
 msgid "Are you sure?"
 msgstr ""
 
-#: index.php:1114
+#: index.php:1115
 msgid "Correction invoice generated."
 msgstr ""
 
@@ -564,7 +564,7 @@ msgstr ""
 msgid "Deactivate license"
 msgstr ""
 
-#: index.php:2495 includes/class-helpers.php:46
+#: index.php:2496 includes/class-helpers.php:46
 msgid "Default"
 msgstr ""
 
@@ -603,7 +603,7 @@ msgstr ""
 msgid "Delivery note pairing"
 msgstr ""
 
-#: index.php:1098
+#: index.php:1099
 msgid "Delivery note successfully generated."
 msgstr ""
 
@@ -622,12 +622,12 @@ msgstr ""
 msgid "Deposit invoice pairing"
 msgstr ""
 
-#: index.php:1082
+#: index.php:1083
 msgid ""
 "Deposit invoice successfully generated and sent to the customer via e-mail."
 msgstr ""
 
-#: index.php:1082
+#: index.php:1083
 msgid "Deposit invoice successfully generated."
 msgstr ""
 
@@ -652,7 +652,7 @@ msgstr ""
 msgid "Disabled payment methods"
 msgstr ""
 
-#: index.php:2372 includes/settings/settings-items.php:33
+#: index.php:2373 includes/settings/settings-items.php:33
 #: includes/views/html-admin-vat-overrides.php:13
 msgid "Discount"
 msgstr ""
@@ -737,7 +737,7 @@ msgid ""
 "file is attached to this email."
 msgstr ""
 
-#: index.php:2067 includes/views/html-admin-pro-version.php:24
+#: index.php:2068 includes/views/html-admin-pro-version.php:24
 msgid "Documentation"
 msgstr ""
 
@@ -876,15 +876,15 @@ msgstr ""
 msgid "F.AFA"
 msgstr ""
 
-#: index.php:1961 index.php:1967
+#: index.php:1962 index.php:1968
 msgid "Failed invoice generation"
 msgstr ""
 
-#: index.php:1201
+#: index.php:1202
 msgid "Failed to mark the invoice as paid."
 msgstr ""
 
-#: index.php:1204
+#: index.php:1205
 #, php-format
 msgid "Failed to mark the Szamlazz.hu invoice as paid! Agent error code: %s"
 msgstr ""
@@ -966,6 +966,10 @@ msgstr ""
 
 #: includes/class-helpers.php:15
 msgid "German"
+msgstr ""
+
+#: includes/settings/settings-vat-number.php:105
+msgid "Global VAT number"
 msgstr ""
 
 #: includes/views/html-modal-grouped.php:27
@@ -1155,7 +1159,7 @@ msgid ""
 "status. You can add multiple, separated with a comma."
 msgstr ""
 
-#: includes/class-vat-number.php:320
+#: includes/class-vat-number.php:321
 #: includes/compatibility/modules/class-wc-szamlazz-eu-vat-number.php:99
 msgid ""
 "If you choose company billing, please enter both your company name and VAT "
@@ -1168,11 +1172,12 @@ msgid ""
 "this."
 msgstr ""
 
-#: includes/class-vat-number.php:312 includes/block/vat-number-block.php:76
+#: includes/class-vat-number.php:313 includes/class-vat-number.php:333
+#: includes/block/vat-number-block.php:76
 msgid "If you enter a company name, the VAT number field is required."
 msgstr ""
 
-#: includes/class-vat-number.php:316 includes/block/vat-number-block.php:29
+#: includes/class-vat-number.php:317 includes/block/vat-number-block.php:29
 msgid "If you enter a VAT number, the company name field is required."
 msgstr ""
 
@@ -1320,15 +1325,15 @@ msgstr ""
 msgid "Invoice sharing"
 msgstr ""
 
-#: index.php:1039
+#: index.php:1040
 msgid "Invoice successfully generated and sent to the customer via e-mail."
 msgstr ""
 
-#: index.php:1039
+#: index.php:1040
 msgid "Invoice successfully generated."
 msgstr ""
 
-#: index.php:1214
+#: index.php:1215
 msgid "Invoice successfully marked as paid"
 msgstr ""
 
@@ -1344,7 +1349,7 @@ msgstr ""
 msgid "Invoices are currently generating, just a sec..."
 msgstr ""
 
-#: index.php:992
+#: index.php:993
 msgid "Invoices for orders with a VAT number are disabled."
 msgstr ""
 
@@ -1356,7 +1361,7 @@ msgstr ""
 msgid "Invoices in My Orders"
 msgstr ""
 
-#: index.php:2420
+#: index.php:2421
 msgid "Invoices not required for free orders"
 msgstr ""
 
@@ -1465,7 +1470,7 @@ msgstr ""
 msgid "Make sure the prefix exists in Számlázz.hu / settings / prefixes."
 msgstr ""
 
-#: index.php:1247 index.php:1248 index.php:1399 index.php:1400
+#: index.php:1248 index.php:1249 index.php:1400 index.php:1401
 msgid "Manually uploaded invoice deleted successfully."
 msgstr ""
 
@@ -1504,7 +1509,7 @@ msgstr ""
 msgid "Next payment"
 msgstr ""
 
-#: index.php:951
+#: index.php:952
 msgid "No line items on the invoice."
 msgstr ""
 
@@ -1669,8 +1674,8 @@ msgstr ""
 msgid "Payment methods"
 msgstr ""
 
-#: index.php:633 index.php:772 index.php:829 index.php:864 index.php:900
-#: index.php:1546 index.php:1588 index.php:1610
+#: index.php:634 index.php:773 index.php:830 index.php:865 index.php:901
+#: index.php:1547 index.php:1589 index.php:1611
 #: includes/views/html-product-options.php:14
 #: includes/views/html-variable-options.php:13
 msgid "pcs"
@@ -1713,7 +1718,7 @@ msgstr ""
 msgid "Print & Download documents"
 msgstr ""
 
-#: index.php:2071
+#: index.php:2072
 msgid "Pro version"
 msgstr ""
 
@@ -1740,23 +1745,23 @@ msgstr ""
 msgid "Proforma invoice"
 msgstr ""
 
-#: index.php:1453
+#: index.php:1454
 #, php-format
 msgid ""
 "Proforma invoice deleted successfully. This was the proforma invoice number: "
 "%s"
 msgstr ""
 
-#: index.php:1467
+#: index.php:1468
 msgid "Proforma invoice deleted."
 msgstr ""
 
-#: index.php:1066
+#: index.php:1067
 msgid ""
 "Proforma invoice successfully generated and sent to the customer via e-mail."
 msgstr ""
 
-#: index.php:1066
+#: index.php:1067
 msgid "Proforma invoice successfully generated."
 msgstr ""
 
@@ -1812,11 +1817,11 @@ msgstr ""
 msgid "Receipt prefix"
 msgstr ""
 
-#: index.php:1683
+#: index.php:1684
 msgid "Receipt successfully generated and sent to the customer via email."
 msgstr ""
 
-#: index.php:1683
+#: index.php:1684
 msgid "Receipt successfully generated."
 msgstr ""
 
@@ -1828,7 +1833,7 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: index.php:898 includes/views/html-admin-vat-overrides.php:15
+#: index.php:899 includes/views/html-admin-vat-overrides.php:15
 msgid "Refund"
 msgstr ""
 
@@ -1862,16 +1867,16 @@ msgctxt "Reverse invoice"
 msgid "Are you sure?"
 msgstr ""
 
-#: index.php:1367
+#: index.php:1368
 msgid "Reverse invoice created successfully."
 msgstr ""
 
-#: index.php:1347
+#: index.php:1348
 #, php-format
 msgid "Reverse invoice created successfully. Invoice number: %s."
 msgstr ""
 
-#: index.php:1345
+#: index.php:1346
 #, php-format
 msgid ""
 "Reverse invoice created successfully. Invoice number: %s. Original invoice: "
@@ -1886,7 +1891,7 @@ msgstr ""
 msgid "Reverse receipt"
 msgstr ""
 
-#: index.php:1773
+#: index.php:1774
 msgid "Reverse receipt successfully generated."
 msgstr ""
 
@@ -1942,7 +1947,7 @@ msgstr ""
 msgid "Set"
 msgstr ""
 
-#: index.php:2055
+#: index.php:2056
 msgid "Settings"
 msgstr ""
 
@@ -2000,6 +2005,10 @@ msgstr ""
 
 #: includes/settings/settings-vat-number.php:22
 msgid "Show the VAT number field on checkout"
+msgstr ""
+
+#: includes/settings/settings-vat-number.php:107
+msgid "Show VAT number field for all countries"
 msgstr ""
 
 #: includes/views/html-admin-pro-notice.php:14
@@ -2061,22 +2070,22 @@ msgid ""
 "number: %s"
 msgstr ""
 
-#: index.php:1014
+#: index.php:1015
 #, php-format
 msgid "Szamlazz.hu invoice generation failed! Agent error code: %s"
 msgstr ""
 
-#: index.php:967
+#: index.php:968
 msgid "Szamlazz.hu invoice generation failed! Already generated a document."
 msgstr ""
 
-#: index.php:994
+#: index.php:995
 msgid ""
 "Szamlazz.hu invoice generation failed! Invoices for orders with a VAT number "
 "are disabled."
 msgstr ""
 
-#: index.php:952
+#: index.php:953
 msgid "Szamlazz.hu invoice generation failed! No line items on the invoice."
 msgstr ""
 
@@ -2090,17 +2099,17 @@ msgstr ""
 msgid "Szamlazz.hu IPN Url"
 msgstr ""
 
-#: index.php:1656
+#: index.php:1657
 #, php-format
 msgid "Szamlazz.hu receipt generation failed! Agent error code: %s"
 msgstr ""
 
-#: index.php:1320
+#: index.php:1321
 #, php-format
 msgid "Szamlazz.hu reverse invoice generation failed! Agent error code: %s"
 msgstr ""
 
-#: index.php:1755
+#: index.php:1756
 #, php-format
 msgid "Szamlazz.hu reverse receipt generation failed! Agent error code: %s"
 msgstr ""
@@ -2109,7 +2118,7 @@ msgstr ""
 msgid "Számla Agent key"
 msgstr ""
 
-#: index.php:272 index.php:273 includes/class-bulk-actions.php:101
+#: index.php:273 index.php:274 includes/class-bulk-actions.php:101
 #: includes/class-bulk-actions.php:149 includes/class-settings-old.php:8
 #: includes/compatibility/modules/class-wc-szamlazz-deposits-partial-payments-for-woocommerce.php:26
 #: includes/compatibility/modules/class-wc-szamlazz-bayna-deposits-for-woocommerce.php:26
@@ -2122,20 +2131,20 @@ msgstr ""
 msgid "Számlázz.hu account"
 msgstr ""
 
-#: index.php:1117
+#: index.php:1118
 #, php-format
 msgid ""
 "Számlázz.hu correction invoice successfully generated. Invoice number: %s"
 msgstr ""
 
-#: index.php:1101
+#: index.php:1102
 #, php-format
 msgid ""
 "Számlázz.hu delivery note successfully generated. Number of the delivery "
 "note: %s"
 msgstr ""
 
-#: index.php:1085
+#: index.php:1086
 #, php-format
 msgid "Számlázz.hu deposit invoice generated successfully. Invoice number: %s"
 msgstr ""
@@ -2154,11 +2163,11 @@ msgstr ""
 msgid "Számlázz.hu document generator"
 msgstr ""
 
-#: index.php:2067
+#: index.php:2068
 msgid "Számlázz.hu Documentation"
 msgstr ""
 
-#: index.php:1042
+#: index.php:1043
 #, php-format
 msgid "Számlázz.hu invoice generated successfully. Invoice number: %s"
 msgstr ""
@@ -2171,16 +2180,16 @@ msgstr ""
 msgid "Számlázz.hu is generating invoices in the background"
 msgstr ""
 
-#: index.php:2071
+#: index.php:2072
 msgid "Számlázz.hu Pro version"
 msgstr ""
 
-#: index.php:1069
+#: index.php:1070
 #, php-format
 msgid "Számlázz.hu proforma invoice generated successfully. Invoice number: %s"
 msgstr ""
 
-#: index.php:1686
+#: index.php:1687
 #, php-format
 msgid "Számlázz.hu receipt successfully generated. Receipt number: %s"
 msgstr ""
@@ -2189,14 +2198,14 @@ msgstr ""
 msgid "Számlázz.hu recommended design"
 msgstr ""
 
-#: index.php:1778
+#: index.php:1779
 #, php-format
 msgid ""
 "Számlázz.hu reverse receipt successfully generated. Receipt number: %s. "
 "Original invoice: %s"
 msgstr ""
 
-#: index.php:2055
+#: index.php:2056
 msgid "Számlázz.hu Settings"
 msgstr ""
 
@@ -2361,7 +2370,7 @@ msgid ""
 "calculate the percentage based on the net and gross prices."
 msgstr ""
 
-#: index.php:1293
+#: index.php:1294
 msgid "There is nothing to cancel"
 msgstr ""
 
@@ -2474,7 +2483,7 @@ msgid ""
 "is correct."
 msgstr ""
 
-#: index.php:1441
+#: index.php:1442
 #, php-format
 msgid "Unable to delete the Szamlazz.hu proforma invoice! Agent error code: %s"
 msgstr ""
@@ -2554,7 +2563,7 @@ msgid "VAT Number"
 msgstr ""
 
 #: includes/class-vat-number.php:169 includes/class-vat-number.php:225
-#: includes/class-vat-number.php:232 includes/class-vat-number.php:499
+#: includes/class-vat-number.php:232 includes/class-vat-number.php:513
 #: includes/class-settings.php:66 includes/settings/settings-vat-number.php:10
 #: includes/views/html-metabox-vat.php:13
 #: includes/views/html-metabox-vat.php:19
@@ -2570,7 +2579,7 @@ msgstr ""
 msgid "VAT number field position"
 msgstr ""
 
-#: index.php:279
+#: index.php:280
 msgid "VAT Number info"
 msgstr ""
 
@@ -2600,6 +2609,13 @@ msgstr ""
 msgid ""
 "When creating the order, it was not possible to retrieve the tax number data "
 "from Számlázz.hu."
+msgstr ""
+
+#: includes/settings/settings-vat-number.php:109
+msgid ""
+"When enabled, the VAT number field will be visible for non-Hungarian and non-"
+"EU countries too, whenever the company name is filled or company billing is "
+"selected. The field will be required but no format validation is applied."
 msgstr ""
 
 #: includes/settings/settings-notice.php:111

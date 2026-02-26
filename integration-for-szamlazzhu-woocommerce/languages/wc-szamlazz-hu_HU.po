@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Integration for Szamlazz.hu & WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-28 16:28+0000\n"
-"PO-Revision-Date: 2026-02-07 19:14+0000\n"
+"PO-Revision-Date: 2026-02-26 23:10+0000\n"
 "Last-Translator: \n"
 "Language-Team: Magyar\n"
 "Language: hu_HU\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Számlázz.hu számlakészítés sikertelen! A számlán a vásárlónak adószáma lenne,"
 " ami nem engedélyezett. "
 
-#: index.php:2380
+#: index.php:2381
 #, php-format
 msgid "%1$s discount with the following coupon code: %2$s"
 msgstr "%1$s kedvezmény a következő kupon kóddal: %2$s"
@@ -203,12 +203,12 @@ msgstr "felülírása az alábbival"
 msgid "after %1$s status"
 msgstr "%1$s státusznál"
 
-#: index.php:1856 includes/class-xml-generator.php:176
+#: index.php:1857 includes/class-xml-generator.php:176
 #, php-format
 msgid "Agent error code: %s"
 msgstr "Agent hibakód: %s"
 
-#: index.php:1857 includes/class-xml-generator.php:177
+#: index.php:1858 includes/class-xml-generator.php:177
 #, php-format
 msgid "Agent error message: %s"
 msgstr "Agent hibaüzenet: %s"
@@ -236,7 +236,7 @@ msgstr "Pozíció"
 msgid "All"
 msgstr "Összes"
 
-#: index.php:966
+#: index.php:967
 msgid "Already generated."
 msgstr "Már létrehozva."
 
@@ -470,7 +470,7 @@ msgctxt "Correction invoice"
 msgid "Are you sure?"
 msgstr "Biztosan létrehozod?"
 
-#: index.php:1114
+#: index.php:1115
 msgid "Correction invoice generated."
 msgstr "Helyesbítő számla létrehozva."
 
@@ -581,7 +581,7 @@ msgstr "nap"
 msgid "Deactivate license"
 msgstr "Deaktiválás"
 
-#: index.php:2495 includes/class-helpers.php:46
+#: index.php:2496 includes/class-helpers.php:46
 msgid "Default"
 msgstr "Alapértelmezett"
 
@@ -620,7 +620,7 @@ msgstr "Szállítólevél számla mellé"
 msgid "Delivery note pairing"
 msgstr "Szállítólevél csatolása"
 
-#: index.php:1098
+#: index.php:1099
 msgid "Delivery note successfully generated."
 msgstr "Szállítólevél sikeresen létrehozva."
 
@@ -639,12 +639,12 @@ msgstr "Előlegszámla"
 msgid "Deposit invoice pairing"
 msgstr "Előlegszámla csatolása"
 
-#: index.php:1082
+#: index.php:1083
 msgid ""
 "Deposit invoice successfully generated and sent to the customer via e-mail."
 msgstr "Előlegszámla sikeresen létrehozva és elküldve a vásárlónak e-mailben."
 
-#: index.php:1082
+#: index.php:1083
 msgid "Deposit invoice successfully generated."
 msgstr "Előlegszámla sikeresen létrehozva."
 
@@ -669,7 +669,7 @@ msgstr "Számlakészítés kikapcsolása"
 msgid "Disabled payment methods"
 msgstr "Nem engedélyezett fizetési módok"
 
-#: index.php:2372 includes/settings/settings-items.php:33
+#: index.php:2373 includes/settings/settings-items.php:33
 #: includes/views/html-admin-vat-overrides.php:13
 msgid "Discount"
 msgstr "Kedvezmény"
@@ -757,7 +757,7 @@ msgstr ""
 "A #%1$s sorszámú rendeléshez tartozó dokumentum(%2$s - %3$s) sikeresen "
 "létrehozva. Csatolmányban találod."
 
-#: index.php:2067 includes/views/html-admin-pro-version.php:24
+#: index.php:2068 includes/views/html-admin-pro-version.php:24
 msgid "Documentation"
 msgstr "Dokumentáció"
 
@@ -901,15 +901,15 @@ msgstr "Kizárólag"
 msgid "F.AFA"
 msgstr "F.AFA"
 
-#: index.php:1961 index.php:1967
+#: index.php:1962 index.php:1968
 msgid "Failed invoice generation"
 msgstr "Sikertelen számlakészítés"
 
-#: index.php:1201
+#: index.php:1202
 msgid "Failed to mark the invoice as paid."
 msgstr "Nem sikerült fizetettnek jelölni a számlát."
 
-#: index.php:1204
+#: index.php:1205
 #, php-format
 msgid "Failed to mark the Szamlazz.hu invoice as paid! Agent error code: %s"
 msgstr ""
@@ -993,6 +993,10 @@ msgstr "Generálás..."
 #: includes/class-helpers.php:15
 msgid "German"
 msgstr "Német"
+
+#: includes/settings/settings-vat-number.php:105
+msgid "Global VAT number"
+msgstr "Globális adószám mező"
 
 #: includes/views/html-modal-grouped.php:27
 msgid "Go to the order"
@@ -1219,7 +1223,7 @@ msgstr ""
 "automatizálás nem fut le, itt megadhatod manuálisan a státusz azonosítókat. "
 "Vesszővel elválasztva többet is megadhatsz. "
 
-#: includes/class-vat-number.php:320
+#: includes/class-vat-number.php:321
 #: includes/compatibility/modules/class-wc-szamlazz-eu-vat-number.php:99
 msgid ""
 "If you choose company billing, please enter both your company name and VAT "
@@ -1235,12 +1239,13 @@ msgstr ""
 "Egy gyűjtőszámla létrehozása után a hozzá kapcsolódó rendelések státuszát "
 "megváltoztatja az itt beállított értékre."
 
-#: includes/class-vat-number.php:312 includes/block/vat-number-block.php:76
+#: includes/class-vat-number.php:313 includes/class-vat-number.php:333
+#: includes/block/vat-number-block.php:76
 msgid "If you enter a company name, the VAT number field is required."
 msgstr ""
 "Ha a cégnév mező ki van töltve, akkor az adószámot is kötelező megadni."
 
-#: includes/class-vat-number.php:316 includes/block/vat-number-block.php:29
+#: includes/class-vat-number.php:317 includes/block/vat-number-block.php:29
 msgid "If you enter a VAT number, the company name field is required."
 msgstr ""
 "Ha az adószám mező ki van töltve, akkor a cégnevet is kötelező megadni."
@@ -1394,15 +1399,15 @@ msgstr "Számla beállítások"
 msgid "Invoice sharing"
 msgstr "Számla megosztás"
 
-#: index.php:1039
+#: index.php:1040
 msgid "Invoice successfully generated and sent to the customer via e-mail."
 msgstr "Számla sikeresen létrehozva és elküldve a vásárlónak e-mailben."
 
-#: index.php:1039
+#: index.php:1040
 msgid "Invoice successfully generated."
 msgstr "Számla sikeresen létrehozva."
 
-#: index.php:1214
+#: index.php:1215
 msgid "Invoice successfully marked as paid"
 msgstr "Számla sikeresen fizetettnek jelölve"
 
@@ -1418,7 +1423,7 @@ msgstr "Számla típusa céges rendelésnél"
 msgid "Invoices are currently generating, just a sec..."
 msgstr "Számlák létrehozása folyamatban, egy kis türelmet..."
 
-#: index.php:992
+#: index.php:993
 msgid "Invoices for orders with a VAT number are disabled."
 msgstr ""
 "Adószámmal rendelkező rendelésekhez nem engedélyezett a számlakészítés."
@@ -1432,7 +1437,7 @@ msgstr ""
 msgid "Invoices in My Orders"
 msgstr "Számlák a profilban"
 
-#: index.php:2420
+#: index.php:2421
 msgid "Invoices not required for free orders"
 msgstr "Ingyenes rendeléshez nem kell számla"
 
@@ -1544,7 +1549,7 @@ msgstr ""
 "A szamlazz.hu rendszerében a beállítások / előtagok menünpontban található "
 "lista valamelyik engedélyezett sorának számlaszám előtag értéke."
 
-#: index.php:1247 index.php:1248 index.php:1399 index.php:1400
+#: index.php:1248 index.php:1249 index.php:1400 index.php:1401
 msgid "Manually uploaded invoice deleted successfully."
 msgstr "Manuálisan feltöltött számla törölve."
 
@@ -1583,7 +1588,7 @@ msgstr "Nettó ár"
 msgid "Next payment"
 msgstr "Előfizetés megújulása"
 
-#: index.php:951
+#: index.php:952
 msgid "No line items on the invoice."
 msgstr "Nincsenek tételek a számlán."
 
@@ -1749,8 +1754,8 @@ msgstr "Fizetési mód"
 msgid "Payment methods"
 msgstr "Fizetési módok"
 
-#: index.php:633 index.php:772 index.php:829 index.php:864 index.php:900
-#: index.php:1546 index.php:1588 index.php:1610
+#: index.php:634 index.php:773 index.php:830 index.php:865 index.php:901
+#: index.php:1547 index.php:1589 index.php:1611
 #: includes/views/html-product-options.php:14
 #: includes/views/html-variable-options.php:13
 msgid "pcs"
@@ -1796,7 +1801,7 @@ msgstr "Nyomtatás"
 msgid "Print & Download documents"
 msgstr "Dokumentumok nyomtatása és letöltése"
 
-#: index.php:2071
+#: index.php:2072
 msgid "Pro version"
 msgstr "Pro verzió"
 
@@ -1823,23 +1828,23 @@ msgstr "Termék címkék"
 msgid "Proforma invoice"
 msgstr "Díjbekérő"
 
-#: index.php:1453
+#: index.php:1454
 #, php-format
 msgid ""
 "Proforma invoice deleted successfully. This was the proforma invoice number: "
 "%s"
 msgstr "Díjbekérő sikeresen törölve. A díjbekérő sorszáma ez volt: %s"
 
-#: index.php:1467
+#: index.php:1468
 msgid "Proforma invoice deleted."
 msgstr "Díjbekérő törölve."
 
-#: index.php:1066
+#: index.php:1067
 msgid ""
 "Proforma invoice successfully generated and sent to the customer via e-mail."
 msgstr "Díjbekérő sikeresen létrehozva és elküldve a vásárlónak e-mailben."
 
-#: index.php:1066
+#: index.php:1067
 msgid "Proforma invoice successfully generated."
 msgstr "Díjbekérő sikeresen létrehozva."
 
@@ -1895,11 +1900,11 @@ msgstr "Nyugta megjegyzés"
 msgid "Receipt prefix"
 msgstr "Nyugtaszám előtag"
 
-#: index.php:1683
+#: index.php:1684
 msgid "Receipt successfully generated and sent to the customer via email."
 msgstr "Nyugta sikeresen létrehozva és elküldve a vásárlónak emailben."
 
-#: index.php:1683
+#: index.php:1684
 msgid "Receipt successfully generated."
 msgstr "Nyugta sikeresen létrehozva."
 
@@ -1911,7 +1916,7 @@ msgstr "Nyugta sablon"
 msgid "Refresh"
 msgstr "Frissítés"
 
-#: index.php:898 includes/views/html-admin-vat-overrides.php:15
+#: index.php:899 includes/views/html-admin-vat-overrides.php:15
 msgid "Refund"
 msgstr "Visszatérítés"
 
@@ -1945,16 +1950,16 @@ msgctxt "Reverse invoice"
 msgid "Are you sure?"
 msgstr "Biztosan sztornózod?"
 
-#: index.php:1367
+#: index.php:1368
 msgid "Reverse invoice created successfully."
 msgstr "Sztornó számla létrehozva."
 
-#: index.php:1347
+#: index.php:1348
 #, php-format
 msgid "Reverse invoice created successfully. Invoice number: %s."
 msgstr "Sztornó számla sikeresen létrehozva. A számla sorszáma: %s."
 
-#: index.php:1345
+#: index.php:1346
 #, php-format
 msgid ""
 "Reverse invoice created successfully. Invoice number: %s. Original invoice: "
@@ -1971,7 +1976,7 @@ msgstr "Sztornó számla csatolása"
 msgid "Reverse receipt"
 msgstr "Sztornó nyugta"
 
-#: index.php:1773
+#: index.php:1774
 msgid "Reverse receipt successfully generated."
 msgstr "Sztornó nyugta sikeresen létrehozva."
 
@@ -2029,7 +2034,7 @@ msgstr "Küldés a Számlázz.hu-val"
 msgid "Set"
 msgstr "A"
 
-#: index.php:2055
+#: index.php:2056
 msgid "Settings"
 msgstr "Beállítások"
 
@@ -2094,6 +2099,10 @@ msgstr ""
 msgid "Show the VAT number field on checkout"
 msgstr "Adószám mező megjelenítése a pénztár oldalon"
 
+#: includes/settings/settings-vat-number.php:107
+msgid "Show VAT number field for all countries"
+msgstr "Az adószám mező megjelenítése minden ország esetében"
+
 #: includes/views/html-admin-pro-notice.php:14
 msgid ""
 "Simplify the purchase process for your private customers with e-receipts"
@@ -2157,17 +2166,17 @@ msgid ""
 "number: %s"
 msgstr "Előlegszámla sikeresen létrehozva IPN alapján. A számla sorszáma: %s"
 
-#: index.php:1014
+#: index.php:1015
 #, php-format
 msgid "Szamlazz.hu invoice generation failed! Agent error code: %s"
 msgstr "Számlázz.hu számlakészítés sikertelen! Agent hibakód: %s"
 
-#: index.php:967
+#: index.php:968
 msgid "Szamlazz.hu invoice generation failed! Already generated a document."
 msgstr ""
 "Számlázz.hu számlakészítés sikertelen. A dokumentum már létre lett hozva."
 
-#: index.php:994
+#: index.php:995
 msgid ""
 "Szamlazz.hu invoice generation failed! Invoices for orders with a VAT number "
 "are disabled."
@@ -2175,7 +2184,7 @@ msgstr ""
 "Számlázz.hu számlakészítés sikertelen: adószámmal rendelkező vásárlónak nem "
 "készül számla."
 
-#: index.php:952
+#: index.php:953
 msgid "Szamlazz.hu invoice generation failed! No line items on the invoice."
 msgstr "Számlázz.hu számlakészítés sikertelen: nincs tétel a számlán."
 
@@ -2191,17 +2200,17 @@ msgstr ""
 msgid "Szamlazz.hu IPN Url"
 msgstr "Szamlazz.hu IPN Url"
 
-#: index.php:1656
+#: index.php:1657
 #, php-format
 msgid "Szamlazz.hu receipt generation failed! Agent error code: %s"
 msgstr "Számlázz.hu nyugtakészítés sikertelen! Agent hibakód: %s"
 
-#: index.php:1320
+#: index.php:1321
 #, php-format
 msgid "Szamlazz.hu reverse invoice generation failed! Agent error code: %s"
 msgstr "Számlázz.hu sztornószámla készítés sikertelen! Agent hibakód: %s"
 
-#: index.php:1755
+#: index.php:1756
 #, php-format
 msgid "Szamlazz.hu reverse receipt generation failed! Agent error code: %s"
 msgstr "Számlázz.hu sztornónyugta készítés sikertelen! Agent hibakód: %s"
@@ -2210,7 +2219,7 @@ msgstr "Számlázz.hu sztornónyugta készítés sikertelen! Agent hibakód: %s"
 msgid "Számla Agent key"
 msgstr "Számla Agent kulcs"
 
-#: index.php:272 index.php:273 includes/class-bulk-actions.php:101
+#: index.php:273 index.php:274 includes/class-bulk-actions.php:101
 #: includes/class-bulk-actions.php:149 includes/class-settings-old.php:8
 #: includes/compatibility/modules/class-wc-szamlazz-deposits-partial-payments-for-woocommerce.php:26
 #: includes/compatibility/modules/class-wc-szamlazz-bayna-deposits-for-woocommerce.php:26
@@ -2223,13 +2232,13 @@ msgstr "Számlázz.hu"
 msgid "Számlázz.hu account"
 msgstr "Számlázz.hu fiók"
 
-#: index.php:1117
+#: index.php:1118
 #, php-format
 msgid ""
 "Számlázz.hu correction invoice successfully generated. Invoice number: %s"
 msgstr "Számlázz.hu helyesbítő számla sikeresen létrehozva. A sorszáma: %s"
 
-#: index.php:1101
+#: index.php:1102
 #, php-format
 msgid ""
 "Számlázz.hu delivery note successfully generated. Number of the delivery "
@@ -2237,7 +2246,7 @@ msgid ""
 msgstr ""
 "Számlázz.hu szállítólevél sikeresen létrehozva. A szállítólevél sorszáma: %s"
 
-#: index.php:1085
+#: index.php:1086
 #, php-format
 msgid "Számlázz.hu deposit invoice generated successfully. Invoice number: %s"
 msgstr "Számlázz.hu előlegszámla sikeresen létrehozva. A számla sorszáma: %s"
@@ -2256,11 +2265,11 @@ msgstr "Számlázz.hu dokumentum elkészült - %s"
 msgid "Számlázz.hu document generator"
 msgstr "Számlázz.hu dokumentumok készítése"
 
-#: index.php:2067
+#: index.php:2068
 msgid "Számlázz.hu Documentation"
 msgstr "Számlázz.hu Dokumentáció"
 
-#: index.php:1042
+#: index.php:1043
 #, php-format
 msgid "Számlázz.hu invoice generated successfully. Invoice number: %s"
 msgstr "Számlázz.hu számla sikeresen létrehozva. A számla sorszáma %s"
@@ -2273,16 +2282,16 @@ msgstr "Számlázz.hu számla beállítások"
 msgid "Számlázz.hu is generating invoices in the background"
 msgstr "A Számlázz.hu épp generálja a számlákat a háttérben."
 
-#: index.php:2071
+#: index.php:2072
 msgid "Számlázz.hu Pro version"
 msgstr "Számlázz.hu Pro verzió"
 
-#: index.php:1069
+#: index.php:1070
 #, php-format
 msgid "Számlázz.hu proforma invoice generated successfully. Invoice number: %s"
 msgstr "Számlázz.hu díjbekérő sikeresen létrehozva. A számla sorszáma: %s"
 
-#: index.php:1686
+#: index.php:1687
 #, php-format
 msgid "Számlázz.hu receipt successfully generated. Receipt number: %s"
 msgstr "Számlázz.hu nyugta sikeresen létrehozva. A számla sorszáma: %s"
@@ -2291,7 +2300,7 @@ msgstr "Számlázz.hu nyugta sikeresen létrehozva. A számla sorszáma: %s"
 msgid "Számlázz.hu recommended design"
 msgstr "Számlázz.hu ajánlott számlakép"
 
-#: index.php:1778
+#: index.php:1779
 #, php-format
 msgid ""
 "Számlázz.hu reverse receipt successfully generated. Receipt number: %s. "
@@ -2300,7 +2309,7 @@ msgstr ""
 "Számlázz.hu sztornó nyugta sikeresen létrehozva. A nyugta sorszáma: %s. "
 "Eredeti nyugta: %s"
 
-#: index.php:2055
+#: index.php:2056
 msgid "Számlázz.hu Settings"
 msgstr "Számlázz.hu beállítások"
 
@@ -2489,7 +2498,7 @@ msgstr ""
 "AAM, EU, EUK, MAA, F.AFA, ÁKK. Ha nem ezek közül van megadva, akkor a "
 "százalékos értéket fogja kiszámolni a nettó/bruttó tétel árakból."
 
-#: index.php:1293
+#: index.php:1294
 msgid "There is nothing to cancel"
 msgstr "Nincs mit sztornózni"
 
@@ -2632,7 +2641,7 @@ msgstr ""
 "Nem sikerült aktiválni a PRO verziót. Nézd meg, hogy pontosan írtad e be "
 "licenc kulcsot. "
 
-#: index.php:1441
+#: index.php:1442
 #, php-format
 msgid "Unable to delete the Szamlazz.hu proforma invoice! Agent error code: %s"
 msgstr "Nem sikerült törölni a Számlázz.hu díjbekérőt! Agent hibakód: %s"
@@ -2712,7 +2721,7 @@ msgid "VAT Number"
 msgstr "Adószám"
 
 #: includes/class-vat-number.php:169 includes/class-vat-number.php:225
-#: includes/class-vat-number.php:232 includes/class-vat-number.php:499
+#: includes/class-vat-number.php:232 includes/class-vat-number.php:513
 #: includes/class-settings.php:66 includes/settings/settings-vat-number.php:10
 #: includes/views/html-metabox-vat.php:13
 #: includes/views/html-metabox-vat.php:19
@@ -2728,7 +2737,7 @@ msgstr "Adószám mező"
 msgid "VAT number field position"
 msgstr "Adószám mező pozíció"
 
-#: index.php:279
+#: index.php:280
 msgid "VAT Number info"
 msgstr "Adószám információ"
 
@@ -2761,6 +2770,16 @@ msgid ""
 msgstr ""
 "A rendelés létrehozásakor nem sikerült a Számlázz.hu-tól lekérni az adószám "
 "adatait."
+
+#: includes/settings/settings-vat-number.php:109
+msgid ""
+"When enabled, the VAT number field will be visible for non-Hungarian and non-"
+"EU countries too, whenever the company name is filled or company billing is "
+"selected. The field will be required but no format validation is applied."
+msgstr ""
+"Ha engedélyezve van, az adószám mező nem magyar és nem EU-országok esetében "
+"is látható lesz, ha a cégnév kitöltésre kerül vagy a céges számlázás opciót "
+"választják. A mező kitöltése kötelező, de validálás nem történik."
 
 #: includes/settings/settings-notice.php:111
 msgid "Where should the download links be included in the emails?"

@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.1.16
+ * Version: 6.2
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.1.16';
+		self::$version = '6.2';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -255,6 +255,7 @@ class WC_Szamlazz {
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'eu_vat_number' => $this->get_option('vat_number_eu', 'no'),
 				'eu_countries' => WC()->countries->get_european_union_countries(),
+				'global_vat' => $this->get_option('vat_number_global', 'no'),
 			);
 			wp_localize_script( 'wc_szamlazz_frontend_js', 'wc_szamlazz_vat_number_params', $wc_szamlazz_local );
 		}

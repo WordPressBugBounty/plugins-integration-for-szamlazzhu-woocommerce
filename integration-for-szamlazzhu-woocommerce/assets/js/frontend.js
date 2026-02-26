@@ -45,6 +45,7 @@ jQuery(document).ready(function($) {
 		var wc_szamlazz_selected_country = 'hu';
 		var wc_szamlazz_vat_always_show = (wc_szamlazz_vat_number_params.type == 'show');
 		var wc_szamlazz_vat_number_eu = (wc_szamlazz_vat_number_params.eu_vat_number == 'yes')
+		var wc_szamlazz_vat_number_global = (wc_szamlazz_vat_number_params.global_vat == 'yes')
 
 		var wc_szamlazz_validate_vat_number_field = function() {
 			var $field = $('input#wc_szamlazz_adoszam');
@@ -89,9 +90,23 @@ jQuery(document).ready(function($) {
 			}
 		}
 
-		//Validate VAT number field
+		//Validate VAT number field(skip validation for non-HU/EU countries with global mode)
 		$('body').on('blur change', 'input#wc_szamlazz_adoszam', function(){
-			wc_szamlazz_validate_vat_number_field();
+			var country = $('select#billing_country').val();
+			if(!country) country = 'HU';
+			var is_hu_or_eu = (country == 'HU' || (wc_szamlazz_vat_number_eu && $.inArray( country, wc_szamlazz_vat_number_params.eu_countries ) >= 0));
+
+			if(is_hu_or_eu) {
+				wc_szamlazz_validate_vat_number_field();
+			} else if(wc_szamlazz_vat_number_global) {
+				//In global mode for non-HU/EU, just clear validation classes(no format check)
+				var $field = $('input#wc_szamlazz_adoszam');
+				var wrapper = $field.closest('.form-row');
+				wrapper.removeClass('woocommerce-validated').removeClass('woocommerce-invalid');
+				if($field.val()) {
+					wrapper.addClass('woocommerce-validated');
+				}
+			}
 		});
 
 		var wc_szamlazz_show_hide_vat_field = {
@@ -182,8 +197,36 @@ jQuery(document).ready(function($) {
 				//If Hungary is not selected
 				if(country != 'HU' && !(wc_szamlazz_vat_number_eu && $.inArray( country, wc_szamlazz_vat_number_params.eu_countries ) >= 0)) {
 
-					//Hide the custom VAT number field
-					_this.toggle_field(_this.$vat_number_field, false);
+					//If global VAT is enabled, show VAT field for all countries based on company context
+					if(wc_szamlazz_vat_number_global) {
+
+						if(_this.ui_type == 'show') {
+							_this.toggle_field(_this.$vat_number_field, true);
+							_this.toggle_required(_this.$vat_number_field, (_this.$company_field.find('input').val()));
+						}
+
+						if(_this.ui_type == 'toggle' || _this.ui_type == 'radio') {
+							var is_checked = _this.$billing_toggle_field.find('input').is(':checked');
+							if(_this.ui_type == 'radio') {
+								is_checked = (_this.$billing_toggle_radio_field.find('input:checked').val() == 'company');
+							}
+							_this.toggle_field(_this.$vat_number_field, is_checked);
+							_this.toggle_field(_this.$company_field, is_checked);
+							_this.toggle_required(_this.$vat_number_field, is_checked);
+							_this.toggle_required(_this.$company_field, is_checked);
+						}
+
+						if(_this.ui_type == 'default') {
+							_this.toggle_field(_this.$vat_number_field, (_this.$company_field.find('input').val()));
+							_this.toggle_required(_this.$vat_number_field, (_this.$company_field.find('input').val()));
+						}
+
+					} else {
+
+						//Hide the custom VAT number field
+						_this.toggle_field(_this.$vat_number_field, false);
+
+					}
 
 					//If UI type is the checkboxed one, still hide/show the company name field
 					if(_this.ui_type == 'toggle' || _this.ui_type == 'radio') {
@@ -206,6 +249,30 @@ jQuery(document).ready(function($) {
 					}
 
 				}
+
+				//Determine company billing state for the event
+				var is_company_billing = false;
+				if(_this.ui_type == 'toggle' || _this.ui_type == 'radio') {
+					var is_checked = _this.$billing_toggle_field.find('input').is(':checked');
+					if(_this.ui_type == 'radio') {
+						is_checked = (_this.$billing_toggle_radio_field.find('input:checked').val() == 'company');
+					}
+					is_company_billing = is_checked;
+				} else {
+					is_company_billing = !!_this.$company_field.find('input').val();
+				}
+
+				var is_hu_or_eu = (country == 'HU' || (wc_szamlazz_vat_number_eu && $.inArray( country, wc_szamlazz_vat_number_params.eu_countries ) >= 0));
+
+				//Trigger custom event for external integrations
+				$(document.body).trigger('wc_szamlazz_vat_field_adjusted', [{
+					country: country,
+					is_company_billing: is_company_billing,
+					is_hu_or_eu: is_hu_or_eu,
+					is_global_non_eu: (wc_szamlazz_vat_number_global && !is_hu_or_eu),
+					vat_field_visible: _this.$vat_number_field.is(':visible'),
+					ui_type: _this.ui_type
+				}]);
 
 			},
 			get_country: function() {

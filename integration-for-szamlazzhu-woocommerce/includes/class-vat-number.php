@@ -306,6 +306,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			//Check for general errors, like missing vat number
 			$ui_type = (WC_Szamlazz()->get_option('vat_number_always_show', 'no') == 'yes') ? 'show' : 'default';
 			$ui_type = WC_Szamlazz()->get_option('vat_number_type', $ui_type);
+			$global_vat = (WC_Szamlazz()->get_option('vat_number_global', 'no') == 'yes');
 
 			if($fields['billing_country'] == 'HU' || ($check_eu_vat && in_array($fields['billing_country'], $eu_countries))) {
 				if(isset($fields['billing_company']) && $fields['billing_company'] && !$fields['wc_szamlazz_adoszam']) {
@@ -318,6 +319,19 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 
 				if($ui_type == 'toggle' && isset($fields['wc_szamlazz_company_toggle']) && $fields['wc_szamlazz_company_toggle'] && (!$fields['billing_company'] || !$fields['wc_szamlazz_adoszam'])) {
 					$errors->add( 'validation', apply_filters('wc_szamlazz_company_billing_validation_required_message', esc_html__( 'If you choose company billing, please enter both your company name and VAT number.', 'wc-szamlazz'), $fields) );
+				}
+			}
+
+			//Global VAT: require VAT number for non-HU/EU countries when company name is filled (no format validation)
+			if($global_vat && $fields['billing_country'] != 'HU' && !($check_eu_vat && in_array($fields['billing_country'], $eu_countries))) {
+				$has_company = (isset($fields['billing_company']) && $fields['billing_company']);
+				$has_toggle = ($ui_type == 'toggle' && isset($fields['wc_szamlazz_company_toggle']) && $fields['wc_szamlazz_company_toggle']);
+				$has_radio = ($ui_type == 'radio' && isset($fields['wc_szamlazz_company_toggle_radio']) && $fields['wc_szamlazz_company_toggle_radio'] == 'company');
+
+				if($has_company || $has_toggle || $has_radio) {
+					if(!$fields['wc_szamlazz_adoszam']) {
+						$errors->add( 'validation', apply_filters('wc_szamlazz_tax_validation_required_message', esc_html__( 'If you enter a company name, the VAT number field is required.', 'wc-szamlazz'), $fields) );
+					}
 				}
 			}
 		}
@@ -472,12 +486,12 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 						}
 					}
 				}
-				return $response;
+				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number);
 			}
 
 			if (!$response_body['valid']) {
-				return $response;
-			}			
+				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number);
+			}
 		
 			//Setup data
 			$response['valid'] = true;

@@ -101,6 +101,14 @@ $setting_vat_eu = array(
 		'checkboxgroup' => 'end',
 		'disabled' => $pro_required,
 	),
+	array(
+		'title' => __( 'Global VAT number', 'wc-szamlazz' ),
+		'type' => 'checkbox',
+		'desc' => __( 'Show VAT number field for all countries', 'wc-szamlazz' ),
+		'class' => 'wc-szamlazz-toggle-group-vatnumber-item',
+		'desc_tip' => __( 'When enabled, the VAT number field will be visible for non-Hungarian and non-EU countries too, whenever the company name is filled or company billing is selected. The field will be required but no format validation is applied.', 'wc-szamlazz' ),
+		'id' => 'vat_number_global',
+	)
 );
 
 //Show different info based on checkout block and shortcode page
