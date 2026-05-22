@@ -1001,6 +1001,10 @@
 			display: flex;
 			align-items: center;
 			gap: 5px;
+
+			.dashicons {
+				line-height: 1 !important;
+			}
 			
 			.dashicons-editor-help,
 			.dashicons-star-filled {

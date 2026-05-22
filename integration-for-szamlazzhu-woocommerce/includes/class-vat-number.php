@@ -292,7 +292,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 					$error_codes = $errors->get_error_codes();
 					if(empty( $error_codes )) {
 						$adoszam_data = self::get_eu_vat_number_data(sanitize_text_field($fields['wc_szamlazz_adoszam']));
-						if($adoszam_data && !$adoszam_data['valid']) {
+						if($adoszam_data && !$adoszam_data['valid'] && apply_filters( 'wc_szamlazz_should_fail_eu_vat_validation', true, $fields, $adoszam_data ) ) {
 							$errors->add( 'validation', apply_filters('wc_szamlazz_tax_validation_nav_message', esc_html__( 'The VAT number is not valid.', 'wc-szamlazz'), $fields) );
 						}
 					}
@@ -323,7 +323,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			}
 
 			//Global VAT: require VAT number for non-HU/EU countries when company name is filled (no format validation)
-			if($global_vat && $fields['billing_country'] != 'HU' && !($check_eu_vat && in_array($fields['billing_country'], $eu_countries))) {
+			if($global_vat && $fields['billing_country'] != 'HU' && !($check_eu_vat && in_array($fields['billing_country'], $eu_countries)) && apply_filters( 'wc_szamlazz_should_validate_global_vat', true, $fields )) {
 				$has_company = (isset($fields['billing_company']) && $fields['billing_company']);
 				$has_toggle = ($ui_type == 'toggle' && isset($fields['wc_szamlazz_company_toggle']) && $fields['wc_szamlazz_company_toggle']);
 				$has_radio = ($ui_type == 'radio' && isset($fields['wc_szamlazz_company_toggle_radio']) && $fields['wc_szamlazz_company_toggle_radio'] == 'company');
@@ -482,15 +482,15 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 						if (isset($error_wrapper['error']) && $error_wrapper['error'] === 'MS_MAX_CONCURRENT_REQ') {
 							$response['valid'] = true;
 							$response['note'] = 'Could not verify due to service rate limit, treated as valid';
-							return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number);
+							return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
 						}
 					}
 				}
-				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number);
+				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
 			}
 
 			if (!$response_body['valid']) {
-				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number);
+				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
 			}
 		
 			//Setup data
@@ -499,7 +499,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			$response['name'] = $response_body['name'];
 
 			//Return response
-			return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number);
+			return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
 			
 		}
 
@@ -628,14 +628,14 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 
 				//Check if company name specified
 				if(
-					isset($output['billing_company']) &&
+					apply_filters( 'wc_szamlazz_should_set_eu_vat_exempt', (isset($output['billing_company']) &&
 					isset($output['billing_country']) &&
 					!empty($output['billing_company']) &&
-				in_array($output['billing_country'], $eu_countries) &&
-				$output['billing_country'] != 'HU' &&
-				isset($output['wc_szamlazz_adoszam']) &&
-				self::validate_eu_vat_format($output['wc_szamlazz_adoszam'])
-			) {
+					in_array($output['billing_country'], $eu_countries) &&
+					$output['billing_country'] != 'HU' &&
+					isset($output['wc_szamlazz_adoszam']) &&
+					self::validate_eu_vat_format($output['wc_szamlazz_adoszam'])), $output )
+				) {
 					WC()->customer->set_is_vat_exempt(true);
 				}
 			}

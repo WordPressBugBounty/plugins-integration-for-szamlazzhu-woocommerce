@@ -77,6 +77,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</a>
 				</div>
 			</li>
+
+			<li class="wc-szamlazz-metabox-rows-data wc-szamlazz-metabox-rows-data-void-reason plugins">
+				<div class="wc-szamlazz-metabox-rows-data-inside">
+					<textarea id="wc_szamlazz_void_note" placeholder="<?php esc_html_e('Reason for cancelling the invoice(optional)', 'wc-szamlazz'); ?>"></textarea>
+				</div>
+			</li>
 			<li class="wc-szamlazz-metabox-rows-data wc-szamlazz-metabox-rows-data-void plugins <?php if($has_voidable_invoice || $has_receipt): ?>show<?php endif; ?>">
 				<div class="wc-szamlazz-metabox-rows-data-inside">
 					<a href="#" data-trigger-value="<?php esc_attr_e('Reverse invoice','wc-szamlazz'); ?>" data-question="<?php echo esc_attr_x('Are you sure?', 'Reverse invoice', 'wc-szamlazz'); ?>" class="delete"><?php esc_html_e('Reverse invoice','wc-szamlazz'); ?></a>
@@ -88,7 +94,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</li>
 		</ul>
-		<?php if($this->should_generate_auto_invoice($order) && $this->get_option('auto_invoice_custom', 'no') != 'yes'): ?>
+		<?php if($this->should_generate_auto_invoice($order) && $this->get_option('auto_invoice_custom', 'no') == 'yes'): ?>
 		<div class="wc-szamlazz-metabox-auto-msg <?php if(!$order->get_meta('_wc_szamlazz_own') && !$has_invoice): ?>show<?php endif; ?>">
 			<div class="wc-szamlazz-metabox-auto-msg-text">
 				<p><?php esc_html_e( 'The invoice will be created automatically if the status of the order changes to:', 'wc-szamlazz' ); ?>

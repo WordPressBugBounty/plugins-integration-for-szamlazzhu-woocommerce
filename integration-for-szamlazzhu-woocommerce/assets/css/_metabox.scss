@@ -121,6 +121,16 @@
 				display: block;
 			}
 
+			&-void-reason {
+				border-bottom: 0;
+				padding-bottom: 0;
+
+				textarea, input[type="number"], input[type="text"], select {
+					width: 100%;
+					margin: 0;
+				}
+			}
+
 			a {
 				&:focus {
 					box-shadow: none;
@@ -203,7 +213,7 @@
 
 				&.active span.dashicons {
 					transform: rotate(45deg);
-					color: #0073AA;
+					color: var(--wp-admin-theme-color);
 				}
 			}
 
@@ -219,6 +229,10 @@
 				width: 30px;
 				margin-left: auto;
 				font-size: 16px;
+
+				.dashicons {
+					line-height: 1 !important;
+				}
 
 				span {
 					font-size: 16px;

@@ -455,6 +455,7 @@ jQuery(document).ready(function($) {
 		$voidedReceiptRow: $('.wc-szamlazz-metabox-invoices-void_receipt'),
 		$completeRow: $('.wc-szamlazz-metabox-rows-data-complete'),
 		$voidRow: $('.wc-szamlazz-metabox-rows-data-void'),
+		$voidReasonRow: $('.wc-szamlazz-metabox-rows-data-void-reason'),
 		$correctRow: $('.wc-szamlazz-metabox-rows-data-correct'),
 		$messages: $('.wc-szamlazz-metabox-messages'),
 		$reverseReceiptButton: $('#wc_szamlazz_reverse_receipt'),
@@ -473,6 +474,8 @@ jQuery(document).ready(function($) {
 			this.$completeRow.find('a').on( 'click', this.mark_completed );
 			this.$voidRow.find('a').on( 'click', this.void_invoice );
 			this.$correctRow.find('a').on( 'click', this.correct_invoice );
+			this.$voidReasonRow.find('textarea').on( 'focus', this.void_invoice_reason_focus );
+			this.$voidReasonRow.find('textarea').on( 'blur', this.void_invoice_reason_blur );
 
 			this.$messages.find('a').on( 'click', this.hide_message );
 
@@ -783,9 +786,13 @@ jQuery(document).ready(function($) {
 
 				//Reset timeout
 				clearTimeout(wc_szamlazz_metabox.void_invoice_timeout);
+				wc_szamlazz_metabox.$voidReasonRow.slideUp();
 
 				//Show loading indicator
 				wc_szamlazz_metabox.loading_indicator(wc_szamlazz_metabox.$voidRow, '#fff');
+
+				//Get textarea vale
+				var reason = $('#wc_szamlazz_void_note').val();
 
 				//Set request route
 				var request_suffix = wc_szamlazz_metabox.is_receipt ? 'void_receipt' : 'void_invoice';
@@ -795,6 +802,7 @@ jQuery(document).ready(function($) {
 					action: wc_szamlazz_metabox.prefix+request_suffix,
 					nonce: wc_szamlazz_metabox.nonce,
 					order: wc_szamlazz_metabox.order,
+					reason: reason
 				};
 
 				$.post(ajaxurl, data, function(response) {
@@ -865,6 +873,7 @@ jQuery(document).ready(function($) {
 						$this.fadeIn();
 						$this.removeClass('confirm');
 					});
+					wc_szamlazz_metabox.$voidReasonRow.slideUp();
 				}, 5000);
 
 				$this.addClass('confirm');
@@ -872,10 +881,28 @@ jQuery(document).ready(function($) {
 					$this.text($this.data('question'))
 					$this.fadeIn();
 				});
+
+				wc_szamlazz_metabox.$voidReasonRow.slideDown();
 			}
 
 			return false;
 
+		},
+		void_invoice_reason_focus: function(){
+			console.log('void_invoice_reason_focus');
+			clearTimeout(wc_szamlazz_metabox.void_invoice_timeout);
+		},
+		void_invoice_reason_blur: function(){
+			clearTimeout(wc_szamlazz_metabox.void_invoice_timeout);
+			var $this = wc_szamlazz_metabox.$voidRow.find('a');
+			wc_szamlazz_metabox.void_invoice_timeout = setTimeout(function(){
+				$this.fadeOut(function(){
+					$this.text($this.data('trigger-value'));
+					$this.fadeIn();
+					$this.removeClass('confirm');
+				});
+				wc_szamlazz_metabox.$voidReasonRow.slideUp();
+			}, 5000);
 		},
 		correct_invoice_timeout: false,
 		correct_invoice: function() {

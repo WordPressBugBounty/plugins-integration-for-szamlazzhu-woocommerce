@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.2
+ * Version: 6.2.1
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 10.5
+ * WC tested up to: 10.7.0
  * Requires Plugins: woocommerce
  */
 
@@ -76,7 +76,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.2';
+		self::$version = '6.2.1';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -300,6 +300,12 @@ class WC_Szamlazz {
 
 		//Plugins can hook up here
 		do_action('wc_szamlazz_before_generate_invoice', $orderId, $type, $options);
+
+		//Allow preventing invoice generation via filter
+		$pre_check = apply_filters('wc_szamlazz_before_generate_invoice_check', null, $orderId, $type, $options);
+		if(is_array($pre_check) && !empty($pre_check['error'])) {
+			return $pre_check;
+		}
 
 		//If multiple orders passed
 		if(is_array($orderId)) {
@@ -545,7 +551,8 @@ class WC_Szamlazz {
 		}
 
 		//Set billing address
-		$vevo->addChild('orszag', htmlspecialchars(WC()->countries->countries[$order->get_billing_country()] ? : ''));
+		$billing_country_code = $order->get_billing_country();
+		$vevo->addChild('orszag', htmlspecialchars(!empty($billing_country_code) && isset(WC()->countries->countries[$billing_country_code]) ? WC()->countries->countries[$billing_country_code] : ''));
 		$vevo->addChild('irsz', $order->get_billing_postcode());
 		$vevo->addChild('telepules', $order->get_billing_city());
 		$vevo->addChild('cim', htmlspecialchars($order->get_billing_address_1()));
@@ -958,9 +965,9 @@ class WC_Szamlazz {
 			return $response;
 
 		}
-
+	
 		//Just in case, check again if we already have a document generated
-		if($this->is_invoice_generated($orderId, $type) && $type != 'delivery') {
+		if($this->is_invoice_generated($orderId, $type) && $type != 'delivery' && !isset($options['preview'])) {
 				
 			//Create response
 			$response['error'] = true;
@@ -1306,6 +1313,11 @@ class WC_Szamlazz {
 		//Do we need to send an email notification?
 		if($this->get_option('auto_email', 'yes') == 'yes') {
 			$vevo->addChild('email', $order->get_billing_email());
+		}
+
+		//Get void reason
+		if(isset($_POST['reason']) && !empty($_POST['reason'])) {
+			$fejlec->addChild('megjegyzes', sanitize_textarea_field($_POST['reason']));
 		}
 		
 		//Generate XML

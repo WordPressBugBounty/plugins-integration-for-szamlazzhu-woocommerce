@@ -648,6 +648,8 @@
     display: flex;
     align-items: center;
     gap: 5px; }
+    .wc-szamlazz-settings-submenu a.button .dashicons {
+      line-height: 1 !important; }
     .wc-szamlazz-settings-submenu a.button .dashicons-editor-help,
     .wc-szamlazz-settings-submenu a.button .dashicons-star-filled {
       transform: translateY(-1px); }
@@ -888,6 +890,12 @@ body.wc-szamlazz-settings.wc-szamlazz-settings-loaded .form-table + h2 {
       display: flex; }
     .wc-szamlazz-metabox-rows-data.show {
       display: block; }
+    .wc-szamlazz-metabox-rows-data-void-reason {
+      border-bottom: 0;
+      padding-bottom: 0; }
+      .wc-szamlazz-metabox-rows-data-void-reason textarea, .wc-szamlazz-metabox-rows-data-void-reason input[type="number"], .wc-szamlazz-metabox-rows-data-void-reason input[type="text"], .wc-szamlazz-metabox-rows-data-void-reason select {
+        width: 100%;
+        margin: 0; }
     .wc-szamlazz-metabox-rows-data a:focus {
       box-shadow: none; }
     .wc-szamlazz-metabox-rows-data a.completed {
@@ -939,7 +947,7 @@ body.wc-szamlazz-settings.wc-szamlazz-settings-loaded .form-table + h2 {
         transition: all ease 0.5s; }
       .wc-szamlazz-metabox-generate-buttons a:first-child.active span.dashicons {
         transform: rotate(45deg);
-        color: #0073AA; }
+        color: var(--wp-admin-theme-color); }
     .wc-szamlazz-metabox-generate-buttons a.button {
       margin-left: auto; }
     .wc-szamlazz-metabox-generate-buttons a.button-preview {
@@ -950,6 +958,8 @@ body.wc-szamlazz-settings.wc-szamlazz-settings-loaded .form-table + h2 {
       width: 30px;
       margin-left: auto;
       font-size: 16px; }
+      .wc-szamlazz-metabox-generate-buttons a.button-preview .dashicons {
+        line-height: 1 !important; }
       .wc-szamlazz-metabox-generate-buttons a.button-preview span {
         font-size: 16px;
         height: 16px;
@@ -1422,7 +1432,9 @@ span.wc-szamlazz-settings-error {
   background: #FFF7F4;
   background-repeat: no-repeat;
   background-position: center;
-  margin-right: 5px; }
+  margin-right: 5px;
+  min-height: 2em;
+  padding: 0; }
   .widefat a.button.wc-szamlazz-button:last-child {
     margin: 0; }
   .widefat a.button.wc-szamlazz-button:focus {
