@@ -377,7 +377,7 @@ jQuery(document).ready(function($) {
 				type:    "POST",
 				url:     wc_szamlazz_vat_number_params.ajax_url,
 				data:    data,
-				timeout: 5000, //Only wait for 5 seconds, so if somethings wrong with NAV or számlázz.hu, user can still order
+				timeout: 10000, //VIES can be slow; wait up to 10s before giving up so the user gets a real result
 				success: function(response) {
 					$( '.woocommerce-billing-fields__field-wrapper, .woocommerce-address-fields__field-wrapper' ).unblock();
 					self.loading = false;

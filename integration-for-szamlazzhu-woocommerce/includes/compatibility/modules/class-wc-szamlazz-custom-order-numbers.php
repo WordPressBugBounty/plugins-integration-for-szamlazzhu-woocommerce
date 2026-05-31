@@ -19,14 +19,17 @@ class WC_Szamlazz_Custom_Order_Number_Compatibility {
 		if(defined('WT_SEQUENCIAL_ORDNUMBER_VERSION')) $meta_key = '_order_number';
 
 		$args = array(
-			'post_type'      => 'shop_order',
-			'posts_per_page' => 1,
-			'post_status'    => 'any',
-			'meta_key' => $meta_key,
-			'meta_value' => $ipn_parameters['order_number'],
-			'fields' => 'ids',
+			'limit'      => 1,
+			'status'     => 'any',
+			'meta_query' => array(
+				array(
+					'key'   => $meta_key,
+					'value' => $ipn_parameters['order_number'],
+				),
+			),
+			'return'     => 'ids',
 		);
-		$orders = get_posts( $args );
+		$orders = wc_get_orders( $args );
 		if($orders) {
 			$ipn_parameters['order_number'] = $orders[0];
 		}

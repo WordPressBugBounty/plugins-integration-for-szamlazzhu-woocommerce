@@ -446,34 +446,62 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 				'vatNumber' => $vat_number
 			);
 
-			// Initialize cURL
-			$ch = curl_init();
-
-			// Set cURL options
-			curl_setopt($ch, CURLOPT_URL, 'https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number');
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($request));
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				'Content-Type: application/json',
-				'Accept: application/json'
-			));
-		
-			// Execute cURL request
-			$api_response = curl_exec($ch);
-			
-			// Check for cURL errors
-			if (curl_errno($ch)) {
-				echo 'cURL error: ' . curl_error($ch);
-				curl_close($ch);
-				return $response;
+			// Short-lived cache to avoid hammering VIES on repeated checkout AJAX calls
+			$cache_key = 'wc_szamlazz_vies_' . md5($country_code . '|' . $vat_number);
+			$cached    = get_transient($cache_key);
+			if (is_array($cached)) {
+				return apply_filters('wc_szamlazz_vat_number_validation_results', $cached, $vat_number, $cached);
 			}
-			
-			// Close cURL
-			curl_close($ch);
 
-			//Get response body
-			$response_body = json_decode($api_response, true);
+			$logger = function_exists('wc_get_logger') ? wc_get_logger() : null;
+			$log_ctx = array('source' => 'wc-szamlazz');
+
+			// Helper: when VIES itself is unreachable / broken, don't block the checkout.
+			$service_unavailable = function ($reason) use ($response, $cache_key, $vat_number, $logger, $log_ctx) {
+				if ($logger) {
+					$logger->warning('VIES unavailable, treating VAT as valid: ' . $reason, $log_ctx);
+				}
+				$response['valid'] = true;
+				$response['note']  = 'VIES unavailable (' . $reason . '), treated as valid';
+				set_transient('wc_szamlazz_vies_' . md5($vat_number), $response, 5 * MINUTE_IN_SECONDS);
+				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, array());
+			};
+
+			// Send request via WP HTTP API
+			$api_response = wp_remote_post('https://ec.europa.eu/taxation_customs/vies/rest-api/check-vat-number', array(
+				'timeout'     => 10, // VIES is slow; cap it so checkout doesn't stall
+				'redirection' => 2,
+				'headers'     => array(
+					'Content-Type' => 'application/json',
+					'Accept'       => 'application/json',
+				),
+				'body'        => wp_json_encode($request),
+			));
+
+			// Transport-level failure (timeout, TCP reset, DNS, TLS, ...)
+			if (is_wp_error($api_response)) {
+				return $service_unavailable('transport: ' . $api_response->get_error_message());
+			}
+
+			$http_code = (int) wp_remote_retrieve_response_code($api_response);
+			$raw_body  = (string) wp_remote_retrieve_body($api_response);
+
+			// Non-2xx -> upstream tax office returned an error page
+			if ($http_code < 200 || $http_code >= 300) {
+				return $service_unavailable('HTTP ' . $http_code . ' body=' . substr($raw_body, 0, 200));
+			}
+
+			// Empty body -> connection dropped or VIES misbehaving
+			if ($raw_body === '') {
+				return $service_unavailable('empty response body');
+			}
+
+			$response_body = json_decode($raw_body, true);
+
+			// Invalid JSON
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				return $service_unavailable('invalid JSON: ' . json_last_error_msg() . ' body=' . substr($raw_body, 0, 200));
+			}
 
 			//Check for valid response
 			if (!is_array($response_body) || !isset($response_body['valid'])) {
@@ -482,14 +510,19 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 						if (isset($error_wrapper['error']) && $error_wrapper['error'] === 'MS_MAX_CONCURRENT_REQ') {
 							$response['valid'] = true;
 							$response['note'] = 'Could not verify due to service rate limit, treated as valid';
+							set_transient($cache_key, $response, 5 * MINUTE_IN_SECONDS);
 							return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
 						}
 					}
+				}
+				if ($logger) {
+					$logger->warning('VIES returned unexpected payload: ' . substr($raw_body, 0, 500), $log_ctx);
 				}
 				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
 			}
 
 			if (!$response_body['valid']) {
+				set_transient($cache_key, $response, HOUR_IN_SECONDS);
 				return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
 			}
 		
@@ -497,6 +530,8 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			$response['valid'] = true;
 			$response['vies'] = $response_body; 
 			$response['name'] = $response_body['name'];
+
+			set_transient($cache_key, $response, DAY_IN_SECONDS);
 
 			//Return response
 			return apply_filters('wc_szamlazz_vat_number_validation_results', $response, $vat_number, $response_body);
@@ -548,6 +583,15 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 
 		//Create ajax function for vat number check
 		public static function check_vat_number_with_ajax() {
+			// The browser cancels this AJAX as soon as the user types again or WC
+			// fires another update_order_review. If we let PHP get killed mid-VIES
+			// the result is never cached and nothing is ever logged. Finish the
+			// request server-side regardless.
+			ignore_user_abort(true);
+			if (function_exists('set_time_limit')) {
+				@set_time_limit(30);
+			}
+
 			if($_POST['page'] == 'checkout') {
 				check_ajax_referer( 'update-order-review', 'security' );
 			} else {

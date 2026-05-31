@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.2.1
+ * Version: 6.2.2
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
