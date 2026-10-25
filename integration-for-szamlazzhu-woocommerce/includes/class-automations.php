@@ -318,7 +318,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 				//Check if document exists and delete it
 				if($order->get_meta('_wc_szamlazz_'.$document_type)) {
 					$path = WC_Szamlazz()->generate_download_link($order, $document_type, true);
-					if($path) {
+					if($path && file_exists($path)) {
 						unlink($path);
 					}
 				}

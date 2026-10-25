@@ -72,10 +72,83 @@ add_action('woocommerce_blocks_loaded', function() {
 		if($request_data['customer_type'] == 'individual' && $request['billing_address']['company']) {
 			$eu_countries = WC()->countries->get_european_union_countries();
 			$check_eu_vat = (WC_Szamlazz()->get_option('vat_number_eu', 'no') == 'yes');
-			if($request['billing_country'] == 'HU' || ($check_eu_vat && in_array($request['billing_country'], $eu_countries))) {
+			$billing_country = $request['billing_address']['country'] ?? '';
+			if($billing_country == 'HU' || ($check_eu_vat && in_array($billing_country, $eu_countries))) {
 				throw new Exception(apply_filters('wc_szamlazz_tax_validation_required_message', esc_html__( 'If you enter a company name, the VAT number field is required.', 'wc-szamlazz')));
 			}
 		}
 	}, 10, 2);
+
+	//Keep the VAT exemption in sync on every cart calculation during Store API (block)
+	//requests. The classic checkout hooks (update_order_review, checkout_process) never run
+	//here, and the Store API update callback only runs when the VAT field value changes, so
+	//both the EU VAT number and the "company outside the EU" exemptions are handled here.
+	add_action('woocommerce_before_calculate_totals', function( $cart ) {
+
+		//Only for the block/Store API flow, so the classic checkout logic is untouched.
+		if( ! ( function_exists('WC') && WC()->is_rest_api_request() ) ) {
+			return;
+		}
+
+		$eu_vat_exempt = ( WC_Szamlazz()->get_option('eu_vat_exempt', 'yes') == 'yes' );
+		$abroad_exempt = ( WC_Szamlazz()->get_option('vat_exempt_abroad', 'no') == 'yes' );
+		if( ! $eu_vat_exempt && ! $abroad_exempt ) {
+			return;
+		}
+
+		if( ! WC()->customer || ! WC()->session ) {
+			return;
+		}
+
+		$is_exempt = false;
+
+		//EU VAT number exemption
+		if( $eu_vat_exempt ) {
+
+			//Resolve the VAT number: prefer the value stored during checkout, fall back to saved user meta.
+			$vat_number_data = WC()->session->get( 'vat-number-data' );
+			$vat_number    = ( is_array($vat_number_data) && ! empty($vat_number_data['vat_number']) ) ? $vat_number_data['vat_number'] : '';
+			$customer_type = ( is_array($vat_number_data) && isset($vat_number_data['customer_type']) ) ? $vat_number_data['customer_type'] : '';
+
+			if( $vat_number === '' && is_user_logged_in() ) {
+				$saved = get_user_meta( get_current_user_id(), 'wc_szamlazz_adoszam', true );
+				if( $saved ) {
+					$vat_number    = $saved;
+					$customer_type = 'company';
+				}
+			}
+
+			//Exempt only company purchases with a non-Hungarian EU VAT number (two-letter prefix).
+			if( $customer_type === 'company' && preg_match('/^[A-Z]{2}/', strtoupper($vat_number)) ) {
+				$country_code = strtoupper( substr($vat_number, 0, 2) );
+				if( $country_code !== 'HU' ) {
+					$is_exempt = true;
+				}
+			}
+
+			$is_exempt = apply_filters( 'wc_szamlazz_should_set_eu_vat_exempt', $is_exempt, array( 'wc_szamlazz_adoszam' => $vat_number ) );
+		}
+
+		//Company outside the EU buying only virtual products (block version of vat_exempt_abroad).
+		//The Store API saves the billing address on the customer before totals are calculated.
+		if( ! $is_exempt && $abroad_exempt ) {
+			$billing_company = WC()->customer->get_billing_company();
+			$billing_country = WC()->customer->get_billing_country();
+			$eu_countries    = WC()->countries->get_european_union_countries('eu_vat');
+
+			if(
+				! empty($billing_company) &&
+				! empty($billing_country) &&
+				! in_array($billing_country, $eu_countries) &&
+				! $cart->needs_shipping()
+			) {
+				$is_exempt = true;
+			}
+		}
+
+		if( WC()->customer->get_is_vat_exempt() !== (bool) $is_exempt ) {
+			WC()->customer->set_is_vat_exempt( (bool) $is_exempt );
+		}
+	}, 5);
 
 });

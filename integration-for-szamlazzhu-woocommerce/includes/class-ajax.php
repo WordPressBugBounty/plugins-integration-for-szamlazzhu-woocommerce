@@ -212,6 +212,9 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 			//Set file name & path
 			self::$pdf_file_path = WC_Szamlazz()->get_pdf_file_path($document_type, $order_id);
 
+			//Make sure the main folder is protected
+			WC_Szamlazz_Document_Storage::protect();
+
 			//Create folder if not exists
 			$file = array(
 				'base' 		=> self::$pdf_file_path['file_dir'],
@@ -263,7 +266,7 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 				$order->save();
 
 				//Set download link
-				$response['link'] = $upload['url'];
+				$response['link'] = WC_Szamlazz()->generate_download_link($order, $document_type);
 
 				//Set response message
 				$response['error'] = false;

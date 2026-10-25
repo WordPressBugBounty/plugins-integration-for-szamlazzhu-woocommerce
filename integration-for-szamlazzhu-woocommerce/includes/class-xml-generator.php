@@ -11,113 +11,50 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 		private $agent_body = array();
 		private $agent_header = array();
 
-		//Init notices
+		//Send the XML to Számlázz.hu
 		public function generate($xml, $orderId, $field) {
 
 			//Log request in debug mode
 			WC_Szamlazz()->log_debug_messages($xml, $field.'-'.$orderId);
 
-			//Temporarily save XML
-			$UploadDir = wp_upload_dir();
-			$UploadURL = $UploadDir['basedir'];
-			$location = realpath($UploadURL . "/wc_szamlazz/");
-			$xmlfile = $location.'/'.$orderId.'.xml';
-			$test = file_put_contents($xmlfile, $xml);
+			//Send the XML as a file upload, built in memory, so we don't need a temporary file
+			$boundary = wp_generate_password(24, false);
+			$body  = "--{$boundary}\r\n";
+			$body .= "Content-Disposition: form-data; name=\"{$field}\"; filename=\"{$orderId}.xml\"\r\n";
+			$body .= "Content-Type: text/xml\r\n\r\n";
+			$body .= $xml."\r\n";
+			$body .= "--{$boundary}--\r\n";
 
-			$cookie_meta_name = '_wc_szamlazz_cookie_name';
-			$xml_file = simplexml_load_string($xml);
-			if($xml_file->beallitasok && $xml_file->beallitasok->felhasznalo) {
-				$username = sanitize_title($xml_file->beallitasok->felhasznalo);
-				$cookie_meta_name = '_wc_szamlazz_cookie_name_'.$username;
-			}
+			//Session cookie for this account, so Számlázz.hu doesn't need to log in again on every request
+			$session_option = $this->get_session_option_name($xml);
 
-			if($xml_file->beallitasok && $xml_file->beallitasok->szamlaagentkulcs) {
-				$agentkey = sanitize_title($xml_file->beallitasok->szamlaagentkulcs);
-				$cookie_meta_name = '_wc_szamlazz_cookie_name_'.substr($agentkey, 0, 5);
-			}
+			$request = wp_remote_post('https://www.szamlazz.hu/szamla/', array(
+				'timeout' => 30,
+				'redirection' => 0,
+				'sslverify' => apply_filters('wc_szamlazz_ssl_verify', true),
+				'headers' => array('Content-Type' => 'multipart/form-data; boundary='.$boundary),
+				'cookies' => $this->get_session_cookies($session_option),
+				'body' => $body,
+			));
 
-			//Generate cookie
-			if(get_option($cookie_meta_name)) {
-				$cookie_file_random_name = get_option($cookie_meta_name);
-			} else {
-				$cookie_file_random_name = substr(md5(rand()),5);
-				update_option($cookie_meta_name,$cookie_file_random_name);
-			}
-			$cookie_file = $location.'/szamlazz_cookie_'.$cookie_file_random_name.'.txt';
-
-			//Agent URL
-			$agent_url = 'https://www.szamlazz.hu/szamla/';
-
-			//Generate Cookie if not already exists
-			if (!file_exists($cookie_file)) {
-				file_put_contents($cookie_file, '');
-			}
-
-			// a CURL inicializálása
-			$ch = curl_init($agent_url);
-
-			// A curl hívás esetén tanúsítványhibát kaphatunk az SSL tanúsítvány valódiságától
-			// függetlenül, ez az alábbi CURL paraméter állítással kiküszöbölhető,
-			// ilyenkor nincs külön SSL ellenőrzés:
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-			// POST-ban küldjük az adatokat
-			curl_setopt($ch, CURLOPT_POST, true);
-
-			// Kérjük a HTTP headert a válaszba, fontos információk vannak benne
-			curl_setopt($ch, CURLOPT_HEADER, true);
-
-			// változóban tároljuk a válasz tartalmát, nem írjuk a kimenetbe
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-			// Beállítjuk, hol van az XML, amiből számlát szeretnénk csinálni (= file upload)
-			// az xmlfile-t itt fullpath-al kell megadni
-			if (!class_exists('CurlFile')) {
-				curl_setopt($ch, CURLOPT_POSTFIELDS, array($field=>'@' . $xmlfile));
-			} else {
-				curl_setopt($ch, CURLOPT_POSTFIELDS, array($field=>new CurlFile($xmlfile)));
-			}
-
-			// 30 másodpercig tartjuk fenn a kapcsolatot (ha valami bökkenő volna)
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
-			// Itt állítjuk be, hogy az érkező cookie a $cookie_file-ba kerüljön mentésre
-			curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
-
-			// Ha van már cookie file-unk, és van is benne valami, elküldjük a Számlázz.hu-nak
-			if (file_exists($cookie_file) && filesize($cookie_file) > 0) {
-				curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
-			}
-
-			// elküldjük a kérést a Számlázz.hu felé, és eltároljuk a választ
-			$agent_response = curl_exec($ch);
-
-			// kiolvassuk a curl-ból volt-e hiba
-			$http_error = curl_error($ch);
-
-			// ezekben a változókban tároljuk a szétbontott választ
-			$agent_header = '';
+			$http_error = '';
+			$header_array = array();
 			$agent_body = '';
-			$agent_http_code = '';
 
-			// lekérjük a válasz HTTP_CODE-ját, ami ha 200, akkor a http kommunikáció rendben volt
-			// ettől még egyáltalán nem biztos, hogy a számla elkészült
-			$agent_http_code = curl_getinfo($ch,CURLINFO_HTTP_CODE);
+			if(is_wp_error($request)) {
+				$http_error = $request->get_error_message();
+			} else {
+				$this->save_session_cookies($session_option, wp_remote_retrieve_cookies($request));
+				$agent_body = wp_remote_retrieve_body($request);
 
-			// a válasz egy byte kupac, ebből az első "header_size" darab byte lesz a header
-			$header_size = curl_getinfo($ch,CURLINFO_HEADER_SIZE);
-
-			// a header tárolása, ebben lesznek majd a számlaszám, bruttó nettó összegek, errorcode, stb.
-			$agent_header = substr($agent_response, 0, $header_size);
-
-			// a body tárolása, ez lesz a pdf, vagy szöveges üzenet
-			$agent_body = substr( $agent_response, $header_size );
-
-			// a curl már nem kell, lezárjuk
-			curl_close($ch);
-
-			// a header soronként tartalmazza az információkat, egy tömbbe teszük a külön sorokat
-			$header_array = explode("\n", $agent_header);
+				//Keep the headers as "name: value" lines, like the raw response, other functions parse these
+				$header_array[] = 'HTTP/1.1 '.wp_remote_retrieve_response_code($request).' '.wp_remote_retrieve_response_message($request);
+				foreach (wp_remote_retrieve_headers($request) as $name => $values) {
+					foreach ((array)$values as $value) {
+						$header_array[] = $name.': '.$value;
+					}
+				}
+			}
 
 			// Save data locally
 			$this->agent_header = $header_array;
@@ -164,9 +101,6 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 				return $response;
 			}
 
-			//Delete the XML
-			unlink($xmlfile);
-
 			if ($volt_hiba) {
 				$response['error'] = true;
 				$response['agent_error'] = $agent_error;
@@ -187,10 +121,66 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 			return $response;
 		}
 
+		//One session per agent key. The option name uses a hash, so the key itself is not stored again
+		private function get_session_option_name($xml) {
+			$agent_key = '';
+			$xml_file = @simplexml_load_string($xml); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			if($xml_file) {
+				if($xml_file->beallitasok && $xml_file->beallitasok->szamlaagentkulcs) {
+					$agent_key = (string)$xml_file->beallitasok->szamlaagentkulcs;
+				} elseif($xml_file->szamlaagentkulcs) {
+					$agent_key = (string)$xml_file->szamlaagentkulcs;
+				}
+			}
+			return '_wc_szamlazz_session_'.substr(md5($agent_key), 0, 12);
+		}
+
+		private function get_session_cookies($option_name) {
+			$cookies = array();
+			$stored = get_option($option_name, array());
+			if(is_array($stored)) {
+				foreach ($stored as $name => $cookie) {
+					if(empty($cookie['expires']) || $cookie['expires'] > time()) {
+						$cookies[$name] = $cookie['value'];
+					}
+				}
+			}
+			return $cookies;
+		}
+
+		private function save_session_cookies($option_name, $response_cookies) {
+			if(empty($response_cookies)) return;
+
+			$stored = get_option($option_name, array());
+			$stored = is_array($stored) ? $stored : array();
+			foreach ($response_cookies as $cookie) {
+				$stored[$cookie->name] = array('value' => $cookie->value, 'expires' => $cookie->expires);
+			}
+			update_option($option_name, $stored, false);
+		}
+
+		//Cookies used to be stored in files, remove those once
+		public static function remove_legacy_cookie_files() {
+			if(get_option('_wc_szamlazz_legacy_cookies_removed')) return;
+			global $wpdb;
+
+			$files = glob(WC_Szamlazz_Document_Storage::get_base_dir().'szamlazz_cookie_*.txt');
+			foreach ((array)$files as $file) {
+				@unlink($file); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			}
+			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '\\_wc\\_szamlazz\\_cookie\\_name%'");
+			wp_cache_delete('alloptions', 'options');
+
+			update_option('_wc_szamlazz_legacy_cookies_removed', true);
+		}
+
 		public function save_pdf_file($type, $orderId, $content = false, $invoice_name = false) {
 			$pdf_file_path = WC_Szamlazz()->get_pdf_file_path($type, $orderId, $invoice_name);
 
-			//If folder doesn't exists, create it with an empty index.html file
+			//Make sure the main folder is protected
+			WC_Szamlazz_Document_Storage::protect();
+
+			//If the month folder doesn't exists, create it with an empty index.html file
 			$file = array(
 				'base' 		=> $pdf_file_path['file_dir'],
 				'file' 		=> 'index.html',
@@ -226,6 +216,8 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 		}
 
 	}
+
+	add_action( 'admin_init', array( 'WC_Szamlazz_Xml_Generator', 'remove_legacy_cookie_files' ) );
 
 endif;
 

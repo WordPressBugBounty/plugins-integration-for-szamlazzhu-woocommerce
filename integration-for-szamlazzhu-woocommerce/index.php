@@ -3,7 +3,7 @@
  * Plugin Name: Integration for Szamlazz.hu & WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.2.2
+ * Version: 6.3
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -11,7 +11,7 @@
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * WC requires at least: 7.0
- * WC tested up to: 10.7.0
+ * WC tested up to: 11.2.1
  * Requires Plugins: woocommerce
  */
 
@@ -26,25 +26,9 @@ use \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableControll
 
 //Generate stuff on plugin activation
 function wc_szamlazz_activate() {
-	$upload_dir = wp_upload_dir();
-
-	$files = array(
-		array(
-			'base' => $upload_dir['basedir'] . '/wc_szamlazz',
-			'file' => 'index.html',
-			'content' => ''
-		)
-	);
-
-	foreach ( $files as $file ) {
-		if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
-			if ( $file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ) ) {
-				fwrite( $file_handle, $file['content'] );
-				fclose( $file_handle );
-			}
-		}
+	if ( class_exists( 'WC_Szamlazz_Document_Storage' ) ) {
+		WC_Szamlazz_Document_Storage::protect();
 	}
-	
 }
 register_activation_hook( __FILE__, 'wc_szamlazz_activate' );
 
@@ -76,13 +60,16 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.2.1';
+		self::$version = '6.3';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-helpers.php' );
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-conditions.php' );
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-update.php' );
+
+		//Protected document storage and download links
+		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-document-storage.php' );
 
 		//XML generator helper
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-xml-generator.php' );
@@ -622,7 +609,7 @@ class WC_Szamlazz {
 		*/
 
 		//Rounding precision. For HUF orders, we are rounding gross to 0 decimals as required by szamlazz.hu
-		$rounding = ($order->get_currency() == 'HUF') ? 0 : wc_get_price_decimals();
+		$rounding = apply_filters('wc_szamlazz_default_rounding_precision', ($order->get_currency() == 'HUF') ? 0 : wc_get_price_decimals(), $order, $szamla);
 
 		//Order Items
 		$tetelek = $szamla->addChild('tetelek');
@@ -1353,7 +1340,7 @@ class WC_Szamlazz {
 
 			//Get existing pdf invoice link & update order notes
 			if($this->is_invoice_generated($orderId)) {
-				$invoice_pdf_url = $this->generate_download_link($order, 'invoice');
+				$invoice_pdf_url = WC_Szamlazz_Document_Storage::get_archived_download_url($order, 'invoice');
 				$invoice_number = $order->get_meta('_wc_szamlazz_invoice');
 				$order->add_order_note(sprintf(esc_html__('Reverse invoice created successfully. Invoice number: %s. Original invoice: %s', 'wc-szamlazz'), $invoice_void_name, '<a target="_blank" href="'.$invoice_pdf_url.'">'.$invoice_number.'</a>'));
 			} else {
@@ -1786,7 +1773,7 @@ class WC_Szamlazz {
 			$response['messages'][] = esc_html__('Reverse receipt successfully generated.','wc-szamlazz');
 
 			//Get existing pdf receipt link
-			$receipt_pdf_url = $this->generate_download_link($order, 'receipt');
+			$receipt_pdf_url = WC_Szamlazz_Document_Storage::get_archived_download_url($order, 'receipt');
 			$receipt_number = $order->get_meta('_wc_szamlazz_receipt');
 			$order->add_order_note(sprintf(esc_html__('Számlázz.hu reverse receipt successfully generated. Receipt number: %s. Original invoice: %s', 'wc-szamlazz'), $invoice_name, '<a target="_blank" href="'.$receipt_pdf_url.'">'.$receipt_number.'</a>'));
 
@@ -2000,26 +1987,18 @@ class WC_Szamlazz {
 		return ($order->get_meta('_wc_szamlazz_completed'));
 	}
 
-	//Generate download url
+	//Generate download url. With $absolute, it returns the file path instead, for email attachments for example
 	public function generate_download_link( $order, $type = 'invoice', $absolute = false) {
-		if($order) {
-			$pdf_name = '';
-			$pdf_name = $order->get_meta('_wc_szamlazz_'.$type.'_pdf');
+		if(!$order) return false;
 
-			if($pdf_name) {
-				$paths = $this->get_pdf_file_path('invoice', 0);
-				if($absolute) {
-					$pdf_file_url = $paths['basedir'].$pdf_name;
-				} else {
-					$pdf_file_url = $paths['baseurl'].$pdf_name;
-				}
-				return apply_filters('wc_szamlazz_download_link', $pdf_file_url, $order);
-			} else {
-				return false;
-			}
+		if($absolute) {
+			$link = WC_Szamlazz_Document_Storage::get_document_path($order, $type);
 		} else {
-			return false;
+			$link = WC_Szamlazz_Document_Storage::get_download_url($order, $type);
 		}
+
+		if(!$link) return false;
+		return apply_filters('wc_szamlazz_download_link', $link, $order);
 	}
 
 	//Add download icons to order details page
@@ -2437,10 +2416,9 @@ class WC_Szamlazz {
 
 	//Get file path for pdf files
 	public function get_pdf_file_path($type, $order_id, $invoice_name = false) {
-		$upload_dir = wp_upload_dir( null, false );
-		$basedir = $upload_dir['basedir'] . '/wc_szamlazz/';
-		$baseurl = $upload_dir['baseurl'] . '/wc_szamlazz/';
-		$random_file_name = substr(md5(rand()),5);
+		$basedir = WC_Szamlazz_Document_Storage::get_base_dir();
+		$baseurl = WC_Szamlazz_Document_Storage::get_base_url(); //Not used for downloads anymore, kept for compatibility
+		$random_file_name = WC_Szamlazz_Document_Storage::generate_random_string();
 		$pdf_file_name = implode( '-', array( $type, $order_id, $random_file_name ) ).'.pdf';
 		$pdf_file_name = apply_filters('wc_szamlazz_pdf_file_name', $pdf_file_name, $type, $order_id, $invoice_name);
 		$file_dir = $basedir;

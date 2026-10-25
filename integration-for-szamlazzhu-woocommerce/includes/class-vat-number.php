@@ -119,6 +119,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			//VAT Exempt for EU VAT Number orders
 			if(WC_Szamlazz()->get_option('eu_vat_exempt', 'yes') == 'yes') {
 				add_action( 'woocommerce_checkout_update_order_review', array( __CLASS__, 'vat_exempt_eu_vat'), 11 );
+				add_action( 'woocommerce_checkout_process', array( __CLASS__, 'vat_exempt_eu_vat_save' ), 11 );
 			}
 
 			//B2B only option
@@ -671,6 +672,29 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 				$eu_countries = WC()->countries->get_european_union_countries('eu_vat');
 
 				//Check if company name specified
+				if(
+					apply_filters( 'wc_szamlazz_should_set_eu_vat_exempt', (isset($output['billing_company']) &&
+					isset($output['billing_country']) &&
+					!empty($output['billing_company']) &&
+					in_array($output['billing_country'], $eu_countries) &&
+					$output['billing_country'] != 'HU' &&
+					isset($output['wc_szamlazz_adoszam']) &&
+					self::validate_eu_vat_format($output['wc_szamlazz_adoszam'])), $output )
+				) {
+					WC()->customer->set_is_vat_exempt(true);
+				}
+			}
+		}
+
+		public static function vat_exempt_eu_vat_save() {
+			if(WC_Szamlazz()->get_option('vat_number_eu', 'no') == 'yes') {
+				WC()->customer->set_is_vat_exempt(false);
+
+				//Read submitted checkout fields
+				$output = $_POST;
+				$eu_countries = WC()->countries->get_european_union_countries('eu_vat');
+
+				//Re-apply the EU VAT exemption at order placement, mirroring vat_exempt_eu_vat
 				if(
 					apply_filters( 'wc_szamlazz_should_set_eu_vat_exempt', (isset($output['billing_company']) &&
 					isset($output['billing_country']) &&

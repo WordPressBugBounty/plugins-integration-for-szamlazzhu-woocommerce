@@ -2,9 +2,9 @@
 Contributors: passatgt
 Tags: szamlazz.hu, szamlazz, woocommerce, szamlazo, magyar
 Requires at least: 6.5
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 6.2.2
+Stable tag: 6.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,6 +128,21 @@ A számlaértesítő teszt módban nem a vásárló email címére érkezik, han
 8. Számlakészítés doboz a rendelés oldalon
 
 == Changelog ==
+
+6.3
+* Biztonságosabb PDF tárolás és hozzáférés: új PHP class kezeli(WC_Szamlazz_Document_Storage), elérhető filterek és actionok: wc_szamlazz_can_download_document, wc_szamlazz_download_file_name, wc_szamlazz_before_document_download
+* cURL helyett wp_remote_post(egyszerűbb, biztonságosabb, filterezhető)
+* Hiba javítása rendelés törlésekor
+* EU adószám ellenőrzés javítás blokkos pénztár oldalon
+* Kompatibilitás megjelölése legújabb WP és Woo verzióval
+
+6.2.4
+* Nyomtatás hibajavítás Safari-val
+* Kompatibilitás megjelölése legújabb WP és Woo verzióval
+* A wc_szamlazz_default_rounding_precision filterrel módosítható a számoláshoz használt tizedesjegyek száma
+
+6.2.3
+* EU adószám javítások
 
 6.2.2
 * EU adószám validálás fejlesztések
