@@ -26,8 +26,8 @@ foreach ($shipping_methods as $key => $method) {
 				<thead>
 					<tr>
 						<th></th>
-						<th colspan="4" class="border-right"><?php _e('For Hungarian billing address', 'wc-szamlazz'); ?></th>
-						<th colspan="4"><?php _e('For international billing address', 'wc-szamlazz'); ?></th>
+						<th colspan="4" class="border-right"><?php esc_html_e('For Hungarian billing address', 'wc-szamlazz'); ?></th>
+						<th colspan="4"><?php esc_html_e('For international billing address', 'wc-szamlazz'); ?></th>
 					</tr>
 				</thead>
 				<thead>
@@ -67,15 +67,15 @@ foreach ($shipping_methods as $key => $method) {
 						}
 						?>
 						<tr>
-							<td><strong style="padding-left:10px;"><?php echo $category->name; ?></strong></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_fokonyvi_szam_hu]" value="<?php echo $value_afa_fokonyvi_szam_hu; ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][fokonyvi_szam_hu]" value="<?php echo $value_fokonyvi_szam_hu; ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][gazd_esem_hu]" value="<?php echo $value_gazd_esem_hu; ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_gazd_esem_hu]" value="<?php echo $value_afa_gazd_esem_hu; ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_fokonyvi_szam_kulfold]" value="<?php echo $value_afa_fokonyvi_szam_kulfold; ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][fokonyvi_szam_kulfold]" value="<?php echo $value_fokonyvi_szam_kulfold; ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][gazd_esem_kulfold]" value="<?php echo $value_gazd_esem_kulfold; ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_gazd_esem_kulfold]" value="<?php echo $value_afa_gazd_esem_kulfold; ?>" /></td>
+							<td><strong style="padding-left:10px;"><?php echo esc_html( $category->name ); ?></strong></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_fokonyvi_szam_hu]" value="<?php echo esc_attr( $value_afa_fokonyvi_szam_hu ); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][fokonyvi_szam_hu]" value="<?php echo esc_attr( $value_fokonyvi_szam_hu ); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][gazd_esem_hu]" value="<?php echo esc_attr( $value_gazd_esem_hu ); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_gazd_esem_hu]" value="<?php echo esc_attr( $value_afa_gazd_esem_hu ); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_fokonyvi_szam_kulfold]" value="<?php echo esc_attr( $value_afa_fokonyvi_szam_kulfold ); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][fokonyvi_szam_kulfold]" value="<?php echo esc_attr( $value_fokonyvi_szam_kulfold ); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][gazd_esem_kulfold]" value="<?php echo esc_attr( $value_gazd_esem_kulfold ); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_accounting_details[<?php echo esc_attr( $category->term_id ); ?>][afa_gazd_esem_kulfold]" value="<?php echo esc_attr( $value_afa_gazd_esem_kulfold ); ?>" /></td>
 						</tr>
 					<?php endforeach ?>
 				</tbody>

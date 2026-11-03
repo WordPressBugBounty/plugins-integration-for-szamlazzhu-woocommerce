@@ -24,25 +24,31 @@ if ( ! class_exists( 'WC_Szamlazz_Invoice_Preview', false ) ) :
 		}
 
 		public static function load_preview_template() {
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only preview page, nothing is saved. Access is limited to users who can edit orders.
 			if(!isset( $_GET['wc_szamlazz_preview'] )) {
 				return;
 			}
 
+			//Check for permissions before doing anything
+			if ( ! current_user_can( 'edit_shop_orders' ) ) {
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wc-szamlazz' ) );
+			}
+
 			//Get order info
-			$order_id = sanitize_text_field($_GET['wc_szamlazz_preview']);
+			$order_id = absint( wp_unslash( $_GET['wc_szamlazz_preview'] ) );
 			$options = array('preview' => true);
 
 			if(isset($_GET['deadline']) && isset($_GET['completed'])) {
-				$options['deadline'] = intval($_GET['deadline']);
-				$options['completed'] = sanitize_text_field($_GET['completed']);
+				$options['deadline'] = ( isset( $_GET['deadline'] ) ? intval( $_GET['deadline'] ) : 0 );
+				$options['completed'] = ( isset( $_GET['completed'] ) ? sanitize_text_field( wp_unslash( $_GET['completed'] ) ) : '' );
 			}
 
 			if(isset($_GET['note']) && !empty($_GET['note'])) {
-				$options['note'] = sanitize_textarea_field($_GET['note']);
+				$options['note'] = ( isset( $_GET['note'] ) ? sanitize_textarea_field( wp_unslash( $_GET['note'] ) ) : '' );
 			}
 
 			if(isset($_GET['account'])) {
-				$options['account'] = sanitize_text_field($_GET['account']);
+				$options['account'] = ( isset( $_GET['account'] ) ? sanitize_text_field( wp_unslash( $_GET['account'] ) ) : '' );
 			}
 
 			//Get invoice XML as json
@@ -53,6 +59,9 @@ if ( ! class_exists( 'WC_Szamlazz_Invoice_Preview', false ) ) :
 				$xml = simplexml_load_string($invoice_xml['xml']);
 				$json = json_encode($xml);
 				$invoice = json_decode($json,TRUE);
+				if(is_array($invoice)) {
+					$invoice = self::normalize_empty_nodes($invoice);
+				}
 			}
 
 			//If order and invoice found, show template
@@ -62,6 +71,17 @@ if ( ! class_exists( 'WC_Szamlazz_Invoice_Preview', false ) ) :
 			} else {
 				return;
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		}
+
+		//Empty XML elements are decoded as empty arrays, turn them into empty strings so they can be printed safely
+		public static function normalize_empty_nodes( $data ) {
+			foreach ( $data as $key => $value ) {
+				if ( is_array( $value ) ) {
+					$data[ $key ] = empty( $value ) ? '' : self::normalize_empty_nodes( $value );
+				}
+			}
+			return $data;
 		}
 
 	}

@@ -7,7 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
-<p><?php printf( esc_html__( 'The invoice for order %s could not be created automatically for some reason. You will see the exact error in the order notes.', 'wc-szamlazz' ), $order->get_order_number() ); ?></p>
+<?php /* translators: %s: Order number */ ?>
+<p><?php printf( esc_html__( 'The invoice for order %s could not be created automatically for some reason. You will see the exact error in the order notes.', 'wc-szamlazz' ), esc_html( $order->get_order_number() ) ); ?></p>
 
 <p><?php esc_html_e( 'As a reminder, here are your order details:', 'wc-szamlazz' ); ?></p>
 

@@ -24,6 +24,7 @@ $trigger_types = array(
 
 //Merge with order status settings
 foreach (self::get_order_statuses() as $key => $label) {
+	/* translators: %1$s: Order status name */
 	$trigger_types[$key] = sprintf( esc_html__( 'after %1$s status', 'wc-szamlazz' ), $label);
 }
 
@@ -81,7 +82,7 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('automations');
 								<input type="checkbox" data-name="wc_szamlazz_automations[X][condition_enabled]" <?php checked( isset($automation['conditional']) && $automation['conditional'] ); ?> class="condition" value="yes">
 								<span><?php esc_html_e('Conditional logic', 'wc-szamlazz'); ?></span>
 							</label>
-							<a href="#" class="delete-automation"><?php _e('delete', 'wc-szamlazz'); ?></a>
+							<a href="#" class="delete-automation"><?php esc_html_e('delete', 'wc-szamlazz'); ?></a>
 						</div>
 						<div class="wc-szamlazz-settings-automation-options">
 							<div class="wc-szamlazz-settings-automation-option">
@@ -116,12 +117,12 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('automations');
 						</div>
 						<div class="wc-szamlazz-settings-automation-if" <?php if(!isset($automation['conditional']) || !$automation['conditional']): ?>style="display:none"<?php endif; ?>>
 							<div class="wc-szamlazz-settings-automation-if-header">
-								<span><?php _e('Run this automation, if', 'wc-szamlazz'); ?></span>
+								<span><?php esc_html_e('Run this automation, if', 'wc-szamlazz'); ?></span>
 								<select data-name="wc_szamlazz_automations[X][logic]">
-									<option value="and" <?php if(isset($automation['logic'])) selected( $automation['logic'], 'and' ); ?>><?php _e('All', 'wc-szamlazz'); ?></option>
-									<option value="or" <?php if(isset($automation['logic'])) selected( $automation['logic'], 'or' ); ?>><?php _e('One', 'wc-szamlazz'); ?></option>
+									<option value="and" <?php if(isset($automation['logic'])) selected( $automation['logic'], 'and' ); ?>><?php esc_html_e('All', 'wc-szamlazz'); ?></option>
+									<option value="or" <?php if(isset($automation['logic'])) selected( $automation['logic'], 'or' ); ?>><?php esc_html_e('One', 'wc-szamlazz'); ?></option>
 								</select>
-								<span><?php _e('of the following match', 'wc-szamlazz'); ?></span>
+								<span><?php esc_html_e('of the following match', 'wc-szamlazz'); ?></span>
 							</div>
 							<ul class="wc-szamlazz-settings-automation-if-options conditions" <?php if(isset($automation['conditions'])): ?>data-options="<?php echo esc_attr(json_encode($automation['conditions'])); ?>"<?php endif; ?>></ul>
 						</div>
@@ -130,7 +131,7 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('automations');
 			<?php endif; ?>
 		</div>
 		<div class="wc-szamlazz-settings-automation-add">
-			<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php _e('Add new automation', 'wc-szamlazz'); ?></span></a>
+			<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php esc_html_e('Add new automation', 'wc-szamlazz'); ?></span></a>
 		</div>
 		<p class="description"><?php echo esc_html($data['desc']); ?></p>
 	</td>
@@ -165,7 +166,7 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('automations');
 					<input type="checkbox" data-name="wc_szamlazz_automations[X][condition_enabled]" class="condition" value="yes">
 					<span><?php esc_html_e('Conditional logic', 'wc-szamlazz'); ?></span>
 				</label>
-				<a href="#" class="delete-automation"><?php _e('delete', 'wc-szamlazz'); ?></a>
+				<a href="#" class="delete-automation"><?php esc_html_e('delete', 'wc-szamlazz'); ?></a>
 			</div>
 			<div class="wc-szamlazz-settings-automation-options">
 				<div class="wc-szamlazz-settings-automation-option">
@@ -199,16 +200,16 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('automations');
 			</div>
 			<div class="wc-szamlazz-settings-automation-if" style="display:none">
 				<div class="wc-szamlazz-settings-automation-if-header">
-					<span><?php _e('Run this automation, if', 'wc-szamlazz'); ?></span>
+					<span><?php esc_html_e('Run this automation, if', 'wc-szamlazz'); ?></span>
 					<select data-name="wc_szamlazz_automations[X][logic]">
-						<option value="and"><?php _e('All', 'wc-szamlazz'); ?></option>
-						<option value="or"><?php _e('One', 'wc-szamlazz'); ?></option>
+						<option value="and"><?php esc_html_e('All', 'wc-szamlazz'); ?></option>
+						<option value="or"><?php esc_html_e('One', 'wc-szamlazz'); ?></option>
 					</select>
-					<span><?php _e('of the following match', 'wc-szamlazz'); ?></span>
+					<span><?php esc_html_e('of the following match', 'wc-szamlazz'); ?></span>
 				</div>
 				<ul class="wc-szamlazz-settings-automation-if-options conditions"></ul>
 			</div>
 		</div>
 </script>
 
-<?php echo WC_Szamlazz_Conditions::get_sample_row('automations'); ?>
+<?php WC_Szamlazz_Conditions::get_sample_row('automations', true); ?>

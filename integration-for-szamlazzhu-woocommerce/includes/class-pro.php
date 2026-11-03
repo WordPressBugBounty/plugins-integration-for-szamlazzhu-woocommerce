@@ -29,7 +29,7 @@ if ( ! class_exists( 'WC_Szamlazz_Pro', false ) ) :
 		}
 
 		public static function is_pro_enabled() {
-			if ((isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], ".local") !== false)){
+			if ((isset($_SERVER['HTTP_HOST']) && strpos(sanitize_text_field(wp_unslash($_SERVER['HTTP_HOST'])), ".local") !== false)){
 				return true;
 			}
 			return get_option('_'.self::$id.'_pro_enabled', false);
@@ -46,12 +46,12 @@ if ( ! class_exists( 'WC_Szamlazz_Pro', false ) ) :
 		public static function pro_activate($pro_key = false) {
 			check_ajax_referer( 'wc-szamlazz-license-check', 'nonce' );
 			if ( !current_user_can( 'manage_woocommerce' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
 
 			//Get submitted key
 			if(!$pro_key) {
-				$pro_key = sanitize_text_field($_POST['key']);
+				$pro_key = ( isset( $_POST['key'] ) ? sanitize_text_field( wp_unslash( $_POST['key'] ) ) : '' );
 			}
 
 			//Execute request
@@ -107,7 +107,7 @@ if ( ! class_exists( 'WC_Szamlazz_Pro', false ) ) :
 		public static function pro_deactivate() {
 			check_ajax_referer( 'wc-szamlazz-license-check', 'nonce' );
 			if ( !current_user_can( 'manage_woocommerce' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
 
 			//Get submitted key
@@ -137,7 +137,7 @@ if ( ! class_exists( 'WC_Szamlazz_Pro', false ) ) :
 		public static function pro_validate() {
 			check_ajax_referer( 'wc-szamlazz-license-check', 'nonce' );
 			if ( !current_user_can( 'manage_woocommerce' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
 
 			//Get submitted key

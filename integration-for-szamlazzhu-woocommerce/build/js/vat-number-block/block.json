@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wc-szamlazz/vat-number-block",
   "version": "2.0.0",
   "title": "Számlázz.hu VAT Number Field",

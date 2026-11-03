@@ -36,7 +36,7 @@ if ( ! class_exists( 'WC_Szamlazz_Background_Generator', false ) ) :
 		public static function background_generator_status() {
 			check_ajax_referer( 'wc-szamlazz-bg-generator', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
 			$response = array();
 			if(self::is_async_generate_running()) {
@@ -52,7 +52,7 @@ if ( ! class_exists( 'WC_Szamlazz_Background_Generator', false ) ) :
 		public static function background_generator_stop() {
 			check_ajax_referer( 'wc-szamlazz-bg-generator', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
 			WC()->queue()->cancel_all('wc_szamlazz_generate_document_async');
 			wp_send_json_success();
@@ -91,7 +91,7 @@ if ( ! class_exists( 'WC_Szamlazz_Background_Generator', false ) ) :
 					array(
 						'parent' => 'wc-szamlazz-bg-generate-loading',
 						'id' => 'wc-szamlazz-bg-generate-loading-msg',
-						'title' => '<div class="loading"><span>'.$text.'</span> <a href="#" id="wc-szamlazz-bg-generate-stop" data-nonce="'.wp_create_nonce( 'wc-szamlazz-bg-generator' ).'">'.$text_stop.'</a></div><div class="finished"><span>'.$text2.'</span> <a href="#" id="wc-szamlazz-bg-generate-refresh">'.$text_refresh.'</a></div>',
+						'title' => '<div class="loading"><span>'.$text.'</span> <a href="#" id="wc-szamlazz-bg-generate-stop" data-nonce="'.esc_attr( wp_create_nonce( 'wc-szamlazz-bg-generator' ) ).'">'.$text_stop.'</a></div><div class="finished"><span>'.$text2.'</span> <a href="#" id="wc-szamlazz-bg-generate-refresh">'.$text_refresh.'</a></div>',
 						'href' => '',
 					)
 				);

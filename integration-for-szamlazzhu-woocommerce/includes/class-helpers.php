@@ -238,8 +238,8 @@ if ( ! class_exists( 'WC_Szamlazz_Helpers', false ) ) :
 			$order_details = WC_Szamlazz_Conditions::get_order_details($order, 'vat_overrides');
 
 			//When manually creating invoices and the selected account is different
-			if(isset( $_POST['action']) && $_POST['action'] == 'wc_szamlazz_generate_invoice' && isset($_POST['account'])) {
-				$order_details['account'] = sanitize_text_field($_POST['account']);
+			if(WC_Szamlazz()->get_manual_account()) {
+				$order_details['account'] = WC_Szamlazz()->get_manual_account();
 			}
 
 			//If its a product item, check for category and attribute

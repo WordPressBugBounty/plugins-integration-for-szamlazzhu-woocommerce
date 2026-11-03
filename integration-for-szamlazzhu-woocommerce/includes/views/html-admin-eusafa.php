@@ -21,12 +21,12 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('eusafas');
 					<div class="wc-szamlazz-settings-eusafa wc-szamlazz-settings-repeat-item">
 						<div class="wc-szamlazz-settings-eusafa-title">
 							<span class="text"><?php esc_html_e('Disable data disclosure towards NTCAs', 'wc-szamlazz'); ?></span>
-							<a href="#" class="delete-eusafa"><?php _e('delete', 'wc-szamlazz'); ?></a>
+							<a href="#" class="delete-eusafa"><?php esc_html_e('delete', 'wc-szamlazz'); ?></a>
 						</div>
 						<div class="wc-szamlazz-settings-eusafa-if">
 							<label>
 								<input type="checkbox" data-name="wc_szamlazz_eusafas[X][condition_enabled]" <?php checked( $automation['conditional'] ); ?> class="condition" value="yes">
-								<span><?php _e('Based on the following conditions:', 'wc-szamlazz'); ?></span>
+								<span><?php esc_html_e('Based on the following conditions:', 'wc-szamlazz'); ?></span>
 							</label>
 							<ul class="wc-szamlazz-settings-eusafa-if-options conditions" <?php if(!$automation['conditional']): ?>style="display:none"<?php endif; ?> <?php if(isset($automation['conditions'])): ?>data-options="<?php echo esc_attr(json_encode($automation['conditions'])); ?>"<?php endif; ?>></ul>
 						</div>
@@ -35,7 +35,7 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('eusafas');
 			<?php endif; ?>
 		</div>
 		<div class="wc-szamlazz-settings-eusafa-add">
-			<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php _e('Add new logic', 'wc-szamlazz'); ?></span></a>
+			<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php esc_html_e('Add new logic', 'wc-szamlazz'); ?></span></a>
 		</div>
 		<p class="description"><?php echo esc_html($data['desc']); ?></p>
 	</td>
@@ -45,16 +45,16 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('eusafas');
 	<div class="wc-szamlazz-settings-eusafa wc-szamlazz-settings-repeat-item">
 		<div class="wc-szamlazz-settings-eusafa-title">
 			<span class="text"><?php esc_html_e('Disable data disclosure towards NTCAs', 'wc-szamlazz'); ?></span>
-			<a href="#" class="delete-eusafa"><?php _e('delete', 'wc-szamlazz'); ?></a>
+			<a href="#" class="delete-eusafa"><?php esc_html_e('delete', 'wc-szamlazz'); ?></a>
 		</div>
 		<div class="wc-szamlazz-settings-eusafa-if">
 			<label>
 				<input type="checkbox" data-name="wc_szamlazz_eusafas[X][condition_enabled]" class="condition" value="yes">
-				<span><?php _e('Based on the following conditions:', 'wc-szamlazz'); ?></span>
+				<span><?php esc_html_e('Based on the following conditions:', 'wc-szamlazz'); ?></span>
 			</label>
 			<ul class="wc-szamlazz-settings-eusafa-if-options conditions" style="display:none"></ul>
 		</div>
 	</div>
 </script>
 
-<?php echo WC_Szamlazz_Conditions::get_sample_row('eusafas'); ?>
+<?php WC_Szamlazz_Conditions::get_sample_row('eusafas', true); ?>

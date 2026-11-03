@@ -75,6 +75,9 @@ class WC_Szamlazz_VAT_Number_Block_Extend_Store_Endpoint {
 			'callback'  => function( $data ) {
 				if ( isset( $data['vat_number'] ) ) {
 
+					//Clean up the VAT number before it is validated and stored in the session
+					$data['vat_number'] = WC_Szamlazz_Vat_Number_Field::sanitize_vat_number( $data['vat_number'] );
+
 					//Reset vat exemption
 					WC()->customer->set_is_vat_exempt(false);
 
@@ -97,6 +100,9 @@ class WC_Szamlazz_VAT_Number_Block_Extend_Store_Endpoint {
 					}
 
 					//Save in session
+					if ( ! is_array( $vat_number_data ) ) {
+						$vat_number_data = array();
+					}
 					$vat_number_data['vat_number'] = $data['vat_number'];
 					$vat_number_data['customer_type'] = 'company';
 					WC()->session->set( 'vat-number-data', $vat_number_data );

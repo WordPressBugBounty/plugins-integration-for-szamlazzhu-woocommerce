@@ -81,7 +81,7 @@ class WC_Szamlazz_Woo_Subscriptions_Compatibility {
 			return;
 		}
 
-		$vat_number = isset( $_POST['wc_szamlazz_adoszam'] ) ? wc_clean( wp_unslash( $_POST['wc_szamlazz_adoszam'] ) ) : '';
+		$vat_number = isset( $_POST['wc_szamlazz_adoszam'] ) ? sanitize_text_field( wp_unslash( $_POST['wc_szamlazz_adoszam'] ) ) : '';
 
 		if ( isset( $_POST['update_all_subscriptions_addresses'] )) {
 			$users_subscriptions = wcs_get_users_subscriptions( $user_id );

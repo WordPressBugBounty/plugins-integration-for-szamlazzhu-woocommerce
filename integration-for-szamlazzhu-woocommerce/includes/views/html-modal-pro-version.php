@@ -11,9 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<header class="wc-backbone-modal-header">
 					<h1>
 						<?php if(WC_Szamlazz_Pro::is_pro_enabled()): ?>
-							<span class="dashicons dashicons-yes-alt"></span> <?php _e('The PRO version is active', 'wc-szamlazz'); ?>
+							<span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('The PRO version is active', 'wc-szamlazz'); ?>
 						<?php else: ?>
-							<span class="dashicons dashicons-warning"></span> <?php _e('The PRO version is expired', 'wc-szamlazz'); ?>
+							<span class="dashicons dashicons-warning"></span> <?php esc_html_e('The PRO version is expired', 'wc-szamlazz'); ?>
 						<?php endif; ?>
 					</h1>
 					<button class="modal-close modal-close-link dashicons dashicons-no-alt">
@@ -23,23 +23,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php if(WC_Szamlazz_Pro::is_pro_enabled() || (!WC_Szamlazz_Pro::is_pro_enabled() && WC_Szamlazz_Pro::get_license_key())): ?>
 					<article class="wc-szamlazz-modal-pro-version-content wc-szamlazz-settings-widget-pro-<?php if(WC_Szamlazz_Pro::is_pro_enabled()): ?>state-active<?php else: ?>state-expired<?php endif; ?>">
 						<p>
-							<span class="wc-szamlazz-settings-widget-pro-label"><?php _e('License key', 'wc-szamlazz'); ?></span><br>
+							<span class="wc-szamlazz-settings-widget-pro-label"><?php esc_html_e('License key', 'wc-szamlazz'); ?></span><br>
 							<?php echo esc_html(WC_Szamlazz_Pro::get_license_key()); ?>
 						</p>
 						<?php $license = WC_Szamlazz_Pro::get_license_key_meta(); ?>
 						<?php if(isset($license['type'])): ?>
 						<p class="single-license-info">
-							<span class="wc-szamlazz-settings-widget-pro-label"><?php _e('License type', 'wc-szamlazz'); ?></span><br>
+							<span class="wc-szamlazz-settings-widget-pro-label"><?php esc_html_e('License type', 'wc-szamlazz'); ?></span><br>
 							<?php if ( $license['type'] == 'unlimited' ): ?>
-								<?php _e( 'Unlimited', 'wc-szamlazz' ); ?>
+								<?php esc_html_e( 'Unlimited', 'wc-szamlazz' ); ?>
 							<?php else: ?>
-								<?php _e( 'Subscription', 'wc-szamlazz' ); ?>
+								<?php esc_html_e( 'Subscription', 'wc-szamlazz' ); ?>
 							<?php endif; ?>
 						</p>
 						<?php endif; ?>
 						<?php if(isset($license['next_payment'])): ?>
 						<p class="single-license-info">
-							<span class="wc-szamlazz-settings-widget-pro-label"><?php _e('Next payment', 'wc-szamlazz'); ?></span><br>
+							<span class="wc-szamlazz-settings-widget-pro-label"><?php esc_html_e('Next payment', 'wc-szamlazz'); ?></span><br>
 							<?php echo esc_html($license['next_payment']); ?>
 						</p>
 						<?php endif; ?>

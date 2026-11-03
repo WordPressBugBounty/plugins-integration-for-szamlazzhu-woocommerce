@@ -9,16 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
     <?php if(WC_Szamlazz_Pro::is_pro_enabled() || (!WC_Szamlazz_Pro::is_pro_enabled() && WC_Szamlazz_Pro::get_license_key())): ?>
         <?php if(WC_Szamlazz_Pro::is_pro_enabled()): ?>
             <a href="#" class="wc-szamlazz-settings-submenu-pro button pro-active">
-                <span class="dashicons dashicons-yes-alt"></span> <?php _e('The PRO version is active', 'wc-szamlazz'); ?>
+                <span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('The PRO version is active', 'wc-szamlazz'); ?>
             </a>
         <?php else: ?>
             <a href="#" class="wc-szamlazz-settings-submenu-pro button expired">
-                <span class="dashicons dashicons-warning"></span> <?php _e('The PRO version is expired', 'wc-szamlazz'); ?>
+                <span class="dashicons dashicons-warning"></span> <?php esc_html_e('The PRO version is expired', 'wc-szamlazz'); ?>
             </a>
         <?php endif; ?>
     <?php else: ?>
         <a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=wc-szamlazz&section=automations' ) ); ?>" class="wc-szamlazz-settings-submenu-pro-setup button">
-            <span class="dashicons dashicons-cart"></span> <?php _e('Setup PRO version', 'wc-szamlazz'); ?>
+            <span class="dashicons dashicons-cart"></span> <?php esc_html_e('Setup PRO version', 'wc-szamlazz'); ?>
         </a>
     <?php endif; ?>
     <a class="button" href="https://visztpeter.me/dokumentacio/" target="_blank"><span class="dashicons dashicons-editor-help"></span> <?php esc_html_e( 'Documentation', 'wc-szamlazz' ); ?></a>

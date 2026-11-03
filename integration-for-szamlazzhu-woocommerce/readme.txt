@@ -1,308 +1,314 @@
-=== Számlázz.hu integráció WooCommerce-hez ===
+=== Integration for Szamlazz.hu and WooCommerce ===
 Contributors: passatgt
 Tags: szamlazz.hu, szamlazz, woocommerce, szamlazo, magyar
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 6.3
+Stable tag: 6.3.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Számlázz.hu összeköttetés WooCommerce-hez.
+Connect WooCommerce with Számlázz.hu, the Hungarian online invoicing service, and create invoices for your orders.
 
 == Description ==
 
-> **PRO verzió**
-> A bővítménynek elérhető a PRO verziója évi 30 €-tól, amelyet itt vásárolhatsz meg: [https://visztpeter.me](https://visztpeter.me/woocommerce-szamlazz-hu/)
-> A licensz kulcs egy weboldalon aktiválható, 1 évig érvényes és természetesen email-es support is jár hozzá beállításhoz, testreszabáshoz, konfiguráláshoz.
-> A vásárlással támogathatod a fejlesztést akkor is, ha esetleg a PRO verzióban elérhető funkciókra nincs is szükséged.
+> **PRO version**
+> A PRO version of the plugin is available from €30 per year, which you can buy here: [https://visztpeter.me](https://visztpeter.me/woocommerce-szamlazz-hu/)
+> The license key can be activated on one website and is valid for 1 year. It includes e-mail support for setup, customization and configuration.
+> Buying it also supports the development of the plugin, even if you don't need the features of the PRO version.
 
-= Funkciók =
+= Features =
 
-* **Számlakészítés**
-Minden rendelésnél egy kattintással tudsz számlát létrehozni:
- * A generált számlát eltárolja a rendelés adataiban.
- * A generált számlát letölti saját weboldalra is, egy véletlenszerű fájlnéven tárolja a wp-content/uploads/wc_szamlazz mappában
- * Fizetési határidő és megjegyzés írható a számlákhoz
- * Kuponokkal is működik, a számlán negatív tételként fog megjelenni
- * Szállítást is ráírja a számlára
- * A PDF fájl letölthető egyből a Rendelések táblázatból is, a műveletek, vagy a külön bekapcsolható Számlázz.hu oszlopból
+* **Invoice generation**
+Create an invoice for any order with one click:
+ * The generated invoice is saved in the order details.
+ * The invoice PDF is also downloaded to your website and stored with a random file name in the wp-content/uploads/wc_szamlazz folder.
+ * You can set a payment deadline and a note for the invoices.
+ * Works with coupons, they appear as negative line items on the invoice.
+ * Shipping is added to the invoice too.
+ * The PDF can be downloaded right from the Orders table, using the order actions or the optional Számlázz.hu column.
 
-* **Díjbekérő, előlegszámla, szállítólevél, sztornó számla**
-A Számlázz.hu által támogatott összes dokumentumtípust létre tudod hozni a rendeléseidhez.
+* **Proforma, deposit and reverse invoices, delivery notes**
+You can create every document type supported by Számlázz.hu for your orders.
 
-* **Csoportos műveletek**
-A rendeléskezelőben a csportos műveletekkel tudsz számlát létrehozni és egyben letölteni, vagy nyomtatni a számlákat.
+* **Bulk actions**
+Use the bulk actions on the Orders page to create invoices and to download or print them all at once.
 
-* **Adószám mező**
-A számlázási adatok között megjelenjenik egy új adószám mező. Az adószámot a rendszer validálja, eltárolja, a vásárlónak küldött emailben és a rendelés adatai között is megjelenik.
+* **VAT number field**
+A new VAT number field is added to the billing details. The VAT number is validated, saved, and shown in the e-mail sent to the customer and in the order details.
 
-* **Naplózás**
-A rendelés jegyzeteiben látod, hogy pontosan mikor és milyen dokumentumot hoztál létre.
+* **Logging**
+The order notes show exactly when and which document was created.
 
-* **Automata fizetettnek jelölés**
-Beállítható, melyik fizetési módoknál hozzon létre már fizetett számlát.
+* **Mark as paid automatically**
+Choose the payment methods for which the invoice should be created as already paid.
 
-* **Nemzetközi számla**
-Ha külföldre értékesítesz például euróban, lehetőség van a számla nyelv átállítására és az aktuális MNB árfolyam feltüntetésére a számlán. Kompatibilis WPML-el és Polylang-al is.
+* **International invoices**
+If you sell abroad, for example in euros, you can change the language of the invoice and show the current exchange rate of the Hungarian National Bank (MNB) on it. Compatible with WPML and Polylang.
 
-* **És még sok más**
-Papír és elektronikus számla állítás, áfakulcs állítás, számlaszám előtag módosítása, letölthető számlák a vásárló profiljában, hibás számlakészítésről e-mailes értesítő stb...
+* **And much more**
+Paper and electronic invoices, VAT rate settings, invoice number prefix, invoices downloadable from the customer's account, e-mail notification about failed invoice generation and more.
 
-= PRO verzióban elérhető =
+= Available in the PRO version =
 
-* **Automata számlakészítés**
-Lehetőség van számlát és egyéb dokumentumokat(díjbekérő, előlegszámla, szállítólevél, sztornó számla) automatikusan a rendelés állapota szerint létrehozni, különböző feltételek alapján.
+* **Automatic invoice generation**
+Create invoices and other documents (proforma and deposit invoices, delivery notes, reverse invoices) automatically based on the order status, with custom conditions.
 
-* **Számlaértesítő**
-Az ingyenes verzióban a számlázz.hu küldi ki a számlaértesítőt a vásárlónak. A PRO verzióban csatolni lehet a WooCommerce által küldött emailekhez, így nem fontos használni a Számlázz.hu számlaértesítőjét és a vásárlód egyel kevesebb emailt fog kapni.
+* **Invoice notification**
+In the free version, Számlázz.hu sends the invoice notification to the customer. In the PRO version, the invoice can be attached to the e-mails sent by WooCommerce, so you don't need to use the Számlázz.hu invoice notification and your customer gets one less e-mail.
 
-* **Banki átutalások automata kezelése**
-A Számlázz.hu-s Autokassza funkció segítségével a díjbekérő kifizetettségéről értesítést kaphat a webáruház, ami után automatán teljesítettnek jelölheti a számlát.
+* **Automatic handling of bank transfers**
+With the Számlázz.hu Autokassza feature, your store can be notified when a proforma invoice is paid, and the invoice can be marked as paid automatically.
 
-* **Speciális áfakulcsok használata**
-Különböző feltételek alapján beállíthatod, hogy bizonyos termékek milyen speciális áfakulccsal jelenjenek meg a számlán(EUKT, EUT, EUFADE stb...).
+* **Special VAT rates**
+Set special VAT rates (EUKT, EUT, EUFADE, etc.) for certain products on the invoice, based on custom conditions.
 
-* **Csoportos műveletek**
-A dokumentumok létrehozása művelettel nem csak számlát, hanem díjbekérőt, előlegszámlát, szállítólevelet és sztornó számlát is készíthetsz.
+* **Bulk actions**
+With the bulk document generation action you can create not just invoices, but proforma and deposit invoices, delivery notes and reverse invoices too.
 
-* **Adatok felülírása**
-Feltételekkel módosíthatod a számlán megjelenő előtagot és bankszámlaszám adatokat.
+* **Override invoice data**
+Use conditions to change the prefix and bank account details shown on the invoice.
 
-* **E-Nyugta**
-Ha elektronikus termékeket, jegyeket, letölthető tartalmakat értékesítesz, nem fontos bekérni a vásárló számlázási címét, elég csak az email címét, a bővítmény pedig elektronikus nyugtát készít.
+* **E-Receipt**
+If you sell electronic products, tickets or downloadable content, you don't need to ask for the customer's billing address, just the e-mail address, and the plugin creates an electronic receipt.
 
-* **Cégadatok kitöltése automatán**
-Az adószám mezőt a Számlázz.hu API-val validálja és a számlázási adatokat automatikusan kitölti.
+* **Fill in company details automatically**
+The VAT number field is validated with the Számlázz.hu API and the billing details are filled in automatically.
 
-* **EU adószám**
-Az adószám mező elfogad EU adószámot is és automatikusan nettósítja a rendelést, ha sikerült validálni(a validáció a VIES API-n keresztül megy).
+* **EU VAT number**
+The VAT number field accepts EU VAT numbers too, and removes VAT from the order automatically if the number is valid (validated with the VIES API).
 
-* **Könyvelési adatok**
-Termékkategóriánként megadhatók a könyveléssel kapcsolatos adatok magyar és külföldi vásárlásoknál: főkönyvi szám, árbevételi főkönyvi szám, gazdasági esemény, áfa gazdasági esemény. A felhasználó azonosítóját pedig a vevő főkönyvi azonosítójaként eltárolja.
+* **Accounting details**
+Set accounting details for each product category, separately for Hungarian and foreign purchases: general ledger number, revenue ledger number, economic event and VAT economic event. The user ID is saved as the customer's ledger ID.
 
-= Használat =
-Részletes dokumentációt [itt](https://visztpeter.me/dokumentacio/) találsz.
-Telepítés után a WooCommerce / Beállítások / Számlázz.hu oldalon meg kell adni az Agent kulcsod.
-Minden rendelésnél jobb oldalon megjelenik egy új doboz, ahol egy gombnyomással létre lehet hozni a számlát. Az Opciók gombbal felül lehet írni a beállításokban megadott értékeket 1-1 számlához.
-Ha az automata számlakészítés be van kapcsolva, akkor automatikusan létrehozza a számlát a rendszer a rendelés állapotának változásakor.
-A számlakészítés kikapcsolható 1-1 rendelésnél az Opciók legördülőn belül.
-Az elkészült számla a rendelés aloldalán és a rendelés listában az utolsó oszlopban található PDF ikonra kattintva letölthető.
+= Usage =
+You can find the detailed documentation [here](https://visztpeter.me/dokumentacio/).
+After installation, enter your Agent key on the WooCommerce / Settings / Számlázz.hu page.
+A new box appears on the right side of every order, where you can create the invoice with one click. With the Options button, you can override the values from the settings for a single invoice.
+If automatic invoice generation is turned on, the invoice is created automatically when the order status changes.
+Invoice generation can be turned off for a single order in the Options dropdown.
+The finished invoice can be downloaded on the order page, or by clicking the PDF icon in the last column of the Orders table.
 
-**FONTOS:** Mindenen esetben ellenőrizd le, hogy a számlakészítés megfelelő e és konzultálj a könyvelőddel, neki is megfelelnek e a generált számlák. Sajnos minden esetet nem tudok tesztelni, különböző áfakulcsok, termékvariációk, kuponok stb..., így mindenképp teszteld le éles használat előtt és ha valami gond van, jelezd felém és megpróbálom javítani.
+**IMPORTANT:** Always check that the invoices are created correctly, and ask your accountant whether the generated invoices are right for them too. I can't test every possible case (different VAT rates, product variations, coupons, etc.), so make sure to test it before using it on a live store. If something is wrong, let me know and I'll try to fix it.
 
-= Fejlesztőknek =
+= For developers =
 
-A plugin egy XML fájlt generál, ezt küldi el a szamlazz.hu-nak, majd az egy pdf-ben visszaküldi az elkészített számlát. Az XML fájl generálás előtt módosítható a `wc_szamlazz_xml` filterrel. Ez minden esetben az éppen aktív téma functions.php fájlban történjen, hogy az esetleges plugin frissítés ne törölje ki a módosításokat! Bővebb fejlesztői dokumentációt [itt](https://visztpeter.me/dokumentacio/) találsz.
+The plugin generates an XML file and sends it to Számlázz.hu, which sends back the finished invoice as a PDF. The XML can be modified before it's sent with the `wc_szamlazz_xml` filter. Always add your changes to the functions.php file of your active theme, so a plugin update won't remove them. You can find more developer documentation [here](https://visztpeter.me/dokumentacio/).
 
 == Installation ==
 
-1. Töltsd le a bővítményt
-2. Wordpress-ben bővítmények / új hozzáadása menüben fel kell tölteni
-3. WooCommerce / Beállítások / Számlázz.hu menüpontban találhatod a beállítások, itt legalább az agent kulcs mezőt kötelező kitölteni
-4. Működik
+1. Download the plugin
+2. Upload it in WordPress under Plugins / Add New
+3. You'll find the settings under WooCommerce / Settings / Számlázz.hu. At least the Agent key field must be filled in.
+4. Done
 
 == Frequently Asked Questions ==
 
-= Mi a különbség a PRO verzió és az ingyenes között? =
+= What is the difference between the PRO and the free version? =
 
-A PRO verzió sok hasznos funkciót tud, amiről [itt](https://visztpeter.me/woocommerce-szamlazz-hu/) olvashatsz. A legfontosabb az automata számlakészítés Továbbá 1 éves emailes support is jár hozzá.
+The PRO version has a lot of useful features, which you can read about [here](https://visztpeter.me/woocommerce-szamlazz-hu/). The most important one is automatic invoice generation. It also includes 1 year of e-mail support.
 
-= Hogyan lehet tesztelni a számlakészítést? =
+= How can I test invoice generation? =
 
-A számlázz.hu fiókodban be tudod kapcsolni a [teszt üzemmódot.](https://tudastar.szamlazz.hu/gyik/szamlazz-hu-kipobalasa-elofizetes-nelkul)
+You can turn on [test mode](https://tudastar.szamlazz.hu/gyik/szamlazz-hu-kipobalasa-elofizetes-nelkul) in your Számlázz.hu account.
 
-= Teszt módban vagyok, de a számlaértesítő nem a vásárló email címére megy. =
+= I'm in test mode, but the invoice notification isn't sent to the customer's e-mail address. =
 
-A számlaértesítő teszt módban nem a vásárló email címére érkezik, hanem a számlázz.hu-n használt fiók email címére.
+In test mode, the invoice notification isn't sent to the customer's e-mail address, but to the e-mail address of your Számlázz.hu account.
 
 == Screenshots ==
 
-1. Általános beállítások
-2. Áfakulcsok és adózás beállítások
-3. Számla tétel beállítások
-4. Adószám mező beállítások
-5. Automatizálás beállítások
-6. Számlaértesítő beállítások
-7. E-Nyugta beállítások
-8. Számlakészítés doboz a rendelés oldalon
+1. General settings
+2. VAT rates and tax settings
+3. Invoice line item settings
+4. VAT number field settings
+5. Automation settings
+6. Invoice notification settings
+7. E-Receipt settings
+8. Invoice box on the order page
 
 == Changelog ==
 
+6.3.1
+* Security fix: the VAT number field is validated and cleaned on the block checkout, and a validation result saved in the session is only used for the same VAT number
+* Security fix: all data shown in the invoice preview is escaped
+* Security hardening: input handling, output escaping and nonce checks improved across the plugin
+* Marked compatible with the latest WP version
+
 6.3
-* Biztonságosabb PDF tárolás és hozzáférés: új PHP class kezeli(WC_Szamlazz_Document_Storage), elérhető filterek és actionok: wc_szamlazz_can_download_document, wc_szamlazz_download_file_name, wc_szamlazz_before_document_download
-* cURL helyett wp_remote_post(egyszerűbb, biztonságosabb, filterezhető)
-* Hiba javítása rendelés törlésekor
-* EU adószám ellenőrzés javítás blokkos pénztár oldalon
-* Kompatibilitás megjelölése legújabb WP és Woo verzióval
+* More secure PDF storage and access: handled by a new PHP class (WC_Szamlazz_Document_Storage), with new filters and actions: wc_szamlazz_can_download_document, wc_szamlazz_download_file_name, wc_szamlazz_before_document_download
+* wp_remote_post instead of cURL (simpler, more secure, filterable)
+* Fixed an error when deleting an order
+* Fixed EU VAT number validation on the block checkout
+* Marked compatible with the latest WP and Woo versions
 
 6.2.4
-* Nyomtatás hibajavítás Safari-val
-* Kompatibilitás megjelölése legújabb WP és Woo verzióval
-* A wc_szamlazz_default_rounding_precision filterrel módosítható a számoláshoz használt tizedesjegyek száma
+* Fixed printing in Safari
+* Marked compatible with the latest WP and Woo versions
+* The number of decimals used for calculations can be changed with the wc_szamlazz_default_rounding_precision filter
 
 6.2.3
-* EU adószám javítások
+* EU VAT number fixes
 
 6.2.2
-* EU adószám validálás fejlesztések
-* IPN javítás HPOS esetén egyedi rendelésszámmal
+* EU VAT number validation improvements
+* Fixed IPN with HPOS and custom order numbers
 
 6.2.1
-* WP 7.0 kompatiblitás javítások
-* Sztornózás oka megadható manuális sztornózásnál
+* WP 7.0 compatibility fixes
+* A reason can be entered when reversing an invoice manually
 
 6.2
-* Adószám mező összes országhoz: ezzel a beállítással nem EU országok esetén is látszik a kötelezően kitöltendő adószám mező, csak nem validálja az értékét
-* A wc_szamlazz_vat_number_validation_results filter hibás adószámnál is lefut és módosítható az eredmény
+* VAT number field for all countries: with this setting, the required VAT number field is shown for non-EU countries too, but its value isn't validated
+* The wc_szamlazz_vat_number_validation_results filter also runs for invalid VAT numbers, so the result can be changed
 
 6.1.16
-* Termék kategória és címke feltétel javítása(figyelembe veszi, ha több féle kategória és címke van a rendelésben)
-* "Kizárólag" feltétel(pl csak akkor fut le, ha csak a kiválasztott(egy) kategória van a rendelésben)
-* Komaptibilitás megjelölése legújabb WC verzióval
+* Fixed product category and tag conditions (takes into account when the order has multiple categories and tags)
+* "Only" condition (e.g. only runs if the order contains only the selected category)
+* Marked compatible with the latest WC version
 
 6.1.15
-* Egyedi logó beállítás mező
+* Custom logo setting field
 
 6.1.14
 * wc_szamlazz_deposit_negative_lines filter
-* Kompatibilitás megjelölése legújabb WC verzióval
-* EU adószám validálás javítás
-* Termék címke feltétel
+* Marked compatible with the latest WC version
+* Fixed EU VAT number validation
+* Product tag condition
 
 6.1.13
-* 21% áfakulcs javítás
+* Fixed 21% VAT rate
 
 6.1.12
-* HO áfakulcs
-* Kompatibilitás megjelölése WP 6.9 és WC 10.3.6-tal
-* EU adószám ellenőrzés javítás(ha rate limit hiba van, validnak kezeli)
+* HO VAT rate
+* Marked compatible with WP 6.9 and WC 10.3.6
+* Fixed EU VAT number validation (treats the number as valid if there's a rate limit error)
 
 6.1.11
-* Javítás előző verzióhoz
+* Fix for the previous version
 
 6.1.10
-* Kompatibilités 10.3 előtti WooCommerce verzióval
+* Compatibility with WooCommerce versions before 10.3
 
 6.1.9
-* Nyugta készítés javítás
+* Fixed receipt generation
 
 6.1.8
-* Kompatibilitás javítás legújabb Woo verzióval
+* Compatibility fix with the latest Woo version
 
 6.1.7
-* Hiányzó %-os áfakulcsok pótlása
-* Kompatibilitás megjelölése legújabb Woo verzióval
-* EU adószám validálás javítások
+* Added missing percentage VAT rates
+* Marked compatible with the latest Woo version
+* EU VAT number validation fixes
 
 6.1.6
-* E-mail számla csatolmány javítás
-* Számlaértesítő szöveg beállítás javítás
-* Törlőkód javítás
+* Fixed invoice e-mail attachment
+* Fixed invoice notification text setting
+* Fixed erasure code
 
 6.1.5
 * wc_szamlazz_ipn_target_order_status filter
-* Törlőkód opció termék beállítás haladó fülön(ha be van pipálva, akkor automatán ad hozzá törlőkódot a tételhez)
-* 21%-os áfakulcs
-* Kompatibilitás megjelölése legújabb Woo verzióval
+* Erasure code option in the product settings Advanced tab (if checked, an erasure code is added to the line item automatically)
+* 21% VAT rate
+* Marked compatible with the latest Woo version
 
 6.1.4
-* Szállítólevél is csatolható a levelekhez
-* Rádió gombos céges számlázás választó klasszikus pénztár oldalon
+* Delivery notes can be attached to e-mails too
+* Radio button selector for company invoicing on the classic checkout
 
 6.1.3
-* Szállítási díj áfa számolás hibajavítás legújabb Woo-ban
+* Fixed shipping cost VAT calculation in the latest Woo version
 
 6.1.2
-* Kompatibilitás legújabb Woo verzióval
+* Compatibility with the latest Woo version
 
 6.1.1
-* PHP notice javítás
-* User role feltétel
+* Fixed PHP notice
+* User role condition
 
 6.1.0.1
-* Woo Payments beállítás javítás
+* Fixed Woo Payments setting
 
 6.1
-* Adószám bugfix blokkos pénztár oldalon
+* VAT number bug fix on the block checkout
 * wc_szamlazz_defer_invoice_in_bulk_action filter
-* Translatepress kompatibilitás javítás
+* Fixed TranslatePress compatibility
 
 6.0.16
-* JS bugfix
-* Kompatibilitás megjelölése legújabb WP/WC verzióval
+* JS bug fix
+* Marked compatible with the latest WP/WC versions
 
 6.0.15
-* PRO verzió modal javítás
+* Fixed PRO version modal
 
 6.0.14
-* Aggregátor kód
-* Kompatibilitás megjelölése legújabb WC verzióval
+* Aggregator code
+* Marked compatible with the latest WC version
 
 6.0.13
-* WooCommerce Subscriptions adószám módosítás javítás
+* Fixed changing the VAT number with WooCommerce Subscriptions
 
 6.0.11 & 6.0.12
-* Pénztár blokkos EU adószám mező javítás
+* Fixed EU VAT number field on the checkout block
 
 6.0.10
-* Blokkos pénztár adószám mező javítás
+* Fixed VAT number field on the block checkout
 
 6.0.9
-* EU adószám ellenőrzés javítások
-* Szállítólevélből lehet újat csinálni akkor is, ha már van egy(felülírja a meglévőt)
+* EU VAT number validation fixes
+* A new delivery note can be created even if one already exists (it replaces the existing one)
 
 6.0.8
-* WPML kompatibilitás javítás
+* Fixed WPML compatibility
 
 6.0.7
-* Fatal error javítás pénztár oldalon, ha volt e-mail küldés beállítva
+* Fixed a fatal error on the checkout page when e-mail sending was set up
 
 6.0.6
-* Loco Translate kompatibilitás javítás
-* Kompatibilitás megjelölése legújabb WP/WC verziókkal
+* Fixed Loco Translate compatibility
+* Marked compatible with the latest WP/WC versions
 
 6.0.5
-* PHP Warning javítás adószámmal kapcsolatban
+* Fixed PHP warning related to the VAT number
 
 6.0.4
-* Céges papírszámla/elektronikus számla kapcsoló javítás
+* Fixed the paper/electronic invoice switch for companies
 
 6.0.3
-* Pénztár blokk adószám javítás
-* Kompatibilitás megjelölése legújabb WP/WC verziókkal
+* Checkout block VAT number fix
+* Marked compatible with the latest WP/WC versions
 
 6.0.2
-* Számlák a profilban funkció javítása
-* Checkout Manager kompatibilitás javítása
+* Fixed the invoices in the customer account feature
+* Fixed Checkout Manager compatibility
 
 6.0.1
-* WooCommerce Subscriptions javítás
-* Polylang javítás
+* WooCommerce Subscriptions fix
+* Polylang fix
 
 6.0
-* Új felület a csoportos címkegenerálásnál: nem tölti újra az oldalt, hanem egy ablakban látod pontosan a folyamatot
-* Új csoportos nyomtatás és letöltés funkció: az összes dokumentum letölthető vagy nyomtatható egyben az oldal újratöltése nélkül
-* Teljesen új beállítások oldal: Számlázz.hu főmenü és azon belül almenükre bontva a jobb átláthatóságért
-* Beállíthatod, hogy milyen státuszba kerüljön a rendelés a számlagenerálás után(és oldal újratöltés nélkül látod a változást csoportos számlageneráláskor)
-* Manuális számlakészítéskor is lehet fizetett(vagy nem fizetett) számlát generálni
-* Az egyedi automatizálás opció lett az alapértelmezett(új telepítésnél már csak ez látszik)
-* Szállítólevél automatizálás esetén is megadható a teljesítési idő
-* Kisebb méret: 4.3mb helyett 2.5mb a bővítmény(pdf nyomtatásra JS-es megoldás PHP helyett)
-* WooCommerce függőség megjelölése, így csak akkor lehet bekapcsolni, ha aktív a WooCommerce(ezzel együtt javítva egy aktiválási bug)
-* Törölve az összes adminfelületen megjelenő értesítési üzenet
-* A megjegyzésben lehet használni a {current_date} cserekódot, ami az aktuális dátumot írja ki(pl jótállási jegyhez hasznos lehet)
-* Adószám mezőt kötelezővé lehet tenni
-* EUK áfakulcs javítása saját EU adószám bekérése esetén
-* Javítva egy bug az áfakulcs felülírással kapcsolatban
-* Adószám blokk javítás Firefox-ban
-* EU adószám ellenőrzés javítása bizonyos szerverkörnyezetekben
-* Hibajavítás az adatok felülírásánál a feltételek beállításaiban
-* Hibajavítás a feltételes mód beállításokban
-* Gyűjtőszámla generálás látszik HPOS esetén is
-* Régi kompatibilitásból megmaradt kódok törlése
-* Adószám hibajavítás blokkos pénztároldalon
-* wc_szamlazz_vat_number_validation_results filterrel módosítható az adószám validálás eredménye
-* WooCommerce Subscriptions kompatibilitás javítás: meglévő díjbekérőt is letörli új előfizetési ciklusban
-* Minimum PHP(7.4) és WP(6.0) verzió beállítása
-* Kompatibilitás megjelölése legújabb WP/WC verziókkal
+* New interface for bulk document generation: the page doesn't reload, you can follow the whole process in a window
+* New bulk print and download feature: all documents can be downloaded or printed at once without reloading the page
+* Completely new settings page: a Számlázz.hu main menu split into submenus for better clarity
+* You can set the order status to change to after invoice generation (and during bulk generation you see the change without reloading the page)
+* Paid (or unpaid) invoices can be generated when creating invoices manually too
+* The custom automation option is now the default (new installs only show this one)
+* The completion date can be set for delivery note automations too
+* Smaller size: 2.5 MB instead of 4.3 MB (JS-based PDF printing instead of PHP)
+* WooCommerce marked as a required plugin, so this plugin can only be activated when WooCommerce is active (this also fixes an activation bug)
+* Removed all admin notice messages
+* The {current_date} placeholder can be used in the note to show the current date (useful for warranty cards, for example)
+* The VAT number field can be made required
+* Fixed EUK VAT rate when asking for your own EU VAT number
+* Fixed a bug with VAT rate overrides
+* Fixed the VAT number block in Firefox
+* Fixed EU VAT number validation in some server environments
+* Fixed data overrides in the condition settings
+* Fixed conditional mode settings
+* Grouped invoice generation is visible with HPOS too
+* Removed old compatibility code
+* VAT number bug fix on the block checkout
+* The VAT number validation result can be changed with the wc_szamlazz_vat_number_validation_results filter
+* WooCommerce Subscriptions compatibility fix: existing proforma invoices are also deleted in a new subscription cycle
+* Set minimum PHP (7.4) and WP (6.0) versions
+* Marked compatible with the latest WP/WC versions

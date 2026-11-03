@@ -66,7 +66,7 @@ if ( ! class_exists( 'WC_Szamlazz_Bulk_Actions', false ) ) :
 
 		public static function generator_modal() {
 			global $pagenow, $typenow; 
-			if ( ( $pagenow === 'edit.php' && $typenow === 'shop_order' ) || ( $pagenow === 'admin.php' && $_GET['page'] === 'wc-orders' ) ) {
+			if ( ( $pagenow === 'edit.php' && $typenow === 'shop_order' ) || ( $pagenow === 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks which admin screen is open, nothing is saved.
 				include( dirname( __FILE__ ) . '/views/html-modal-generator.php' );
 				include( dirname( __FILE__ ) . '/views/html-modal-generate.php' );
 			}
@@ -135,8 +135,8 @@ if ( ! class_exists( 'WC_Szamlazz_Bulk_Actions', false ) ) :
 				}
 
 				//Convert to JSON and add as data attribute
-				$json_order_details = json_encode($order_details);
-				echo '<span class="wc-szamlazz-order-details" style="display:none;" data-order-details=\'' . htmlspecialchars($json_order_details, ENT_QUOTES, 'UTF-8') . '\'></span>';
+				$json_order_details = wp_json_encode($order_details);
+				echo '<span class="wc-szamlazz-order-details" style="display:none;" data-order-details=\'' . esc_attr($json_order_details) . '\'></span>';
 			}
 		}
 
@@ -164,6 +164,7 @@ if ( ! class_exists( 'WC_Szamlazz_Bulk_Actions', false ) ) :
 
 				//Replicate the original price content
 				if ( $order->get_payment_method_title() ) {
+					/* translators: %s: Payment method name */
 					echo '<span class="tips" data-tip="' . esc_attr( sprintf( __( 'via %s', 'wc-szamlazz' ), $order->get_payment_method_title() ) ) . '">' . wp_kses_post( $order->get_formatted_order_total() ) . '</span>';
 				} else {
 					echo wp_kses_post( $order->get_formatted_order_total() );
@@ -174,19 +175,20 @@ if ( ! class_exists( 'WC_Szamlazz_Bulk_Actions', false ) ) :
 					if($order->get_meta('_wc_szamlazz_completed')) {
 						$paid_date = $order->get_meta('_wc_szamlazz_completed');
 						if (strpos($paid_date, '-') == false) {
-							$paid_date = date('Y-m-d', $paid_date);
+							$paid_date = gmdate('Y-m-d', $paid_date);
 						}
 
-						echo '<span class="wc-szamlazz-mark-paid-button paid tips" data-tip="'.sprintf(__('Paid on: %s', 'wc-szamlazz'), $paid_date).'"></span>';
+						/* translators: %s: Payment date */
+						echo '<span class="wc-szamlazz-mark-paid-button paid tips" data-tip="'.esc_attr( sprintf(__('Paid on: %s', 'wc-szamlazz'), $paid_date) ).'"></span>';
 					} else {
 						if(!$order->get_meta('_wc_szamlazz_own')) {
-							echo '<a href="#" data-nonce="'.wp_create_nonce( 'wc_szamlazz_generate_invoice' ).'" data-order="'.$order->get_id().'" class="wc-szamlazz-mark-paid-button tips" data-tip="'.__('Mark as paid', 'wc-szamlazz').'"></a>';
+							echo '<a href="#" data-nonce="'.esc_attr( wp_create_nonce( 'wc_szamlazz_generate_invoice' ) ).'" data-order="'.esc_attr( $order->get_id() ).'" class="wc-szamlazz-mark-paid-button tips" data-tip="'.esc_attr__('Mark as paid', 'wc-szamlazz').'"></a>';
 						}
 					}
 
 				} else {
 					$tip = __("There's no invoice for this order yet", "wc-szamlazz");
-					echo '<span class="wc-szamlazz-mark-paid-button pending tips" data-tip="'.$tip.'"></span>';
+					echo '<span class="wc-szamlazz-mark-paid-button pending tips" data-tip="'.esc_attr( $tip ).'"></span>';
 				}
 
 				echo '</span>';
@@ -198,7 +200,7 @@ if ( ! class_exists( 'WC_Szamlazz_Bulk_Actions', false ) ) :
 				foreach ($invoice_types as $invoice_type => $invoice_label) {
 					if(WC_Szamlazz()->is_invoice_generated($order->get_id(), $invoice_type) && !$order->get_meta('_wc_szamlazz_own')):
 					?>
-						<a href="<?php echo WC_Szamlazz()->generate_download_link($order, $invoice_type); ?>" class="button tips wc-szamlazz-button wc-szamlazz-button-<?php echo esc_attr($invoice_type); ?>" target="_blank" data-tip="<?php echo $invoice_label; ?>"></a>
+						<a href="<?php echo esc_url( WC_Szamlazz()->generate_download_link($order, $invoice_type) ); ?>" class="button tips wc-szamlazz-button wc-szamlazz-button-<?php echo esc_attr($invoice_type); ?>" target="_blank" data-tip="<?php echo esc_attr( $invoice_label ); ?>"></a>
 					<?php
 					endif;
 				}

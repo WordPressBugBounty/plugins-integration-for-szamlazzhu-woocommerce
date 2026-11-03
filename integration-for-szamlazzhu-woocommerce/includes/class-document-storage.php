@@ -210,7 +210,7 @@ if ( ! class_exists( 'WC_Szamlazz_Document_Storage', false ) ) :
 			}
 
 			$type = sanitize_key( wp_unslash( $_GET[ self::QUERY_VAR ] ) );
-			$order_id = absint( $_GET['order'] );
+			$order_id = ( isset( $_GET['order'] ) ? absint( $_GET['order'] ) : 0 );
 			$token = isset( $_GET['token'] ) && is_scalar( $_GET['token'] ) ? sanitize_text_field( wp_unslash( $_GET['token'] ) ) : '';
 			$file_key = isset( $_GET['file'] ) && is_scalar( $_GET['file'] ) ? sanitize_text_field( wp_unslash( $_GET['file'] ) ) : '';
 			// phpcs:enable WordPress.Security.NonceVerification.Recommended
@@ -282,7 +282,7 @@ if ( ! class_exists( 'WC_Szamlazz_Document_Storage', false ) ) :
 		}
 
 		private static function download_error( $message, $status ) {
-			wp_die( wp_kses_post( $message ), esc_html__( 'Számlázz.hu document', 'wc-szamlazz' ), array( 'response' => $status ) );
+			wp_die( wp_kses_post( $message ), esc_html__( 'Számlázz.hu document', 'wc-szamlazz' ), array( 'response' => absint( $status ) ) );
 		}
 
 		//Check if a file in the folder can be downloaded directly. Returns true, false, or null if we can't tell
@@ -305,7 +305,7 @@ if ( ! class_exists( 'WC_Szamlazz_Document_Storage', false ) ) :
 				'redirection' => 0,
 				'sslverify' => false, //It's a request to our own site, which might use a self-signed certificate
 			) );
-			@unlink( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+			wp_delete_file( $path );
 
 			if ( is_wp_error( $response ) ) {
 				$result = null;
@@ -389,7 +389,7 @@ if ( ! class_exists( 'WC_Szamlazz_Document_Storage', false ) ) :
 				'label' => __( 'Számlázz.hu invoices are not publicly accessible', 'wc-szamlazz' ),
 				'status' => 'good',
 				'badge' => array(
-					'label' => __( 'Security' ),
+					'label' => __( 'Security', 'wc-szamlazz' ),
 					'color' => 'blue',
 				),
 				'description' => '<p>' . esc_html__( 'Direct access to the folder where invoices are stored is blocked.', 'wc-szamlazz' ) . '</p>',

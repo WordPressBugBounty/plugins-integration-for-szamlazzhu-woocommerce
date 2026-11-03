@@ -42,7 +42,7 @@ if($order->get_meta('_billing_wc_szamlazz_adoszam')) $vat_number = $order->get_m
 			<?php foreach ($wc_szamlazz_labels as $field => $label): ?>
 				<?php if($vat_number_data['address'][$field]): ?>
 					<tr>
-						<th><?php echo $label; ?></th>
+						<th><?php echo esc_html( $label ); ?></th>
 						<td><?php echo esc_html($vat_number_data['address'][$field]); ?></td>
 					</tr>
 				<?php endif; ?>
@@ -63,7 +63,7 @@ if($order->get_meta('_billing_wc_szamlazz_adoszam')) $vat_number = $order->get_m
 			<?php foreach ($wc_szamlazz_labels as $field => $label): ?>
 				<?php if($vat_number_data['vies'][$field]): ?>
 					<tr>
-						<th><?php echo $label; ?></th>
+						<th><?php echo esc_html( $label ); ?></th>
 						<td><?php echo esc_html($vat_number_data['vies'][$field]); ?></td>
 					</tr>
 				<?php endif; ?>

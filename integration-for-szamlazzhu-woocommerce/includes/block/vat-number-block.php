@@ -26,23 +26,30 @@ add_action('woocommerce_blocks_loaded', function() {
 
 			//If company name is missing, ask for it
 			if(!$request['billing_address']['company']) {
-				throw new Exception(apply_filters('wc_szamlazz_company_validation_required_message', esc_html__( 'If you enter a VAT number, the company name field is required.', 'wc-szamlazz')));
+				throw new Exception( esc_html( apply_filters('wc_szamlazz_company_validation_required_message', esc_html__( 'If you enter a VAT number, the company name field is required.', 'wc-szamlazz')) ) );
+			}
+
+			//Only accept a VAT number made of allowed characters, reject everything else
+			$raw_vat_number = ( isset( $request_data['billing_vat_number'] ) && is_string( $request_data['billing_vat_number'] ) ) ? trim( $request_data['billing_vat_number'] ) : '';
+			$vat_number = WC_Szamlazz_Vat_Number_Field::sanitize_vat_number( $raw_vat_number );
+			if ( $vat_number === '' || $vat_number !== $raw_vat_number ) {
+				throw new Exception( esc_html( apply_filters('wc_szamlazz_vat_number_validation_failed_message', esc_html__( 'The VAT number is invalid.', 'wc-szamlazz')) ) );
 			}
 
 			//Check if VAT number is EU, in that case we need to validate the billing country too
-			$vat_number = $request_data['billing_vat_number'];
 			if(preg_match('/^[A-Z]{2}/', $vat_number)) {
 				$country_code = substr($vat_number, 0, 2);
 				$billing_country = $request['billing_address']['country'];
 				$billing_country = WC_Szamlazz_Vat_Number_Field::get_vat_number_prefix($billing_country);
 				if($country_code != $billing_country) {
-					throw new Exception(apply_filters('wc_szamlazz_eu_vat_number_validation_country_mismatch_message', esc_html__( 'The VAT number is from another country, please select that country in the billing address.', 'wc-szamlazz')));
+					throw new Exception( esc_html( apply_filters('wc_szamlazz_eu_vat_number_validation_country_mismatch_message', esc_html__( 'The VAT number is from another country, please select that country in the billing address.', 'wc-szamlazz')) ) );
 				}
 			}
 			
-			//Validate it if we don't have data, this will also return the data to save
-			$vat_number_data = WC()->session->get( 'vat-number-data' );
-			if(!isset($vat_number_data['valid']) || !isset($vat_number_data['name'])) {
+			//Reuse the validation result from the session only if it belongs to this exact VAT number, otherwise validate it again
+			$vat_number_data = WC()->session ? WC()->session->get( 'vat-number-data' ) : false;
+			$session_vat_number = ( is_array( $vat_number_data ) && isset( $vat_number_data['vat_number'] ) ) ? (string) $vat_number_data['vat_number'] : '';
+			if(!isset($vat_number_data['valid']) || !isset($vat_number_data['name']) || $session_vat_number !== $vat_number) {
 				if(preg_match('/^[A-Z]{2}/', $vat_number)) {
 					$vat_number_data = WC_Szamlazz_Vat_Number_Field::get_eu_vat_number_data($vat_number);
 				} else {
@@ -51,8 +58,8 @@ add_action('woocommerce_blocks_loaded', function() {
 			}
 
 			//Maybe validate it again just in case?
-			if(!$vat_number_data['valid']) {
-				throw new Exception(apply_filters('wc_szamlazz_vat_number_validation_failed_message', esc_html__( 'The VAT number is invalid.', 'wc-szamlazz')));
+			if(!is_array($vat_number_data) || empty($vat_number_data['valid'])) {
+				throw new Exception( esc_html( apply_filters('wc_szamlazz_vat_number_validation_failed_message', esc_html__( 'The VAT number is invalid.', 'wc-szamlazz')) ) );
 			}
 
 			//Save data
@@ -74,7 +81,7 @@ add_action('woocommerce_blocks_loaded', function() {
 			$check_eu_vat = (WC_Szamlazz()->get_option('vat_number_eu', 'no') == 'yes');
 			$billing_country = $request['billing_address']['country'] ?? '';
 			if($billing_country == 'HU' || ($check_eu_vat && in_array($billing_country, $eu_countries))) {
-				throw new Exception(apply_filters('wc_szamlazz_tax_validation_required_message', esc_html__( 'If you enter a company name, the VAT number field is required.', 'wc-szamlazz')));
+				throw new Exception( esc_html( apply_filters('wc_szamlazz_tax_validation_required_message', esc_html__( 'If you enter a company name, the VAT number field is required.', 'wc-szamlazz')) ) );
 			}
 		}
 	}, 10, 2);

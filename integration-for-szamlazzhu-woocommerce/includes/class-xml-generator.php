@@ -93,6 +93,7 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 			if ( $http_error != "" ) {
 				$response['error'] = true;
 				$response['http_error'] = $http_error;
+				/* translators: %s: Error message */
 				$response['messages'][] = sprintf(__('Http error: %s', 'wc-szamlazz'), $http_error);
 
 				//Log error messages
@@ -107,7 +108,9 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 				$response['agent_error_code'] = $agent_error_code;
 
 				// ha a számla nem készült el kiírjuk amit lehet
+				/* translators: %s: Error code */
 				$response['messages'][] = sprintf(__('Agent error code: %s', 'wc-szamlazz'), $agent_error_code);
+				/* translators: %s: Error message */
 				$response['messages'][] = sprintf(__('Agent error message: %s', 'wc-szamlazz'), urldecode($agent_error));
 				//$response['messages'][] = 'Agent válasz: '.urldecode($agent_body);
 
@@ -166,7 +169,7 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 
 			$files = glob(WC_Szamlazz_Document_Storage::get_base_dir().'szamlazz_cookie_*.txt');
 			foreach ((array)$files as $file) {
-				@unlink($file); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+				wp_delete_file( $file );
 			}
 			$wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '\\_wc\\_szamlazz\\_cookie\\_name%'");
 			wp_cache_delete('alloptions', 'options');
@@ -188,9 +191,8 @@ if ( ! class_exists( 'WC_Szamlazz_Xml_Generator', false ) ) :
 			);
 
 			if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
-				if ( $file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ) ) {
-					fwrite( $file_handle, $file['content'] );
-					fclose( $file_handle );
+				if ( wp_is_writable( $file['base'] ) ) {
+					file_put_contents( trailingslashit( $file['base'] ) . $file['file'], $file['content'] );
 				}
 			}
 

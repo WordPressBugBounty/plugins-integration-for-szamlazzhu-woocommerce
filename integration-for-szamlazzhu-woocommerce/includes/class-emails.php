@@ -123,6 +123,7 @@ if ( ! class_exists( 'WC_Szamlazz_Emails', false ) ) :
 			$mailer = WC()->mailer();
 			$content = wc_get_template_html( 'emails/invoice-copy.php', array(
 				'order' => $order,
+				/* translators: %s: Document name */
 				'email_heading' => sprintf(__('The following document was successfully created: %s', 'wc-szamlazz'), $document_label),
 				'plain_text' => false,
 				'email' => $mailer,
@@ -132,6 +133,7 @@ if ( ! class_exists( 'WC_Szamlazz_Emails', false ) ) :
 				'document_link' => WC_Szamlazz()->generate_download_link($order, $document_type)
 			), '', plugin_dir_path( __FILE__ ) );
 			$recipient = WC_Szamlazz()->get_option('invoice_forward');
+			/* translators: %s: Document name */
 			$subject = sprintf(__("Számlázz.hu document created - %s", 'wc-szamlazz'), $document_label);
 			$headers = "Content-Type: text/html\r\n";
 			$attachments = array();

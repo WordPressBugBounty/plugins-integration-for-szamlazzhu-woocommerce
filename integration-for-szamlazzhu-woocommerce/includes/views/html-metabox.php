@@ -6,14 +6,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <?php if(!$this->get_option('agent_key')): ?>
 
-	<a href="<?php echo admin_url( 'admin.php?page=wc-settings&tab=integration&section=wc_szamlazz' ); ?>" class="wc-szamlazz-metabox-settings">
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=integration&section=wc_szamlazz' ) ); ?>" class="wc-szamlazz-metabox-settings">
 		<span><?php esc_html_e('To create an invoice, you must enter the Agent Key in the settings','wc-szamlazz'); ?></span>
 		<span class="dashicons dashicons-arrow-right-alt2"></span>
 	</a>
 
 <?php else: ?>
 
-	<div class="wc-szamlazz-metabox-content" data-order="<?php echo $order->get_id(); ?>" data-nonce="<?php echo wp_create_nonce( "wc_szamlazz_generate_invoice" ); ?>">
+	<div class="wc-szamlazz-metabox-content" data-order="<?php echo esc_attr( $order->get_id() ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( "wc_szamlazz_generate_invoice" ) ); ?>">
 		<div class="wc-szamlazz-metabox-messages wc-szamlazz-metabox-messages-success" style="display:none;">
 			<div class="wc-szamlazz-metabox-messages-content">
 				<ul></ul>
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php esc_html_e('Invoicing has been disabled for this order because:','wc-szamlazz'); ?> <span><?php echo esc_html($note); ?></span>
 			</p>
 			<p>
-				<a class="wc-szamlazz-invoice-toggle on" href="#" data-nonce="<?php echo wp_create_nonce( "wc_szamlazz_toggle_invoice" ); ?>" data-order="<?php echo $order->get_id(); ?>">
+				<a class="wc-szamlazz-invoice-toggle on" href="#" data-nonce="<?php echo esc_attr( wp_create_nonce( "wc_szamlazz_toggle_invoice" ) ); ?>" data-order="<?php echo esc_attr( $order->get_id() ); ?>">
 					<?php esc_html_e('Turn back on','wc-szamlazz'); ?>
 				</a>
 			</p>
@@ -47,9 +47,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<ul class="wc-szamlazz-metabox-rows">
 
 			<?php foreach ($document_types as $document_type => $document_label): ?>
-				<li class="wc-szamlazz-metabox-rows-invoice wc-szamlazz-metabox-invoices-<?php echo $document_type; ?> <?php if($order->get_meta('_wc_szamlazz_'.$document_type)): ?>show<?php endif; ?>">
-					<a target="_blank" href="<?php echo $this->generate_download_link($order, $document_type); ?>">
-						<span><?php echo $document_label; ?></span>
+				<li class="wc-szamlazz-metabox-rows-invoice wc-szamlazz-metabox-invoices-<?php echo esc_attr( $document_type ); ?> <?php if($order->get_meta('_wc_szamlazz_'.$document_type)): ?>show<?php endif; ?>">
+					<a target="_blank" href="<?php echo esc_url( $this->generate_download_link($order, $document_type) ); ?>">
+						<span><?php echo esc_html( $document_label ); ?></span>
 						<strong><?php echo esc_html($order->get_meta('_wc_szamlazz_'.$document_type)); ?></strong>
 					</a>
 				</li>
@@ -68,7 +68,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php
 								$paid_date = $order->get_meta('_wc_szamlazz_completed');
 								if (strpos($paid_date, '-') == false) {
-									$paid_date = date('Y-m-d', $paid_date);
+									$paid_date = gmdate('Y-m-d', $paid_date);
 								}
 								?>
 								<?php echo esc_html($paid_date); ?>
@@ -99,7 +99,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="wc-szamlazz-metabox-auto-msg-text">
 				<p><?php esc_html_e( 'The invoice will be created automatically if the status of the order changes to:', 'wc-szamlazz' ); ?>
 					<?php foreach ($this->should_generate_auto_invoice($order) as $status_name): ?>
-						<strong><?php echo wc_get_order_status_name($status_name); ?></strong>
+						<strong><?php echo esc_html( wc_get_order_status_name($status_name) ); ?></strong>
 					<?php endforeach; ?>
 				</p>
 				<span class="dashicons dashicons-yes-alt"></span>
@@ -142,7 +142,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<label for="wc_szamlazz_invoice_account"><?php esc_html_e('Számlázz.hu account','wc-szamlazz'); ?></label>
 					<select id="wc_szamlazz_invoice_account">
 						<?php foreach ($this->get_szamlazz_accounts() as $account_key => $account_name): ?>
-							<option value="<?php echo esc_attr($account_key); ?>" <?php selected( $this->get_szamlazz_agent_key($order), $account_key); ?>><?php echo esc_html($account_name); ?> - <?php echo substr(esc_html($account_key), 0, 16); ?>...</option>
+							<option value="<?php echo esc_attr($account_key); ?>" <?php selected( $this->get_szamlazz_agent_key($order), $account_key); ?>><?php echo esc_html($account_name); ?> - <?php echo esc_html( substr( $account_key, 0, 16 ) ); ?>...</option>
 						<?php endforeach; ?>
 					</select>
 				</li>
@@ -179,7 +179,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</li>
 						<li>
 							<label for="wc_szamlazz_invoice_completed"><?php esc_html_e('Completion date','wc-szamlazz'); ?></label>
-							<input type="text" class="date-picker" id="wc_szamlazz_invoice_completed" maxlength="10" value="<?php echo date('Y-m-d'); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
+							<input type="text" class="date-picker" id="wc_szamlazz_invoice_completed" maxlength="10" value="<?php echo esc_attr( gmdate('Y-m-d') ); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
 						</li>
 					</ul>
 				</li>
@@ -223,7 +223,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="wc-backbone-modal-content">
 				<section class="wc-backbone-modal-main" role="main">
 					<header class="wc-backbone-modal-header">
-						<h1><?php echo esc_html_e('Upload document manually', 'wc-szamlazz'); ?></h1>
+						<h1><?php esc_html_e('Upload document manually', 'wc-szamlazz'); ?></h1>
 						<button class="modal-close modal-close-link dashicons dashicons-no-alt">
 							<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'woocommerce' ); ?></span>
 						</button>

@@ -14,16 +14,20 @@ if ( ! class_exists( 'WC_Szamlazz_IPN', false ) ) :
 		}
 
 		public static function ipn_process() {
+			// phpcs:disable WordPress.Security.NonceVerification -- Server to server callback from Számlázz.hu, a nonce is not possible. The request is authenticated with the secret token in the IPN URL.
 			if (isset($_GET['wc_szamlazz_ipn_url'])) {
-				if(empty($_GET['wc_szamlazz_ipn_url']) || $_GET['wc_szamlazz_ipn_url'] != get_option( '_wc_szamlazz_ipn_url')) {
+				$ipn_token = sanitize_text_field( wp_unslash( $_GET['wc_szamlazz_ipn_url'] ) );
+				$saved_token = (string) get_option( '_wc_szamlazz_ipn_url' );
+				if(empty($ipn_token) || empty($saved_token) || ! hash_equals( $saved_token, $ipn_token )) {
 					return false;
 				}
 
 				//Setup parameters
 				$ipn_parameters = array();
-				if(isset($_POST['szlahu_fizetesmod'])) $ipn_parameters['payment_method'] = esc_html($_POST['szlahu_fizetesmod']);
-				if(isset($_POST['szlahu_szamlaszam'])) $ipn_parameters['invoice_id'] = esc_html($_POST['szlahu_szamlaszam']);
-				if(isset($_POST['szlahu_rendelesszam'])) $ipn_parameters['order_number'] = esc_html($_POST['szlahu_rendelesszam']);
+				if(isset($_POST['szlahu_fizetesmod'])) $ipn_parameters['payment_method'] = sanitize_text_field( wp_unslash( $_POST['szlahu_fizetesmod'] ) );
+				if(isset($_POST['szlahu_szamlaszam'])) $ipn_parameters['invoice_id'] = sanitize_text_field( wp_unslash( $_POST['szlahu_szamlaszam'] ) );
+				if(isset($_POST['szlahu_rendelesszam'])) $ipn_parameters['order_number'] = sanitize_text_field( wp_unslash( $_POST['szlahu_rendelesszam'] ) );
+				// phpcs:enable WordPress.Security.NonceVerification
 				$ipn_parameters = apply_filters('wc_szamlazz_ipn_request_parameters', $ipn_parameters);
 
 				WC_Szamlazz()->log_debug_messages($ipn_parameters, 'ipn_process-parameters', true);
@@ -82,8 +86,10 @@ if ( ! class_exists( 'WC_Szamlazz_IPN', false ) ) :
 
 						//Update order notes
 						if($ipn_document_type == 'deposit') {
+							/* translators: %s: Document number */
 							$order->add_order_note( sprintf(__( 'Szamlazz.hu deposit invoice successfully generated through IPN. Invoice number: %s', 'wc-szamlazz' ), $szamlaszam) );
 						} else {
+							/* translators: %s: Document number */
 							$order->add_order_note( sprintf(__( 'Szamlazz.hu invoice successfully generated through IPN. Invoice number: %s', 'wc-szamlazz' ), $szamlaszam) );
 						}
 

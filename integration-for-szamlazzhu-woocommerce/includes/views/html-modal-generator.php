@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="wc-backbone-modal-content">
 			<section class="wc-backbone-modal-main" role="main">
 				<header class="wc-backbone-modal-header">
-					<h1><?php echo esc_html_e('Számlázz.hu document generator', 'wc-szamlazz'); ?></h1>
+					<h1><?php esc_html_e('Számlázz.hu document generator', 'wc-szamlazz'); ?></h1>
 					<button class="modal-close modal-close-link dashicons dashicons-no-alt">
 						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'woocommerce' ); ?></span>
 					</button>
@@ -56,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<label for="wc_szamlazz_bulk_invoice_account"><?php esc_html_e('Számlázz.hu account','wc-szamlazz'); ?></label>
 									<select id="wc_szamlazz_bulk_invoice_account">
 										<?php foreach (WC_Szamlazz()->get_szamlazz_accounts() as $account_key => $account_name): ?>
-											<option value="<?php echo esc_attr($account_key); ?>" <?php selected( WC_Szamlazz()->get_option('agent_key', ''), $account_key); ?>><?php echo esc_html($account_name); ?> - <?php echo substr(esc_html($account_key), 0, 16); ?>...</option>
+											<option value="<?php echo esc_attr($account_key); ?>" <?php selected( WC_Szamlazz()->get_option('agent_key', ''), $account_key); ?>><?php echo esc_html($account_name); ?> - <?php echo esc_html( substr( $account_key, 0, 16 ) ); ?>...</option>
 										<?php endforeach; ?>
 									</select>
 								</li>
@@ -94,7 +94,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										</li>
 										<li>
 											<label for="wc_szamlazz_bulk_invoice_completed"><?php esc_html_e('Completion date','wc-szamlazz'); ?></label>
-											<input type="text" class="date-picker" id="wc_szamlazz_bulk_invoice_completed" maxlength="10" value="<?php echo date('Y-m-d'); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
+											<input type="text" class="date-picker" id="wc_szamlazz_bulk_invoice_completed" maxlength="10" value="<?php echo esc_attr( gmdate('Y-m-d') ); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
 										</li>
 									</ul>
 								</li>
@@ -103,7 +103,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</article>
 					<footer>
 						<div class="inner">
-							<a class="button button-primary button-large" href="#" id="wc_szamlazz_bulk_generator" data-orders="{{{ data.orderIds }}}" data-nonce="<?php echo wp_create_nonce( "wc_szamlazz_bulk_generator" ); ?>"><?php esc_html_e( 'Generate documents', 'wc-szamlazz' ); ?></a>
+							<a class="button button-primary button-large" href="#" id="wc_szamlazz_bulk_generator" data-orders="{{{ data.orderIds }}}" data-nonce="<?php echo esc_attr( wp_create_nonce( "wc_szamlazz_bulk_generator" ) ); ?>"><?php esc_html_e( 'Generate documents', 'wc-szamlazz' ); ?></a>
 						</div>
 					</footer>
 				<# } else { #>
@@ -124,18 +124,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="wc-backbone-modal-content">
 			<section class="wc-backbone-modal-main" role="main">
 				<header class="wc-backbone-modal-header">
-					<h1><?php echo esc_html_e('This invoice was paid by the customer', 'wc-szamlazz'); ?></h1>
+					<h1><?php esc_html_e('This invoice was paid by the customer', 'wc-szamlazz'); ?></h1>
 					<button class="modal-close modal-close-link dashicons dashicons-no-alt">
 						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'woocommerce' ); ?></span>
 					</button>
 				</header>
 				<article>
 					<label for="wc_szamlazz_mark_paid_date"><?php esc_html_e('Payment date','wc-szamlazz'); ?></label>
-					<input type="text" class="date-picker" id="wc_szamlazz_mark_paid_date" maxlength="10" value="<?php echo date('Y-m-d'); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
+					<input type="text" class="date-picker" id="wc_szamlazz_mark_paid_date" maxlength="10" value="<?php echo esc_attr( gmdate('Y-m-d') ); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
 				</article>
 				<footer>
 					<div class="inner">
-						<a class="button button-primary button-large" href="#" id="wc_szamlazz_mark_paid" data-order="{{{ data.order_id }}}" data-nonce="<?php echo wp_create_nonce( "wc_szamlazz_generate_invoice" ); ?>"><?php esc_html_e( 'Mark as paid', 'wc-szamlazz' ); ?></a>
+						<a class="button button-primary button-large" href="#" id="wc_szamlazz_mark_paid" data-order="{{{ data.order_id }}}" data-nonce="<?php echo esc_attr( wp_create_nonce( "wc_szamlazz_generate_invoice" ) ); ?>"><?php esc_html_e( 'Mark as paid', 'wc-szamlazz' ); ?></a>
 					</div>
 				</footer>
 			</section>

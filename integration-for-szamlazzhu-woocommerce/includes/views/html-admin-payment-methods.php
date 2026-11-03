@@ -75,8 +75,8 @@ if(WC_Szamlazz_Pro::is_pro_enabled() && $saved_values && count($saved_values) > 
 						?>
 						<tr>
 							<td class="label"><strong><?php echo esc_html($payment_method); ?></strong></td>
-							<td><input type="number" name="wc_szamlazz_payment_options[<?php echo esc_attr( $payment_method_id ); ?>][deadline]" value="<?php echo $value_deadline; ?>" placeholder="<?php echo esc_attr(WC_Szamlazz()->get_option('payment_deadline')); ?>" /></td>
-							<td><input type="text" name="wc_szamlazz_payment_options[<?php echo esc_attr( $payment_method_id ); ?>][name]" value="<?php echo $value_name; ?>" placeholder="<?php echo esc_attr($payment_method); ?>" /></td>
+							<td><input type="number" name="wc_szamlazz_payment_options[<?php echo esc_attr( $payment_method_id ); ?>][deadline]" value="<?php echo esc_attr( $value_deadline ); ?>" placeholder="<?php echo esc_attr(WC_Szamlazz()->get_option('payment_deadline')); ?>" /></td>
+							<td><input type="text" name="wc_szamlazz_payment_options[<?php echo esc_attr( $payment_method_id ); ?>][name]" value="<?php echo esc_attr( $value_name ); ?>" placeholder="<?php echo esc_attr($payment_method); ?>" /></td>
 							<td class="cb"><input type="checkbox" name="wc_szamlazz_payment_options[<?php echo esc_attr( $payment_method_id ); ?>][complete]" value="1" <?php checked( $value_complete ); ?> /></td>
 							<?php if($show_proform_deposit): ?>
 								<td class="cb"><input type="checkbox" name="wc_szamlazz_payment_options[<?php echo esc_attr( $payment_method_id ); ?>][proform]" value="1" <?php checked( $value_proform ); ?> /></td>

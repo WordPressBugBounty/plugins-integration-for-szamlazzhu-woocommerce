@@ -1906,8 +1906,8 @@ msgstr ""
 #: index.php:1345
 #, php-format
 msgid ""
-"Reverse invoice created successfully. Invoice number: %s. Original invoice: "
-"%s"
+"Reverse invoice created successfully. Invoice number: %1$s. Original invoice: "
+"%2$s"
 msgstr ""
 
 #: includes/settings/settings-notice.php:94
@@ -2244,8 +2244,8 @@ msgstr ""
 #: index.php:1778
 #, php-format
 msgid ""
-"Számlázz.hu reverse receipt successfully generated. Receipt number: %s. "
-"Original invoice: %s"
+"Számlázz.hu reverse receipt successfully generated. Receipt number: %1$s. "
+"Original invoice: %2$s"
 msgstr ""
 
 #: index.php:2047

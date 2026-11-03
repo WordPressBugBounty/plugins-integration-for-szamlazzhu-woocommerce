@@ -98,7 +98,7 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 				foreach ( $attribute_taxonomies as $tax ) {
 					$taxonomy = wc_attribute_taxonomy_name( $tax->attribute_name );
 					if ( taxonomy_exists( $taxonomy ) ) {
-						$terms        = get_terms( $taxonomy, 'hide_empty=0' );
+						$terms        = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
 						foreach ($terms as $term) {
 							$conditions['product_attribute']['options'][$term->term_id] = $tax->attribute_label . " - " . $term->name;
 						}
@@ -133,24 +133,26 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 			return $conditions;
 		}
 
-		public static function get_sample_row($group = 'notes') {
+		public static function get_sample_row($group = 'notes', $echo = false) {
 			$conditions = self::get_conditions($group);
-			ob_start();
+			if ( ! $echo ) {
+				ob_start();
+			}
 			?>
-			<script type="text/html" id="wc_szamlazz_<?php echo $group; ?>_condition_sample_row">
+			<script type="text/html" id="wc_szamlazz_<?php echo esc_attr( $group ); ?>_condition_sample_row">
 				<li>
-					<select class="condition" data-name="wc_szamlazz_<?php echo $group; ?>[X][conditions][Y][category]">
+					<select class="condition" data-name="wc_szamlazz_<?php echo esc_attr( $group ); ?>[X][conditions][Y][category]">
 						<?php foreach ($conditions as $condition_id => $condition): ?>
 							<option value="<?php echo esc_attr($condition_id); ?>" <?php if($condition_id == 'payment_method'): ?>selected="selected"<?php endif; ?>"><?php echo esc_html($condition['label']); ?></option>
 						<?php endforeach; ?>
 					</select>
-					<select class="comparison" data-name="wc_szamlazz_<?php echo $group; ?>[X][conditions][Y][comparison]">
-						<option value="equal"><?php _e('Equal', 'wc-szamlazz'); ?></option>
-						<option value="not_equal"><?php _e('Not equal', 'wc-szamlazz'); ?></option>
-						<option value="exclusively"><?php _e('Exclusively', 'wc-szamlazz'); ?></option>
+					<select class="comparison" data-name="wc_szamlazz_<?php echo esc_attr( $group ); ?>[X][conditions][Y][comparison]">
+						<option value="equal"><?php esc_html_e('Equal', 'wc-szamlazz'); ?></option>
+						<option value="not_equal"><?php esc_html_e('Not equal', 'wc-szamlazz'); ?></option>
+						<option value="exclusively"><?php esc_html_e('Exclusively', 'wc-szamlazz'); ?></option>
 					</select>
 					<?php foreach ($conditions as $condition_id => $condition): ?>
-						<select class="value <?php if($condition_id == 'payment_method'): ?>selected<?php endif; ?>" data-condition="<?php echo esc_attr($condition_id); ?>" data-name="wc_szamlazz_<?php echo $group; ?>[X][conditions][Y][<?php echo esc_attr($condition_id); ?>]" <?php if($condition_id != 'payment_method'): ?>disabled="disabled"<?php endif; ?>>
+						<select class="value <?php if($condition_id == 'payment_method'): ?>selected<?php endif; ?>" data-condition="<?php echo esc_attr($condition_id); ?>" data-name="wc_szamlazz_<?php echo esc_attr( $group ); ?>[X][conditions][Y][<?php echo esc_attr($condition_id); ?>]" <?php if($condition_id != 'payment_method'): ?>disabled="disabled"<?php endif; ?>>
 							<?php foreach ($condition['options'] as $option_id => $option_name): ?>
 								<option value="<?php echo esc_attr($option_id); ?>"><?php echo esc_html($option_name); ?></option>
 							<?php endforeach; ?>
@@ -161,7 +163,9 @@ if ( ! class_exists( 'WC_Szamlazz_Conditions', false ) ) :
 				</li>
 			</script>
 			<?php
-			return ob_get_clean();
+			if ( ! $echo ) {
+				return ob_get_clean();
+			}
 		}
 
 		public static function get_order_details($order, $group) {

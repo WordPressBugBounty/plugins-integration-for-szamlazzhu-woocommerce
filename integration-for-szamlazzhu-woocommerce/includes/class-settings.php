@@ -48,7 +48,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 
 	//Add body class to settings pages
 	public static function add_body_class($classes) {
-		if(isset($_GET['tab']) && $_GET['tab'] == 'wc-szamlazz') {
+		if(isset($_GET['tab']) && $_GET['tab'] == 'wc-szamlazz') { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks which admin screen is open, nothing is saved.
 			$classes .= ' wc-szamlazz-settings';
 			if(WC_Szamlazz_Pro::is_pro_enabled()) {
 				$classes .= ' wc-szamlazz-pro-enabled';
@@ -97,14 +97,19 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 	public function save() {
 		global $current_section;
 
+		//WooCommerce verifies this nonce before saving settings, check it here too before reading the submitted data
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'woocommerce-settings' ) ) {
+			return;
+		}
+
 		//Save by default
 		$this->save_settings_for_current_section();
 
 		//Save multi account options
-		if(!isset($_GET['section']) || empty($_GET['section'])) {
+		if(empty($current_section)) {
 			$extra_accounts = array();
 			if ( isset( $_POST['wc_szamlazz_additional_accounts'] ) ) {
-				foreach ($_POST['wc_szamlazz_additional_accounts'] as $account_id => $account) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_additional_accounts'] ) as $account_id => $account) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 					$name = wc_clean($account['name']);
 					$key = wc_clean($account['key']);
 					$condition = wc_clean($account['condition']);
@@ -121,9 +126,9 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 			//Save notes
 			$notes = array();
 			if ( isset( $_POST['wc_szamlazz_notes'] ) ) {
-				foreach ($_POST['wc_szamlazz_notes'] as $note_id => $note) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_notes'] ) as $note_id => $note) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 
-					$comment = wp_kses_post( trim( wp_unslash($note['note']) ) );
+					$comment = wp_kses_post( trim( $note['note'] ) );
 					$notes[$note_id] = array(
 						'comment' => $comment,
 						'conditional' => false
@@ -145,7 +150,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 								$condition_details = array(
 									'category' => wc_clean($condition['category']),
 									'comparison' => wc_clean($condition['comparison']),
-									'value' => $condition[$condition['category']]
+									'value' => wc_clean($condition[$condition['category']])
 								);
 
 								$notes[$note_id]['conditions'][] = $condition_details;
@@ -159,7 +164,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 			//Save advanced options
 			$advanced_options = array();
 			if ( isset( $_POST['wc_szamlazz_advanced_options'] ) ) {
-				foreach ($_POST['wc_szamlazz_advanced_options'] as $advanced_option_id => $advanced_option) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_advanced_options'] ) as $advanced_option_id => $advanced_option) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 					$property = sanitize_text_field($advanced_option['property']);
 					$value = sanitize_text_field($advanced_option['value']);
 					$advanced_options[$advanced_option_id] = array(
@@ -182,7 +187,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 							$condition_details = array(
 								'category' => wc_clean($condition['category']),
 								'comparison' => wc_clean($condition['comparison']),
-								'value' => $condition[$condition['category']]
+								'value' => wc_clean($condition[$condition['category']])
 							);
 
 							$advanced_options[$advanced_option_id]['conditions'][] = $condition_details;
@@ -195,7 +200,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 			//Save payment options
 			$accounts = array();
 			if ( isset( $_POST['wc_szamlazz_payment_options'] ) ) {
-				foreach ($_POST['wc_szamlazz_payment_options'] as $payment_method_id => $payment_method) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_payment_options'] ) as $payment_method_id => $payment_method) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 					$deadline = wc_clean($payment_method['deadline']);
 					$complete = isset($payment_method['complete']) ? true : false;
 					$proform = isset($payment_method['proform']) ? true : false;
@@ -218,10 +223,10 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 		}
 
 		//Save vat overrides
-		if(isset($_GET['section']) && $_GET['section'] == 'taxes') {
+		if($current_section == 'taxes') {
 			$vat_overrides = array();
 			if ( isset( $_POST['wc_szamlazz_vat_overrides'] ) ) {
-				foreach ($_POST['wc_szamlazz_vat_overrides'] as $vat_override_id => $vat_override) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_vat_overrides'] ) as $vat_override_id => $vat_override) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 					$line_item = sanitize_text_field($vat_override['line_item']);
 					$vat_type = sanitize_text_field($vat_override['vat_type']);
 					$vat_overrides[$vat_override_id] = array(
@@ -242,7 +247,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 							$condition_details = array(
 								'category' => wc_clean($condition['category']),
 								'comparison' => wc_clean($condition['comparison']),
-								'value' => $condition[$condition['category']]
+								'value' => wc_clean($condition[$condition['category']])
 							);
 
 							$vat_overrides[$vat_override_id]['conditions'][] = $condition_details;
@@ -255,7 +260,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 			//Save vat overrides
 			$eusafas = array();
 			if ( isset( $_POST['wc_szamlazz_eusafas'] ) ) {
-				foreach ($_POST['wc_szamlazz_eusafas'] as $vat_override_id => $vat_override) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_eusafas'] ) as $vat_override_id => $vat_override) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 					$eusafas[$vat_override_id] = array(
 						'enabled' => true,
 						'conditional' => false
@@ -272,7 +277,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 							$condition_details = array(
 								'category' => wc_clean($condition['category']),
 								'comparison' => wc_clean($condition['comparison']),
-								'value' => $condition[$condition['category']]
+								'value' => wc_clean($condition[$condition['category']])
 							);
 
 							$eusafas[$vat_override_id]['conditions'][] = $condition_details;
@@ -285,7 +290,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 			//Save accounting details
 			$accounts = array();
 			if ( isset( $_POST['wc_szamlazz_accounting_details'] ) ) {
-				foreach ($_POST['wc_szamlazz_accounting_details'] as $payment_method_id => $payment_method) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_accounting_details'] ) as $payment_method_id => $payment_method) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 					$afa_fokonyvi_szam_hu = wc_clean($payment_method['afa_fokonyvi_szam_hu']);
 					$fokonyvi_szam_hu = wc_clean($payment_method['fokonyvi_szam_hu']);
 					$gazd_esem_hu = wc_clean($payment_method['gazd_esem_hu']);
@@ -311,12 +316,12 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 
 		}
 
-		if(isset($_GET['section']) && $_GET['section'] == 'automations') {
+		if($current_section == 'automations') {
 
 			//Save automations
 			$automations = array();
 			if ( isset( $_POST['wc_szamlazz_automations'] ) ) {
-				foreach ($_POST['wc_szamlazz_automations'] as $automation_id => $automation) {
+				foreach ( wp_unslash( $_POST['wc_szamlazz_automations'] ) as $automation_id => $automation) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 					$document = sanitize_text_field($automation['document']);
 					$trigger = sanitize_text_field($automation['trigger']);
 					$complete = sanitize_text_field($automation['complete']);
@@ -348,7 +353,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 							$condition_details = array(
 								'category' => wc_clean($condition['category']),
 								'comparison' => wc_clean($condition['comparison']),
-								'value' => $condition[$condition['category']]
+								'value' => wc_clean($condition[$condition['category']])
 							);
 
 							$automations[$automation_id]['conditions'][] = $condition_details;
@@ -363,7 +368,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 			foreach ($checkbox_groups as $checkbox_group) {
 				$checkbox_values = array();
 				if ( isset( $_POST['wc_szamlazz_'.$checkbox_group] ) ) {
-					foreach ($_POST['wc_szamlazz_'.$checkbox_group] as $checkbox_value) {
+					foreach ( wp_unslash( $_POST['wc_szamlazz_'.$checkbox_group] ) as $checkbox_value) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each field is sanitized below.
 						$checkbox_values[] = wc_clean($checkbox_value);
 					}
 				}
@@ -395,9 +400,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 		);
 		$data = wp_parse_args( $data, $defaults );
 		$template_name = str_replace('wc_szamlazz_settings_', '', $data['type']);
-		ob_start();
 		include( dirname( __FILE__ ) . '/views/html-admin-'.str_replace('_', '-', $template_name).'.php' );
-		echo ob_get_clean();
 	}
 
 	public static function get_payment_methods() {
@@ -442,7 +445,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 	public static function get_ipn_url() {
 		$url = '';
 		if(WC_Szamlazz_Pro::is_pro_enabled()) {
-			$ipn_id = add_option( '_wc_szamlazz_ipn_url', substr(md5(rand()),5)); //this will only store it if doesn't exists yet
+			$ipn_id = add_option( '_wc_szamlazz_ipn_url', substr(md5(wp_rand()),5)); //this will only store it if doesn't exists yet
 			$url = home_url( '?wc_szamlazz_ipn_url=' ).get_option('_wc_szamlazz_ipn_url');
 		}
 		return $url;
@@ -470,7 +473,7 @@ class WC_Szamlazz_Settings extends WC_Settings_Page {
 
 	//Order statuses
 	public static function get_order_statuses_for_void() {
-		$built_in_statuses = array("no"=>__("Turned off")) + self::get_order_statuses();
+		$built_in_statuses = array("no"=>__("Turned off", "wc-szamlazz")) + self::get_order_statuses();
 		return $built_in_statuses;
 	}
 

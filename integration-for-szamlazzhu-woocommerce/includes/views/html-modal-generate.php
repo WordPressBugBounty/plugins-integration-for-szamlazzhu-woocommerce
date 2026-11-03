@@ -6,15 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 $prograss_bar_text = array(
 	'total' => array(
 		'singular' => __( 'One in total', 'wc-szamlazz' ),
+		/* translators: %d: Total number of orders */
 		'plural' => __( '%d in total', 'wc-szamlazz' ),    
 	),
 	'current' => array(
 		'default' => __( '1 invoice generating', 'wc-szamlazz' ),
 		'singular' => __( '1 invoice generated', 'wc-szamlazz' ),
+		/* translators: %d: Number of generated invoices */
 		'plural' => __( '%d invoices generated', 'wc-szamlazz' ),    
 	),
 	'selected' => array(
 		'singular' => __( 'One order selected', 'wc-szamlazz' ),
+		/* translators: %d: Number of selected orders */
 		'plural' => __( '%d orders selected', 'wc-szamlazz' ),    
 	)
 );
@@ -45,7 +48,7 @@ $titles_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $titles_json ) : 
 		<div class="wc-backbone-modal-content">
 			<section class="wc-backbone-modal-main" role="main">
 				<header class="wc-backbone-modal-header">
-					<h1 data-titles="<?php echo $titles_attr; ?>"><?php echo esc_html_e('Generate invoices', 'wc-szamlazz'); ?></h1>
+					<h1 data-titles="<?php echo esc_attr( $titles_json ); ?>"><?php esc_html_e('Generate invoices', 'wc-szamlazz'); ?></h1>
 					<button class="modal-close modal-close-link dashicons dashicons-no-alt">
 						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'wc-szamlazz' ); ?></span>
 					</button>
@@ -71,14 +74,14 @@ $titles_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $titles_json ) : 
 							</div>
 							<div class="hidden-if-void">
 								<label for="wc_szamlazz_bulk_invoice_completed"><?php esc_html_e('Completion date','wc-szamlazz'); ?></label>
-								<input type="text" class="date-picker" id="wc_szamlazz_bulk_invoice_completed" maxlength="10" value="<?php echo date('Y-m-d'); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
+								<input type="text" class="date-picker" id="wc_szamlazz_bulk_invoice_completed" maxlength="10" value="<?php echo esc_attr( gmdate('Y-m-d') ); ?>" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
 							</div>
 							<?php if(count(WC_Szamlazz()->get_szamlazz_accounts()) > 1): ?>
 							<div>
 								<label for="wc_szamlazz_bulk_invoice_account"><?php esc_html_e('Számlázz.hu account','wc-szamlazz'); ?></label>
 								<select id="wc_szamlazz_bulk_invoice_account">
 									<?php foreach (WC_Szamlazz()->get_szamlazz_accounts() as $account_key => $account_name): ?>
-										<option value="<?php echo esc_attr($account_key); ?>" <?php selected( WC_Szamlazz()->get_option('agent_key', ''), $account_key); ?>><?php echo esc_html($account_name); ?> - <?php echo substr(esc_html($account_key), 0, 16); ?>...</option>
+										<option value="<?php echo esc_attr($account_key); ?>" <?php selected( WC_Szamlazz()->get_option('agent_key', ''), $account_key); ?>><?php echo esc_html($account_name); ?> - <?php echo esc_html( substr( $account_key, 0, 16 ) ); ?>...</option>
 									<?php endforeach; ?>
 								</select>
 							</div>
@@ -125,7 +128,7 @@ $titles_attr = function_exists( 'wc_esc_json' ) ? wc_esc_json( $titles_json ) : 
 								<div class="wc-szamlazz-modal-generate-progress-bar">
 									<div class="wc-szamlazz-modal-generate-progress-bar-inner"></div>
 								</div>
-								<div class="wc-szamlazz-modal-generate-progress-bar-text" data-labels="<?php echo $prograss_bar_text_attr; ?>">
+								<div class="wc-szamlazz-modal-generate-progress-bar-text" data-labels="<?php echo esc_attr( $prograss_bar_text_json ); ?>">
 									<span class="wc-szamlazz-modal-generate-progress-bar-text-current"></span>
 									<span class="wc-szamlazz-modal-generate-progress-bar-text-total"></span>
 								</div>

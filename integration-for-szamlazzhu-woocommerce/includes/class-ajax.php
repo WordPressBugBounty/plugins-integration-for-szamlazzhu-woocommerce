@@ -30,22 +30,22 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function quick_generate_invoice_with_ajax() {
 			check_ajax_referer( 'wc-szamlazz-generate', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$order_id = intval($_POST['order']);
+			$order_id = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 
 			//Generate invoice(either final, proform or deposit, based on $_POST['type'])
-			$type = sanitize_text_field($_POST['type']);
+			$type = ( isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '' );
 
 			//Set custom options if we have any
 			$options = array();
 			if(isset($_POST['completed'])) {
-				$options['completed'] = sanitize_text_field($_POST['completed']);
-				$options['deadline'] = sanitize_text_field($_POST['deadline']);
-				$options['note'] = sanitize_text_field($_POST['note']);
+				$options['completed'] = ( isset( $_POST['completed'] ) ? sanitize_text_field( wp_unslash( $_POST['completed'] ) ) : '' );
+				$options['deadline'] = ( isset( $_POST['deadline'] ) ? sanitize_text_field( wp_unslash( $_POST['deadline'] ) ) : '' );
+				$options['note'] = ( isset( $_POST['note'] ) ? sanitize_text_field( wp_unslash( $_POST['note'] ) ) : '' );
 
 				if(isset($_POST['account'])) {
-					$options['account'] = sanitize_text_field($_POST['account']);
+					$options['account'] = ( isset( $_POST['account'] ) ? sanitize_text_field( wp_unslash( $_POST['account'] ) ) : '' );
 				}
 			}
 
@@ -72,12 +72,12 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function generate_invoice_with_ajax() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$order_id = intval($_POST['order']);
+			$order_id = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 
 			//Generate invoice(either final, proform or deposit, based on $_POST['type'])
-			$type = sanitize_text_field($_POST['type']);
+			$type = ( isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '' );
 			$response = WC_Szamlazz()->generate_invoice($order_id, $type);
 
 			//Check if we need to create delivery note too, only if we already generated an invoice
@@ -99,9 +99,9 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function generate_receipt_with_ajax() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$order_id = intval($_POST['order']);
+			$order_id = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 			$response = WC_Szamlazz()->generate_receipt($order_id);
 			wp_send_json_success($response);
 		}
@@ -110,9 +110,9 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function void_invoice_with_ajax() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$order_id = intval($_POST['order']);
+			$order_id = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 			$response = WC_Szamlazz()->generate_void_invoice($order_id, 'void');
 			wp_send_json_success($response);
 		}
@@ -121,9 +121,9 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function void_receipt_with_ajax() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$order_id = intval($_POST['order']);
+			$order_id = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 			$response = WC_Szamlazz()->generate_void_receipt($order_id);
 			wp_send_json_success($response);
 		}
@@ -132,11 +132,11 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function mark_completed_with_ajax() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$order_id = intval($_POST['order']);
+			$order_id = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 			$date = false;
-			if(isset($_POST['date'])) $date = sanitize_text_field($_POST['date']);
+			if(isset($_POST['date'])) $date = ( isset( $_POST['date'] ) ? sanitize_text_field( wp_unslash( $_POST['date'] ) ) : '' );
 			$response = WC_Szamlazz()->generate_invoice_complete($order_id, $date);
 			wp_send_json_success($response);
 		}
@@ -145,11 +145,11 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function toggle_invoice() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$orderid = intval($_POST['order']);
+			$orderid = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 			$order = wc_get_order($orderid);
-			$note = sanitize_text_field($_POST['note']);
+			$note = ( isset( $_POST['note'] ) ? sanitize_text_field( wp_unslash( $_POST['note'] ) ) : '' );
 			$invoice_own = $order->get_meta('_wc_szamlazz_own');
 			$response = array();
 
@@ -173,9 +173,9 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function reverse_receipt_with_ajax() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
-			$orderid = intval($_POST['order']);
+			$orderid = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 			$order = wc_get_order($orderid);
 			$order->delete_meta_data('_wc_szamlazz_type_receipt');
 			$order->save();
@@ -186,16 +186,16 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 		public static function upload_document() {
 			check_ajax_referer( 'wc_szamlazz_generate_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
 
 			//Gather data
-			$order_id = intval($_POST['order']);
+			$order_id = ( isset( $_POST['order'] ) ? intval( $_POST['order'] ) : 0 );
 			$order = wc_get_order($order_id);
-			$document_name = sanitize_text_field($_POST['document_upload_name']);
-			$document_type = sanitize_text_field($_POST['document_upload_type']);
-			$document_payment_date = sanitize_text_field($_POST['document_payment_date']);
-			$pdf = $_FILES['document_upload_file'];
+			$document_name = ( isset( $_POST['document_upload_name'] ) ? sanitize_text_field( wp_unslash( $_POST['document_upload_name'] ) ) : '' );
+			$document_type = ( isset( $_POST['document_upload_type'] ) ? sanitize_key( wp_unslash( $_POST['document_upload_type'] ) ) : '' );
+			$document_payment_date = ( isset( $_POST['document_payment_date'] ) ? sanitize_text_field( wp_unslash( $_POST['document_payment_date'] ) ) : '' );
+			$pdf = isset( $_FILES['document_upload_file'] ) ? $_FILES['document_upload_file'] : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- The file is validated by wp_handle_upload() below, only PDF files are allowed.
 
 			//Create response object
 			$response = array();
@@ -223,9 +223,8 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 			);
 
 			if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
-				if ( $file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ) ) {
-					fwrite( $file_handle, $file['content'] );
-					fclose( $file_handle );
+				if ( wp_is_writable( $file['base'] ) ) {
+					file_put_contents( trailingslashit( $file['base'] ) . $file['file'], $file['content'] );
 				}
 			}
 
@@ -254,6 +253,7 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 				$order->update_meta_data( '_wc_szamlazz_'.$document_type.'_manual', true );
 
 				//Update order notes
+				/* translators: %s: Document name */
 				$order->add_order_note(sprintf(esc_html__('Számlázz.hu document called %s uploaded successfully.', 'wc-szamlazz'), $document_name));
 
 				//Mark as paid if needed
@@ -272,6 +272,7 @@ if ( ! class_exists( 'WC_Szamlazz_Ajax', false ) ) :
 				$response['error'] = false;
 				$response['type'] = $document_type;
 				$response['name'] = $document_name;
+				/* translators: %s: Document name */
 				$response['messages'][] = sprintf(esc_html__('Számlázz.hu document called %s uploaded successfully.', 'wc-szamlazz'), $document_name);
 
 				//Return response

@@ -1,9 +1,11 @@
 <?php
 /**
- * Plugin Name: Integration for Szamlazz.hu & WooCommerce
+ * Plugin Name: Integration for Szamlazz.hu and WooCommerce
  * Plugin URI: https://visztpeter.me
  * Description: Számlázz.hu összeköttetés WooCommercehez
- * Version: 6.3
+ * Version: 6.3.1
+ * License: GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Author: Viszt Péter
  * Author URI: https://visztpeter.me
  * Text Domain: wc-szamlazz
@@ -60,7 +62,7 @@ class WC_Szamlazz {
 		self::$plugin_basename = plugin_basename(__FILE__);
 		self::$plugin_url = plugin_dir_url(self::$plugin_basename);
 		self::$plugin_path = trailingslashit(dirname(__FILE__));
-		self::$version = '6.3';
+		self::$version = '6.3.1';
 
 		//Helper functions
 		require_once( plugin_dir_path( __FILE__ ) . 'includes/class-pro.php' );
@@ -95,7 +97,7 @@ class WC_Szamlazz {
 		if( isset( $data['upgrade_notice'] ) ) {
 			printf(
 				'<div class="update-message">%s</div>',
-				wpautop( $data['upgrade_notice'] )
+				wp_kses_post( wpautop( $data['upgrade_notice'] ) )
 			);
 		}
 	}
@@ -345,7 +347,7 @@ class WC_Szamlazz {
 
 		//Override document type if value submitted
 		$doc_type = '';
-		if(isset($_POST['doc_type'])) $doc_type = sanitize_text_field($_POST['doc_type']);
+		if($this->get_request_value('doc_type') !== null) $doc_type = $this->get_request_value('doc_type');
 		if(isset($options['doc_type'])) $doc_type = sanitize_text_field($options['doc_type']);
 		if($doc_type == 'paper') $electronic_invoice_type = 'false';
 		if($doc_type == 'electronic') $electronic_invoice_type = 'true';
@@ -356,9 +358,11 @@ class WC_Szamlazz {
 		$szamla->beallitasok->addChild('aggregator', 'uiBo2swiVxh0SLgDDt6jnTNk0ohWNY9Q');
 
 		//If custom details submitted
-		if(isset($_POST['deadline']) && isset($_POST['completed'])) {
-			$deadline = intval($_POST['deadline']);
-			$complated_date = sanitize_text_field($_POST['completed']);
+		$request_deadline = $this->get_request_value('deadline');
+		$request_completed = $this->get_request_value('completed');
+		if($request_deadline !== null && $request_completed !== null) {
+			$deadline = intval($request_deadline);
+			$complated_date = $request_completed;
 		} elseif (isset($options['deadline']) && isset($options['completed'])) {
 			$deadline = intval($options['deadline']);
 			$complated_date = sanitize_text_field($options['completed']);
@@ -369,12 +373,12 @@ class WC_Szamlazz {
 
 		//Get language
 		$language = WC_Szamlazz_Helpers::get_order_language($order);
-		if(isset($_POST['lang'])) $language = sanitize_text_field($_POST['lang']);
+		if($this->get_request_value('lang') !== null) $language = $this->get_request_value('lang');
 		if(isset($options['lang'])) $language = sanitize_text_field($options['lang']);
 
 		//Get order note
 		$note = $this->get_invoice_note($order, $type, $language, $szamla);
-		if(isset($_POST['note']) && !empty($_POST['note'])) $note = sanitize_textarea_field($_POST['note']);
+		if(!empty($this->get_request_value('note', 'textarea'))) $note = $this->get_request_value('note', 'textarea');
 		if(isset($options['note']) && !empty($options['note'])) $note = sanitize_textarea_field($options['note']);
 
 		//Replace customer email and phone number in note
@@ -455,7 +459,7 @@ class WC_Szamlazz {
 		}
 
 		//Mark as paid based on metabox option
-		if(isset($_POST['paid']) && $type != 'delivery') {
+		if($this->get_request_value('paid') !== null && $type != 'delivery') {
 			if(!$fejlec->fizetve) {
 				$fejlec->addChild('fizetve', 'true');
 			}
@@ -465,7 +469,7 @@ class WC_Szamlazz {
 			$is_invoice_already_paid = true;
 
 			//If not paid
-			if($_POST['paid'] == 'false') {
+			if($this->get_request_value('paid') == 'false') {
 				$fejlec->fizetve = 'false';
 				$is_invoice_already_paid = false;
 			}
@@ -711,7 +715,7 @@ class WC_Szamlazz {
 					$discount_note = $this->get_option('discount_note');
 					$discount_note_replacements = array('{eredeti_ar}' => wc_price($original_price), '{kedvezmeny_merteke}' => wc_price($applied_sale), '{kedvezmenyes_ar}' => wc_price($discounted_price));
 					$discount_note = str_replace( array_keys( $discount_note_replacements ), array_values( $discount_note_replacements ), $discount_note);
-					$discount_note = strip_tags($discount_note);
+					$discount_note = wp_strip_all_tags($discount_note);
 					$discount_note = html_entity_decode($discount_note);
 					$note .= $discount_note;
 				}
@@ -1006,6 +1010,7 @@ class WC_Szamlazz {
 			//Create response
 			$response['error'] = true;
 			$response['messages'] = $xml_response['messages'];
+			/* translators: %s: Error code */
 			$order->add_order_note(sprintf(esc_html__('Szamlazz.hu invoice generation failed! Agent error code: %s', 'wc-szamlazz'), urldecode($xml_response['agent_error'])));
 
 			//Callbacks
@@ -1034,6 +1039,7 @@ class WC_Szamlazz {
 					$response['messages'][] = ($auto_email_sent) ? esc_html__('Invoice successfully generated and sent to the customer via e-mail.','wc-szamlazz') : esc_html__('Invoice successfully generated.','wc-szamlazz');
 
 					//Update order notes
+					/* translators: %s: Document number */
 					$order->add_order_note(sprintf(esc_html__('Számlázz.hu invoice generated successfully. Invoice number: %s', 'wc-szamlazz'), $invoice_name));
 
 					//Store the filename
@@ -1041,8 +1047,8 @@ class WC_Szamlazz {
 					$order->update_meta_data( '_wc_szamlazz_invoice_pdf', $invoice_pdf );
 
 					//If it was manually generated with a custom account
-					if(isset( $_POST['action']) && $_POST['action'] == 'wc_szamlazz_generate_invoice' && isset($_POST['account']) && $_POST['account'] != $this->get_option('agent_key')) {
-						$order->update_meta_data( '_wc_szamlazz_account_id', substr(sanitize_text_field($_POST['account']), 0, 5) );
+					if($this->get_manual_account() && $this->get_manual_account() != $this->get_option('agent_key')) {
+						$order->update_meta_data( '_wc_szamlazz_account_id', substr($this->get_manual_account(), 0, 5) );
 					}
 
 					//Mark as paid if needed
@@ -1061,6 +1067,7 @@ class WC_Szamlazz {
 					$response['messages'][] = ($auto_email_sent) ? esc_html__('Proforma invoice successfully generated and sent to the customer via e-mail.','wc-szamlazz') : esc_html__('Proforma invoice successfully generated.','wc-szamlazz');
 
 					//Update order notes
+					/* translators: %s: Document number */
 					$order->add_order_note(sprintf(esc_html__('Számlázz.hu proforma invoice generated successfully. Invoice number: %s', 'wc-szamlazz'), $invoice_name));
 
 					//Store the filename
@@ -1077,6 +1084,7 @@ class WC_Szamlazz {
 					$response['messages'][] = ($auto_email_sent) ? esc_html__('Deposit invoice successfully generated and sent to the customer via e-mail.','wc-szamlazz') : esc_html__('Deposit invoice successfully generated.','wc-szamlazz');
 
 					//Update order notes
+					/* translators: %s: Document number */
 					$order->add_order_note(sprintf(esc_html__('Számlázz.hu deposit invoice generated successfully. Invoice number: %s', 'wc-szamlazz'), $invoice_name));
 
 					//Store the filename
@@ -1093,6 +1101,7 @@ class WC_Szamlazz {
 					$response['messages'][] = esc_html__('Delivery note successfully generated.','wc-szamlazz');
 
 					//Update order notes
+					/* translators: %s: Document number */
 					$order->add_order_note(sprintf(esc_html__('Számlázz.hu delivery note successfully generated. Number of the delivery note: %s', 'wc-szamlazz'), $invoice_name));
 
 					//Store the filename
@@ -1109,6 +1118,7 @@ class WC_Szamlazz {
 					$response['messages'][] = esc_html__('Correction invoice generated.','wc-szamlazz');
 
 					//Update order notes
+					/* translators: %s: Document number */
 					$order->add_order_note(sprintf(esc_html__('Számlázz.hu correction invoice successfully generated. Invoice number: %s', 'wc-szamlazz'), $invoice_name));
 
 					//Store the filename
@@ -1196,6 +1206,7 @@ class WC_Szamlazz {
 			$response['messages'][] = esc_html__('Failed to mark the invoice as paid.', 'wc-szamlazz');
 
 			//Update order notes
+			/* translators: %s: Error code */
 			$order->add_order_note( sprintf(__( 'Failed to mark the Szamlazz.hu invoice as paid! Agent error code: %s', 'wc-szamlazz' ), urldecode($xml_response['agent_error'])) );
 
 			return $response;
@@ -1303,8 +1314,8 @@ class WC_Szamlazz {
 		}
 
 		//Get void reason
-		if(isset($_POST['reason']) && !empty($_POST['reason'])) {
-			$fejlec->addChild('megjegyzes', sanitize_textarea_field($_POST['reason']));
+		if(!empty($this->get_request_value('reason', 'textarea'))) {
+			$fejlec->addChild('megjegyzes', $this->get_request_value('reason', 'textarea'));
 		}
 		
 		//Generate XML
@@ -1317,6 +1328,7 @@ class WC_Szamlazz {
 		if($xml_response['error']) {
 
 			//Update order notes
+			/* translators: %s: Error code */
 			$order->add_order_note( sprintf(esc_html__( 'Szamlazz.hu reverse invoice generation failed! Agent error code: %s', 'wc-szamlazz' ), urldecode($xml_response['agent_error'])) );
 
 			//Create response
@@ -1342,8 +1354,10 @@ class WC_Szamlazz {
 			if($this->is_invoice_generated($orderId)) {
 				$invoice_pdf_url = WC_Szamlazz_Document_Storage::get_archived_download_url($order, 'invoice');
 				$invoice_number = $order->get_meta('_wc_szamlazz_invoice');
-				$order->add_order_note(sprintf(esc_html__('Reverse invoice created successfully. Invoice number: %s. Original invoice: %s', 'wc-szamlazz'), $invoice_void_name, '<a target="_blank" href="'.$invoice_pdf_url.'">'.$invoice_number.'</a>'));
+				/* translators: %1$s: Reverse document number, %2$s: Original document number */
+				$order->add_order_note(sprintf(esc_html__('Reverse invoice created successfully. Invoice number: %1$s. Original invoice: %2$s', 'wc-szamlazz'), $invoice_void_name, '<a target="_blank" href="'.$invoice_pdf_url.'">'.$invoice_number.'</a>'));
 			} else {
+				/* translators: %s: Document number */
 				$order->add_order_note(sprintf(esc_html__('Reverse invoice created successfully. Invoice number: %s.', 'wc-szamlazz'), $invoice_void_name));
 			}
 
@@ -1438,6 +1452,7 @@ class WC_Szamlazz {
 		if($xml_error) {
 
 			//Update order notes
+			/* translators: %s: Error code */
 			$order->add_order_note( sprintf(esc_html__( 'Unable to delete the Szamlazz.hu proforma invoice! Agent error code: %s', 'wc-szamlazz' ), urldecode($xml_response['agent_error'])) );
 
 			//Create response
@@ -1450,6 +1465,7 @@ class WC_Szamlazz {
 		} else {
 
 			//Update order notes
+			/* translators: %s: Document number */
 			$order->add_order_note( sprintf(esc_html__('Proforma invoice deleted successfully. This was the proforma invoice number: %s', 'wc-szamlazz'), $szamlaszam));
 
 			//Delete existing meta
@@ -1653,6 +1669,7 @@ class WC_Szamlazz {
 			$response['error'] = true;
 			$response['messages'][] = 'Agent hibakód: '.$agent_error_code;
 			$response['messages'][] = 'Agent hibaüzenet: '.$agent_error;
+			/* translators: %s: Error code */
 			$order->add_order_note(sprintf(esc_html__('Szamlazz.hu receipt generation failed! Agent error code: %s', 'wc-szamlazz'), urldecode($agent_error)));
 
 			//Callbacks
@@ -1683,6 +1700,7 @@ class WC_Szamlazz {
 			$response['messages'][] = ($auto_email_sent) ? esc_html__('Receipt successfully generated and sent to the customer via email.','wc-szamlazz') : esc_html__('Receipt successfully generated.','wc-szamlazz');
 
 			//Update order notes
+			/* translators: %s: Document number */
 			$order->add_order_note(sprintf(esc_html__('Számlázz.hu receipt successfully generated. Receipt number: %s', 'wc-szamlazz'), $invoice_name));
 
 			//Store the filename
@@ -1752,6 +1770,7 @@ class WC_Szamlazz {
 			$response['error'] = true;
 			$response['messages'][] = 'Agent hibakód: '.$agent_error_code;
 			$response['messages'][] = 'Agent hibaüzenet: '.$agent_error;
+			/* translators: %s: Error code */
 			$order->add_order_note(sprintf(esc_html__('Szamlazz.hu reverse receipt generation failed! Agent error code: %s', 'wc-szamlazz'), urldecode($agent_error)));
 
 			do_action('wc_szamlazz_after_receipt_void_error', $order, $response);
@@ -1775,7 +1794,8 @@ class WC_Szamlazz {
 			//Get existing pdf receipt link
 			$receipt_pdf_url = WC_Szamlazz_Document_Storage::get_archived_download_url($order, 'receipt');
 			$receipt_number = $order->get_meta('_wc_szamlazz_receipt');
-			$order->add_order_note(sprintf(esc_html__('Számlázz.hu reverse receipt successfully generated. Receipt number: %s. Original invoice: %s', 'wc-szamlazz'), $invoice_name, '<a target="_blank" href="'.$receipt_pdf_url.'">'.$receipt_number.'</a>'));
+			/* translators: %1$s: Reverse document number, %2$s: Original document number */
+			$order->add_order_note(sprintf(esc_html__('Számlázz.hu reverse receipt successfully generated. Receipt number: %1$s. Original invoice: %2$s', 'wc-szamlazz'), $invoice_name, '<a target="_blank" href="'.$receipt_pdf_url.'">'.$receipt_number.'</a>'));
 
 			//Store the filename
 			$order->update_meta_data( '_wc_szamlazz_void_receipt', $invoice_name );
@@ -1853,7 +1873,9 @@ class WC_Szamlazz {
 			$xml_response['error'] = true;
 
 			// ha a számla nem készült el kiírjuk amit lehet
+			/* translators: %s: Error code */
 			$xml_response['messages'][] = sprintf( __( 'Agent error code: %s','wc-szamlazz' ), $agent_error_code );
+			/* translators: %s: Error message */
 			$xml_response['messages'][] = sprintf( __( 'Agent error message: %s','wc-szamlazz' ), $agent_error );
 
 			//Log error messages
@@ -2113,11 +2135,36 @@ class WC_Szamlazz {
 		return apply_filters('wc_szamlazz_get_accounting_details', $data, $order, $order_item);
 	}
 
+	//Get a value submitted from the order metabox or the bulk generator modal.
+	//Returns null if the value is missing or the request doesn't have a valid nonce.
+	public function get_request_value( $key, $type = 'text' ) {
+		if ( ! isset( $_POST[ $key ], $_POST['nonce'] ) ) {
+			return null;
+		}
+		$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
+		if ( ! wp_verify_nonce( $nonce, 'wc_szamlazz_generate_invoice' ) && ! wp_verify_nonce( $nonce, 'wc-szamlazz-generate' ) ) {
+			return null;
+		}
+		if ( 'textarea' === $type ) {
+			return sanitize_textarea_field( wp_unslash( $_POST[ $key ] ) );
+		}
+		return sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+	}
+
+	//Get the account selected in the order metabox when an invoice is generated manually, false otherwise
+	public function get_manual_account() {
+		if ( $this->get_request_value( 'action' ) !== 'wc_szamlazz_generate_invoice' ) {
+			return false;
+		}
+		$account = $this->get_request_value( 'account' );
+		return ( null === $account ) ? false : $account;
+	}
+
 	public function get_authentication_xml_object($order, $fixed_agent_key = false) {
 
 		//Check if its manually created, if so, $_POST might have a key set
-		if(isset( $_POST['action']) && $_POST['action'] == 'wc_szamlazz_generate_invoice' && isset($_POST['account'])) {
-			$agent_key = sanitize_text_field($_POST['account']);
+		if($this->get_manual_account()) {
+			$agent_key = $this->get_manual_account();
 		} else {
 			$agent_key = $this->get_szamlazz_agent_key($order);
 		}
@@ -2368,7 +2415,8 @@ class WC_Szamlazz {
 		$order_discount = method_exists( $order, 'get_discount_total' ) ? $order->get_discount_total() : $order->order_discount;
 		if ( $order_discount > 0 ) {
 			$coupons = implode(', ', $order->get_coupon_codes());
-			$discount = strip_tags(html_entity_decode($order->get_discount_to_display()));
+			$discount = wp_strip_all_tags(html_entity_decode($order->get_discount_to_display()));
+			/* translators: %1$s: Discount amount, %2$s: Coupon codes */
 			$details["desc"] = sprintf( __( '%1$s discount with the following coupon code: %2$s', 'wc-szamlazz' ), $discount, $coupons );
 
 			if($this->get_option('separate_coupon_name')) {

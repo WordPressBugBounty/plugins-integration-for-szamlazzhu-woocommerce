@@ -25,7 +25,7 @@ if ( ! class_exists( 'WC_Szamlazz_Grouped_Invoice', false ) ) :
 
 		public static function grouped_generate_modal() {
 			global $pagenow, $typenow; 
-			if ( ( $pagenow === 'edit.php' && $typenow === 'shop_order' ) || ( $pagenow === 'admin.php' && $_GET['page'] === 'wc-orders' ) ) {
+			if ( ( $pagenow === 'edit.php' && $typenow === 'shop_order' ) || ( $pagenow === 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] === 'wc-orders' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks which admin screen is open, nothing is saved.
 				include( dirname( __FILE__ ) . '/views/html-modal-grouped.php' );
 			}
 		}
@@ -33,7 +33,7 @@ if ( ! class_exists( 'WC_Szamlazz_Grouped_Invoice', false ) ) :
 		public static function generate_grouped_invoice() {
 			check_ajax_referer( 'wc_szamlazz_generate_grouped_invoice', 'nonce' );
 			if ( !current_user_can( 'edit_shop_orders' ) ) {
-				wp_die( __( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
+				wp_die( esc_html__( 'You do not have sufficient permissions to access this action.', 'wc-szamlazz' ) );
 			}
 
 			//Create response
@@ -44,10 +44,10 @@ if ( ! class_exists( 'WC_Szamlazz_Grouped_Invoice', false ) ) :
 			$order_status = str_replace( 'wc-', '', WC_Szamlazz()->get_option('grouped_invoice_status', 'no') );
 
 			//Get the selected order ids
-			$orders = sanitize_text_field($_POST['orders']);
+			$orders = ( isset( $_POST['orders'] ) ? sanitize_text_field( wp_unslash( $_POST['orders'] ) ) : '' );
 
 			//Get the main order id(used as the base for the invoice)
-			$main_order_id = intval($_POST['main_order']);
+			$main_order_id = ( isset( $_POST['main_order'] ) ? intval( $_POST['main_order'] ) : 0 );
 			$main_order = wc_get_order($main_order_id);
 
 			//Convert submitted order ids to int array
@@ -70,6 +70,7 @@ if ( ! class_exists( 'WC_Szamlazz_Grouped_Invoice', false ) ) :
 			//Return error if invoice already exists for main order
 			if(WC_Szamlazz()->is_invoice_generated($main_order_id, 'invoice')) {
 				$response['error'] = true;
+				/* translators: %1$s: Order number(s) */
 				$response['messages'][] = sprintf( esc_html__( 'An invoice has been already created for the selected orders(#%1$s).', 'wc-szamlazz' ), $main_order->get_order_number() );
 				wp_send_json_success($response);
 				return false;
@@ -87,11 +88,13 @@ if ( ! class_exists( 'WC_Szamlazz_Grouped_Invoice', false ) ) :
 
 					//If its the main order, save a note that this contains a grouped invoice
 					if($order_id == $main_order_id) {
+						/* translators: %1$s: Order number(s) */
 						$order->add_order_note(sprintf( esc_html__( 'A combined invoice has been created for this order. This invoice also has line items from the following orders: #%1$s', 'wc-szamlazz' ), implode(', ', $order_numbers) ));
 					}
 
 					//If its not the main order, disable the auto invoice generation and store where to find the actual invoice
 					if($order_id != $main_order_id) {
+						/* translators: %1$s: Order number(s) */
 						$order->update_meta_data('_wc_szamlazz_own', sprintf( esc_html__( 'A combined invoice has been created for this order. You can find the invoice on the main order: #%1$s', 'wc-szamlazz' ), $order->get_order_number() ));
 					}
 

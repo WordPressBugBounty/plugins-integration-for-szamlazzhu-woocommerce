@@ -66,11 +66,11 @@ if ( ! class_exists( 'WC_Szamlazz_Product_Options', false ) ) :
 		public static function save_product_options_fields($product) {
 			$fields = ['mennyisegi_egyseg', 'megjegyzes', 'tetel_nev', 'disable_auto_invoice', 'hide_item', 'custom_cost', 'eraser_code'];
 			foreach ($fields as $field) {
-				if(isset($_REQUEST['wc_szamlazz_'.$field])) {
-					$posted_data = $_REQUEST['wc_szamlazz_'.$field];
-					if(!empty($posted_data) && !is_array($posted_data)) {
-						$posted_data = wp_kses_post( trim( wp_unslash($_REQUEST['wc_szamlazz_'.$field]) ) );
-					} else {
+				// phpcs:disable WordPress.Security.NonceVerification.Missing -- WooCommerce verified the product edit nonce before this hook runs.
+				if(isset($_POST['wc_szamlazz_'.$field])) {
+					$posted_data = is_array($_POST['wc_szamlazz_'.$field]) ? '' : trim( wp_kses_post( wp_unslash( $_POST['wc_szamlazz_'.$field] ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized with wp_kses_post().
+					// phpcs:enable WordPress.Security.NonceVerification.Missing
+					if(empty($posted_data)) {
 						$posted_data = '';
 					}
 					$product->update_meta_data( 'wc_szamlazz_'.$field, $posted_data);
@@ -85,10 +85,12 @@ if ( ! class_exists( 'WC_Szamlazz_Product_Options', false ) ) :
 			$fields = ['mennyisegi_egyseg', 'megjegyzes', 'tetel_nev', 'disable_auto_invoice', 'hide_item', 'custom_cost', 'eraser_code'];
 			$product_variation = wc_get_product_object( 'variation', $variation_id );
 			foreach ($fields as $field) {
+				// phpcs:disable WordPress.Security.NonceVerification.Missing -- WooCommerce verified the save variations nonce before this hook runs.
 				if(isset($_POST['wc_szamlazz_'.$field][$i])) {
-					$custom_field = $_POST['wc_szamlazz_'.$field][$i];
+					$custom_field = trim( wp_kses_post( wp_unslash( $_POST['wc_szamlazz_'.$field][$i] ) ) );
+					// phpcs:enable WordPress.Security.NonceVerification.Missing
 					if ( ! empty( $custom_field ) ) {
-						$product_variation->update_meta_data('wc_szamlazz_'.$field, wp_kses_post( trim( wp_unslash($custom_field) ) ));
+						$product_variation->update_meta_data('wc_szamlazz_'.$field, $custom_field);
 					}
 				} else {
 					$product_variation->delete_meta_data('wc_szamlazz_'.$field);

@@ -48,9 +48,9 @@ $condition_select_values = apply_filters('wc_szamlazz_account_conditions', array
 			<table class="wc-szamlazz-settings-inline-table wc-szamlazz-settings-inline-table-accounts">
 				<thead>
 					<tr>
-						<th><?php _e('Account name', 'wc-szamlazz'); ?></th>
-						<th><?php _e('Agent key', 'wc-szamlazz'); ?></th>
-						<th><?php _e('Condition', 'wc-szamlazz'); ?></th>
+						<th><?php esc_html_e('Account name', 'wc-szamlazz'); ?></th>
+						<th><?php esc_html_e('Agent key', 'wc-szamlazz'); ?></th>
+						<th><?php esc_html_e('Condition', 'wc-szamlazz'); ?></th>
 						<th></th>
 					</tr>
 				</thead>
@@ -59,14 +59,14 @@ $condition_select_values = apply_filters('wc_szamlazz_account_conditions', array
 						<?php foreach ( $saved_values as $account_id => $account ): ?>
 							<tr>
 								<td>
-									<input type="text" placeholder="<?php _e('Can be anything', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][name]" name="wc_szamlazz_additional_accounts[<?php echo esc_attr( $account_id ); ?>][name]" value="<?php echo esc_attr($account['name']); ?>" />
+									<input type="text" placeholder="<?php esc_html_e('Can be anything', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][name]" name="wc_szamlazz_additional_accounts[<?php echo esc_attr( $account_id ); ?>][name]" value="<?php echo esc_attr($account['name']); ?>" />
 								</td>
 								<td>
-									<input type="text" placeholder="<?php _e('42 character key', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][key]" name="wc_szamlazz_additional_accounts[<?php echo esc_attr( $account_id ); ?>][key]" value="<?php echo esc_attr($account['key']); ?>" />
+									<input type="text" placeholder="<?php esc_html_e('42 character key', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][key]" name="wc_szamlazz_additional_accounts[<?php echo esc_attr( $account_id ); ?>][key]" value="<?php echo esc_attr($account['key']); ?>" />
 								</td>
 								<td>
 									<select data-name="wc_szamlazz_additional_accounts[X][condition]" name="wc_szamlazz_additional_accounts[<?php echo esc_attr( $account_id ); ?>][condition]" <?php if(empty($account['condition'])): ?>class="placeholder"<?php endif; ?>>
-										<option value=""><?php _e('Not conditional', 'wc-szamlazz'); ?></option>
+										<option value=""><?php esc_html_e('Not conditional', 'wc-szamlazz'); ?></option>
 										<?php foreach ($condition_select_values as $option_group): ?>
 											<optgroup label="<?php echo esc_attr($option_group['label']); ?>">
 												<?php foreach ($option_group['options'] as $option_id => $option_label): ?>
@@ -86,7 +86,7 @@ $condition_select_values = apply_filters('wc_szamlazz_account_conditions', array
 				<tfoot>
 					<tr>
 						<td colspan="4">
-							<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php _e('Add a new account', 'wc-szamlazz'); ?></span></a>
+							<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php esc_html_e('Add a new account', 'wc-szamlazz'); ?></span></a>
 						</td>
 					</tr>
 				</tfoot>
@@ -99,14 +99,14 @@ $condition_select_values = apply_filters('wc_szamlazz_account_conditions', array
 <script type="text/html" id="wc_szamlazz_additional_accounts_sample_row">
 	<tr>
 		<td>
-			<input type="text" placeholder="<?php _e('Can be anything', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][name]" />
+			<input type="text" placeholder="<?php esc_html_e('Can be anything', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][name]" />
 		</td>
 		<td>
-			<input type="text" placeholder="<?php _e('42 character key', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][key]" />
+			<input type="text" placeholder="<?php esc_html_e('42 character key', 'wc-szamlazz'); ?>" data-name="wc_szamlazz_additional_accounts[X][key]" />
 		</td>
 		<td>
 			<select data-name="wc_szamlazz_additional_accounts[X][condition]" class="placeholder">
-				<option value="" selected><?php _e('Not conditional', 'wc-szamlazz'); ?></option>
+				<option value="" selected><?php esc_html_e('Not conditional', 'wc-szamlazz'); ?></option>
 				<?php foreach ($condition_select_values as $option_group): ?>
 					<optgroup label="<?php echo esc_attr($option_group['label']); ?>">
 						<?php foreach ($option_group['options'] as $option_id => $option_label): ?>

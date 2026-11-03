@@ -195,9 +195,11 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 		}
 
 		public static function save_vat_number( $order_id ) {
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- WooCommerce verified the checkout nonce before this hook runs.
 			if ( ! empty( $_POST['wc_szamlazz_adoszam'] ) ) {
 				$order = wc_get_order( $order_id );
-				$vat_number = sanitize_text_field( $_POST['wc_szamlazz_adoszam'] );
+				$vat_number = self::sanitize_vat_number( sanitize_text_field( wp_unslash( $_POST['wc_szamlazz_adoszam'] ) ) );
+				// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 				//Clean hungarian vat number format
 				if(preg_match('/^\d{11}$/', $vat_number)) {
@@ -223,7 +225,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 		public static function display_vat_number($order){
 			if(!$order->get_meta('_billing_wc_szamlazz_adoszam')) {
 				if($adoszam = $order->get_meta('wc_szamlazz_adoszam')) {
-					echo '<p><strong>'.__('VAT number', 'wc-szamlazz').':</strong> ' . $adoszam . '</p>';
+					echo '<p><strong>'.esc_html__('VAT number', 'wc-szamlazz').':</strong> ' . esc_html( $adoszam ) . '</p>';
 				}
 			}
 		}
@@ -337,7 +339,19 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			}
 		}
 
+		//Clean up a VAT number coming from user input: strip tags and keep only characters used in HU / EU VAT numbers
+		public static function sanitize_vat_number( $vat_number ) {
+			if ( ! is_scalar( $vat_number ) ) {
+				return '';
+			}
+			$vat_number = trim( sanitize_text_field( (string) $vat_number ) );
+			$vat_number = preg_replace( '/[^A-Za-z0-9 .\-+*]/', '', $vat_number );
+			return substr( $vat_number, 0, 32 );
+		}
+
 		public static function get_vat_number_data($vat_number) {
+
+			$vat_number = self::sanitize_vat_number( $vat_number );
 
 			//Allow plugins to hook into the vat number validation
 			do_action('wc_szamlazz_before_vat_number_validation', $vat_number);
@@ -349,7 +363,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 			$xml = $szamla->asXML();
 
 			//Get response from Számlázz.hu
-			$xml_response = WC_Szamlazz()->xml_generator->generate($xml, rand(), 'action-szamla_agent_taxpayer');
+			$xml_response = WC_Szamlazz()->xml_generator->generate($xml, wp_rand(), 'action-szamla_agent_taxpayer');
 			$response = array();
 
 			if($xml_response['error']) {
@@ -414,6 +428,8 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 		}
 
 		public static function get_eu_vat_number_data($vat_number) {
+
+			$vat_number = self::sanitize_vat_number( $vat_number );
 
 			//Allow plugins to hook into the vat number validation
 			do_action('wc_szamlazz_before_vat_number_validation', $vat_number);
@@ -540,8 +556,8 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 		}
 
 		public static function update_customer_meta($customer_id) {
-			$billing_tax_number = !empty( $_POST['wc_szamlazz_adoszam'] ) ? $_POST['wc_szamlazz_adoszam'] : '';
-			update_user_meta( $customer_id, 'wc_szamlazz_adoszam', sanitize_text_field( $billing_tax_number ) );
+			$billing_tax_number = !empty( $_POST['wc_szamlazz_adoszam'] ) ? sanitize_text_field( wp_unslash( $_POST['wc_szamlazz_adoszam'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verified the checkout nonce before this hook runs.
+			update_user_meta( $customer_id, 'wc_szamlazz_adoszam', self::sanitize_vat_number( $billing_tax_number ) );
 		}
 
 		public static function customer_meta($profileFieldArray) {
@@ -593,14 +609,14 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 				@set_time_limit(30);
 			}
 
-			if($_POST['page'] == 'checkout') {
+			if(isset($_POST['page']) && $_POST['page'] == 'checkout') {
 				check_ajax_referer( 'update-order-review', 'security' );
 			} else {
 				check_ajax_referer( 'woocommerce-edit_address', 'security' );
 			}
 
 			//Submitted vat number
-			$vat_number = sanitize_text_field($_POST['vat_number']);
+			$vat_number = ( isset( $_POST['vat_number'] ) ? sanitize_text_field( wp_unslash( $_POST['vat_number'] ) ) : '' );
 			$vat_number_data = false;
 
 			//Try to validate using számlázz.hu api
@@ -644,7 +660,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 				WC()->customer->set_is_vat_exempt(false);
 
 				//Check selected address type
-				$output = $_POST;
+				$output = wc_clean( wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- WooCommerce verified the checkout nonce before this hook runs. Values are sanitized with wc_clean().
 				$eu_countries = WC()->countries->get_european_union_countries('eu_vat');
 
 				//Check if company name specified
@@ -691,7 +707,7 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 				WC()->customer->set_is_vat_exempt(false);
 
 				//Read submitted checkout fields
-				$output = $_POST;
+				$output = wc_clean( wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- WooCommerce verified the checkout nonce before this hook runs. Values are sanitized with wc_clean().
 				$eu_countries = WC()->countries->get_european_union_countries('eu_vat');
 
 				//Re-apply the EU VAT exemption at order placement, mirroring vat_exempt_eu_vat

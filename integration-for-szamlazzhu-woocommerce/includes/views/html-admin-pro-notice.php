@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 	<div class="wc-szamlazz-pro-widget-activate">
 		<input class="input-text regular-input" type="text" name="woocommerce_wc_szamlazz_pro_key" id="woocommerce_wc_szamlazz_pro_key" value="" placeholder="<?php esc_html_e( 'License key', 'wc-szamlazz' ); ?>">
-		<button class="button" type="button" id="wc_szamlazz_activate_pro"><?php _e('Activate', 'wc-szamlazz'); ?></button>
+		<button class="button" type="button" id="wc_szamlazz_activate_pro"><?php esc_html_e('Activate', 'wc-szamlazz'); ?></button>
     </div>
     <div class="wc-szamlazz-pro-widget-notice" style="display:none">
 		<span class="dashicons dashicons-warning"></span>

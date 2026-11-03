@@ -36,6 +36,7 @@ if ( ! class_exists( 'WC_Szamlazz_Checkout_Receipt', false ) ) :
 						break;
 					}
 				}
+				/* translators: %s: Payment method name */
 				$errors->add( 'validation', apply_filters('wc_szamlazz_receipt_payment_method_validation_message', sprintf(esc_html__('Please fill in your billing details if you prefer to use this payment method: %s', 'wc-szamlazz'), $payment_method_label), $fields) );
 				WC()->session->set( 'wc_szamlazz_receipt', 'invoice' );
 				WC()->session->set( 'reload_checkout', true );
@@ -124,7 +125,7 @@ if ( ! class_exists( 'WC_Szamlazz_Checkout_Receipt', false ) ) :
 		public static function receipt_check_with_ajax() {
 			check_ajax_referer( 'update-order-review', 'nonce' );
 
-			if($_POST['checked'] == 'invoice') {
+			if(isset($_POST['checked']) && $_POST['checked'] == 'invoice') {
 				WC()->session->set( 'wc_szamlazz_receipt', 'invoice' );
 			} else {
 				WC()->session->set( 'wc_szamlazz_receipt', 'receipt' );
@@ -134,15 +135,15 @@ if ( ! class_exists( 'WC_Szamlazz_Checkout_Receipt', false ) ) :
 			$customer = array();
 
 			if ( ! empty( $_POST['billing_first_name'] ) ) {
-				$customer['billing_first_name'] = $_POST['billing_first_name'];
+				$customer['billing_first_name'] = sanitize_text_field( wp_unslash( $_POST['billing_first_name'] ) );
 			}
 
 			if ( ! empty( $_POST['billing_last_name'] ) ) {
-				$customer['billing_last_name'] = $_POST['billing_last_name'];
+				$customer['billing_last_name'] = sanitize_text_field( wp_unslash( $_POST['billing_last_name'] ) );
 			}
 
 			if ( ! empty( $_POST['billing_email'] ) ) {
-				$customer['billing_email'] = $_POST['billing_email'];
+				$customer['billing_email'] = sanitize_email( wp_unslash( $_POST['billing_email'] ) );
 			}
 
 			WC()->session->set( 'wc_szamlazz_temp_customer', $customer);

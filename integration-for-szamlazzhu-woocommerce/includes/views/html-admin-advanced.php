@@ -47,11 +47,11 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('advanced_options');
 								</select>
 							</div>
 							<span class="text"><?php echo esc_html_x('to', 'advanced-options', 'wc-szamlazz'); ?></span>
-							<a href="#" class="delete-advanced-option"><?php _e('delete', 'wc-szamlazz'); ?></a>
+							<a href="#" class="delete-advanced-option"><?php esc_html_e('delete', 'wc-szamlazz'); ?></a>
 						</div>
 						<div class="wc-szamlazz-settings-advanced-option-options">
 							<?php foreach ($line_item_options as $line_item_id => $line_item_value): ?>
-								<div class="wc-szamlazz-settings-advanced-option-option option-<?php echo $line_item_id; ?>">
+								<div class="wc-szamlazz-settings-advanced-option-option option-<?php echo esc_attr( $line_item_id ); ?>">
 									<?php if($line_item_value == ''): ?>
 										<input type="text" class="property-value" data-name="wc_szamlazz_advanced_options[X][value]" value="<?php echo esc_attr($automation['value']); ?>">
 									<?php else: ?>
@@ -69,13 +69,13 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('advanced_options');
 							<div class="wc-szamlazz-settings-advanced-option-if-header">
 								<label>
 									<input type="checkbox" data-name="wc_szamlazz_advanced_options[X][condition_enabled]" class="condition" value="yes" checked>
-									<span><?php _e('Based on the following conditions, if', 'wc-szamlazz'); ?></span>
+									<span><?php esc_html_e('Based on the following conditions, if', 'wc-szamlazz'); ?></span>
 								</label>
 								<select data-name="wc_szamlazz_advanced_options[X][logic]">
-									<option value="and" <?php if(isset($note['logic'])) selected( $note['logic'], 'and' ); ?>><?php _e('All', 'wc-szamlazz'); ?></option>
-									<option value="or" <?php if(isset($note['logic'])) selected( $note['logic'], 'or' ); ?>><?php _e('One', 'wc-szamlazz'); ?></option>
+									<option value="and" <?php if(isset($note['logic'])) selected( $note['logic'], 'and' ); ?>><?php esc_html_e('All', 'wc-szamlazz'); ?></option>
+									<option value="or" <?php if(isset($note['logic'])) selected( $note['logic'], 'or' ); ?>><?php esc_html_e('One', 'wc-szamlazz'); ?></option>
 								</select>
-								<span><?php _e('of the following match', 'wc-szamlazz'); ?></span>
+								<span><?php esc_html_e('of the following match', 'wc-szamlazz'); ?></span>
 							</div>
 							<ul class="wc-szamlazz-settings-advanced-option-if-options conditions" <?php if(isset($automation['conditions'])): ?>data-options="<?php echo esc_attr(json_encode($automation['conditions'])); ?>"<?php endif; ?>></ul>
 						</div>
@@ -84,7 +84,7 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('advanced_options');
 			<?php endif; ?>
 		</div>
 		<div class="wc-szamlazz-settings-advanced-option-add">
-			<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php _e('Add new', 'wc-szamlazz'); ?></span></a>
+			<a href="#"><span class="dashicons dashicons-plus-alt"></span> <span><?php esc_html_e('Add new', 'wc-szamlazz'); ?></span></a>
 		</div>
 		<p class="description"><?php echo esc_html($data['desc']); ?></p>
 	</td>
@@ -103,11 +103,11 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('advanced_options');
 				</select>
 			</div>
 			<span class="text"><?php echo esc_html_x('to', 'advanced-options', 'wc-szamlazz'); ?></span>
-			<a href="#" class="delete-advanced-option"><?php _e('delete', 'wc-szamlazz'); ?></a>
+			<a href="#" class="delete-advanced-option"><?php esc_html_e('delete', 'wc-szamlazz'); ?></a>
 		</div>
 		<div class="wc-szamlazz-settings-advanced-option-options">
 			<?php foreach ($line_item_options as $line_item_id => $line_item_value): ?>
-				<div class="wc-szamlazz-settings-advanced-option-option option-<?php echo $line_item_id; ?>">
+				<div class="wc-szamlazz-settings-advanced-option-option option-<?php echo esc_attr( $line_item_id ); ?>">
 					<?php if($line_item_value == ''): ?>
 						<input type="text" class="property-value" data-name="wc_szamlazz_advanced_options[X][value]" value="">
 					<?php else: ?>
@@ -124,17 +124,17 @@ $conditions = WC_Szamlazz_Conditions::get_conditions('advanced_options');
 			<div class="wc-szamlazz-settings-advanced-option-if-header">
 				<label>
 					<input type="checkbox" data-name="wc_szamlazz_advanced_options[X][condition_enabled]" class="condition" value="yes" checked>
-					<span><?php _e('Based on the following conditions, if', 'wc-szamlazz'); ?></span>
+					<span><?php esc_html_e('Based on the following conditions, if', 'wc-szamlazz'); ?></span>
 				</label>
 				<select data-name="wc_szamlazz_advanced_options[X][logic]">
-					<option value="and"><?php _e('All', 'wc-szamlazz'); ?></option>
-					<option value="or"><?php _e('One', 'wc-szamlazz'); ?></option>
+					<option value="and"><?php esc_html_e('All', 'wc-szamlazz'); ?></option>
+					<option value="or"><?php esc_html_e('One', 'wc-szamlazz'); ?></option>
 				</select>
-				<span><?php _e('of the following match', 'wc-szamlazz'); ?></span>
+				<span><?php esc_html_e('of the following match', 'wc-szamlazz'); ?></span>
 			</div>
 			<ul class="wc-szamlazz-settings-advanced-option-if-options conditions"></ul>
 		</div>
 	</div>
 </script>
 
-<?php echo WC_Szamlazz_Conditions::get_sample_row('advanced_options'); ?>
+<?php WC_Szamlazz_Conditions::get_sample_row('advanced_options', true); ?>

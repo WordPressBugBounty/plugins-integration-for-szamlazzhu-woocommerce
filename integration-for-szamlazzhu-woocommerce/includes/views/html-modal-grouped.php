@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="wc-backbone-modal-content">
 			<section class="wc-backbone-modal-main" role="main">
 				<header class="wc-backbone-modal-header">
-					<h1><?php echo esc_html_e('Create a combined invoice', 'wc-szamlazz'); ?></h1>
+					<h1><?php esc_html_e('Create a combined invoice', 'wc-szamlazz'); ?></h1>
 					<button class="modal-close modal-close-link dashicons dashicons-no-alt">
 						<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'woocommerce' ); ?></span>
 					</button>
@@ -32,14 +32,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 							<p>
 								<?php esc_html_e('The combined invoice will be displayed on the selected order.', 'wc-szamlazz'); ?>
 								<?php if(WC_Szamlazz()->get_option('grouped_invoice_status', 'no') != 'no'): ?>
-									<br><?php esc_html_e('The status of the orders above will change to this after the invoice is created:', 'wc-szamlazz'); ?> <strong><?php echo wc_get_order_status_name(WC_Szamlazz()->get_option('grouped_invoice_status')); ?></strong>
+									<br><?php esc_html_e('The status of the orders above will change to this after the invoice is created:', 'wc-szamlazz'); ?> <strong><?php echo esc_html( wc_get_order_status_name(WC_Szamlazz()->get_option('grouped_invoice_status')) ); ?></strong>
 								<?php endif; ?>
 							</p>
 						</div>
 					</article>
 					<footer>
 						<div class="inner">
-							<a class="button button-primary button-large" href="#" id="generate_grouped_invoice" data-orders="{{{ data.orderIds }}}" data-nonce="<?php echo wp_create_nonce( "wc_szamlazz_generate_grouped_invoice" ); ?>"><?php esc_html_e( 'Create combined invoice', 'wc-szamlazz' ); ?></a>
+							<a class="button button-primary button-large" href="#" id="generate_grouped_invoice" data-orders="{{{ data.orderIds }}}" data-nonce="<?php echo esc_attr( wp_create_nonce( "wc_szamlazz_generate_grouped_invoice" ) ); ?>"><?php esc_html_e( 'Create combined invoice', 'wc-szamlazz' ); ?></a>
 						</div>
 					</footer>
 				<# } else { #>

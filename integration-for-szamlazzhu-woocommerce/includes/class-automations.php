@@ -187,7 +187,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 			$order_total = $order->get_total();
 
 			//Don't defer if we are just changing one or two order status using bulk actions
-			if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) {
+			if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks which admin screen is open, nothing is saved.
 				$deferred = apply_filters('wc_szamlazz_defer_invoice_in_bulk_action', true);
 			}
 
@@ -319,7 +319,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 				if($order->get_meta('_wc_szamlazz_'.$document_type)) {
 					$path = WC_Szamlazz()->generate_download_link($order, $document_type, true);
 					if($path && file_exists($path)) {
-						unlink($path);
+						wp_delete_file( $path );
 					}
 				}
 			}
@@ -365,7 +365,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 					$deferred = false;
 
 					//Don't defer if we are just changing one or two order status using bulk actions
-					if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) {
+					if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks which admin screen is open, nothing is saved.
 						$deferred = apply_filters('wc_szamlazz_defer_invoice_in_bulk_action', true);
 					}
 
@@ -399,7 +399,7 @@ if ( ! class_exists( 'WC_Szamlazz_Automations', false ) ) :
 			}
 
 			//Don't defer if we are just changing one or two order status using bulk actions
-			if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) {
+			if(is_admin() && isset($_GET['_wp_http_referer']) && isset($_GET['post']) && count($_GET['post']) > 5) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only checks which admin screen is open, nothing is saved.
 				$deferred = apply_filters('wc_szamlazz_defer_invoice_in_bulk_action', true);
 			}
 
