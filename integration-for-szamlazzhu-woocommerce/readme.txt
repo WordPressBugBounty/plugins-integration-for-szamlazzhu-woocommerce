@@ -4,7 +4,7 @@ Tags: szamlazz.hu, szamlazz, woocommerce, szamlazo, magyar
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 6.3.1
+Stable tag: 6.3.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -128,6 +128,10 @@ In test mode, the invoice notification isn't sent to the customer's e-mail addre
 8. Invoice box on the order page
 
 == Changelog ==
+
+6.3.2
+* WooCommerce Block e-mail editor fix
+* EU VAT exempt only if shipping country is the same
 
 6.3.1
 * Security fix: the VAT number field is validated and cleaned on the block checkout, and a validation result saved in the session is only used for the same VAT number

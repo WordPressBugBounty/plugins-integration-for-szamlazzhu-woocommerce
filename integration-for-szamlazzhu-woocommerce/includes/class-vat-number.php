@@ -695,7 +695,8 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 					in_array($output['billing_country'], $eu_countries) &&
 					$output['billing_country'] != 'HU' &&
 					isset($output['wc_szamlazz_adoszam']) &&
-					self::validate_eu_vat_format($output['wc_szamlazz_adoszam'])), $output )
+					self::validate_eu_vat_format($output['wc_szamlazz_adoszam']) &&
+					self::is_eu_vat_exempt_shipping_country(self::get_checkout_shipping_country($output))), $output )
 				) {
 					WC()->customer->set_is_vat_exempt(true);
 				}
@@ -718,11 +719,34 @@ if ( ! class_exists( 'WC_Szamlazz_Vat_Number_Field', false ) ) :
 					in_array($output['billing_country'], $eu_countries) &&
 					$output['billing_country'] != 'HU' &&
 					isset($output['wc_szamlazz_adoszam']) &&
-					self::validate_eu_vat_format($output['wc_szamlazz_adoszam'])), $output )
+					self::validate_eu_vat_format($output['wc_szamlazz_adoszam']) &&
+					self::is_eu_vat_exempt_shipping_country(self::get_checkout_shipping_country($output))), $output )
 				) {
 					WC()->customer->set_is_vat_exempt(true);
 				}
 			}
+		}
+
+		/**
+		 * Intra-community supply (Áfa tv. 89. §): a valid VAT number from another member state is not enough on its own,
+		 * physical goods must also be shipped to another EU member state, not to Hungary.
+		 * Orders that don't need shipping (services, digital goods) only need the VAT number.
+		 */
+		public static function is_eu_vat_exempt_shipping_country($shipping_country) {
+			if(!WC()->cart || !WC()->cart->needs_shipping()) {
+				return true;
+			}
+
+			$eu_countries = WC()->countries->get_european_union_countries('eu_vat');
+			return in_array($shipping_country, $eu_countries) && $shipping_country != 'HU';
+		}
+
+		//Goods are shipped to the shipping address if set, otherwise to the billing address
+		public static function get_checkout_shipping_country($output) {
+			if(!empty($output['ship_to_different_address']) && !empty($output['shipping_country'])) {
+				return $output['shipping_country'];
+			}
+			return isset($output['billing_country']) ? $output['billing_country'] : '';
 		}
 
 		public static function require_vat_number($fields) {

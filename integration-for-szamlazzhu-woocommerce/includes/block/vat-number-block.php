@@ -125,15 +125,19 @@ add_action('woocommerce_blocks_loaded', function() {
 				}
 			}
 
-			//Exempt only company purchases with a non-Hungarian EU VAT number (two-letter prefix).
+			//Goods are shipped to the shipping address if set, otherwise to the billing address
+			$shipping_country = WC()->customer->get_shipping_country() ? WC()->customer->get_shipping_country() : WC()->customer->get_billing_country();
+
+			//Exempt only company purchases with a non-Hungarian EU VAT number (two-letter prefix),
+			//and physical goods must be shipped to another EU country, not to Hungary.
 			if( $customer_type === 'company' && preg_match('/^[A-Z]{2}/', strtoupper($vat_number)) ) {
 				$country_code = strtoupper( substr($vat_number, 0, 2) );
-				if( $country_code !== 'HU' ) {
+				if( $country_code !== 'HU' && WC_Szamlazz_Vat_Number_Field::is_eu_vat_exempt_shipping_country( $shipping_country ) ) {
 					$is_exempt = true;
 				}
 			}
 
-			$is_exempt = apply_filters( 'wc_szamlazz_should_set_eu_vat_exempt', $is_exempt, array( 'wc_szamlazz_adoszam' => $vat_number ) );
+			$is_exempt = apply_filters( 'wc_szamlazz_should_set_eu_vat_exempt', $is_exempt, array( 'wc_szamlazz_adoszam' => $vat_number, 'shipping_country' => $shipping_country ) );
 		}
 
 		//Company outside the EU buying only virtual products (block version of vat_exempt_abroad).

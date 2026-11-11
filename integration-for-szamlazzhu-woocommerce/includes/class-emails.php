@@ -80,6 +80,10 @@ if ( ! class_exists( 'WC_Szamlazz_Emails', false ) ) :
 			if(!is_a( $order, 'WC_Order' )) return $attachments;
 			$order_id = $order->get_id();
 			$order = wc_get_order($order_id);
+
+			//Not a saved order, for example the dummy order in the WooCommerce email preview
+			if(!$order) return $attachments;
+
 			$invoice_types = array('invoice', 'proform', 'void', 'deposit', 'delivery');
 			foreach ($invoice_types as $invoice_type) {
 				$invoice_email_ids = WC_Szamlazz()->get_option('email_attachment_'.$invoice_type, array());
